@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('users', function (Blueprint $table) {
+    Schema::create('orders', function (Blueprint $table) {
 
-        $table->increments('UserID'); // ganti id
+        $table->increments('OrderID'); // PRIMARY KEY
 
-        $table->string('Nama', 100);
-        $table->string('Email', 100)->unique();
-        $table->string('Password', 255);
+        $table->integer('UserID');
+        $table->integer('TotalHarga');
 
-        $table->string('GoogleID', 255)->nullable();
-        $table->string('Role', 20)->nullable();
+        $table->string('StatusOrder', 20)->nullable();
+        $table->dateTime('TanggalOrder')->nullable();
+
         $table->string('CompanyCode', 20)->nullable();
 
         $table->tinyInteger('Status')->default(1);
@@ -31,9 +31,11 @@ return new class extends Migration
 
         $table->string('LastUpdatedBy', 32)->nullable();
         $table->dateTime('LastUpdatedDate')->nullable();
-
-        // optional (kalau masih mau pakai fitur Laravel)
-        // $table->rememberToken();
     });
+}
+
+public function down()
+{
+    Schema::dropIfExists('orders');
 }
 };
