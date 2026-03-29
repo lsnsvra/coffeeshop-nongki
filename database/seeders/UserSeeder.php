@@ -16,10 +16,37 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'nama' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('12345678'),
-            ]    
+                'Nama' => 'Admin Manager',
+                'Email' => 'admin@coffeeshop.com',
+                'Password' => Hash::make('password'),
+                'Role' => 'admin',
+                'GoogleID' => null,
+                'CompanyCode' => null,
+            ],
+            [
+                'Nama' => 'Manager Nongki',
+                'Email' => 'manager@coffeeshop.com',
+                'Password' => Hash::make('password'),
+                'Role' => 'manager',
+                'GoogleID' => null,
+                'CompanyCode' => null,
+            ],
+            [
+                'Nama' => 'Kasir 1',
+                'Email' => 'kasir@coffeeshop.com',
+                'Password' => Hash::make('password'),
+                'Role' => 'kasir',
+                'GoogleID' => null,
+                'CompanyCode' => null,
+            ],
+            [
+                'Nama' => 'Pelanggan Biasa',
+                'Email' => 'pelanggan@coffeeshop.com',
+                'Password' => Hash::make('password'),
+                'Role' => 'pelanggan',
+                'GoogleID' => null,
+                'CompanyCode' => null,
+            ],
         ]);
     }
 }
