@@ -1,1126 +1,521 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>@yield('title', 'NONGKI — Coffee Shop')</title>
-
-  {{-- Bootstrap 5 CSS --}}
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  {{-- Bootstrap Icons --}}
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  {{-- Google Fonts: Playfair Display + DM Sans --}}
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
-
-  <style>
-  /* ═══════════════════════════════════════════
-           CSS VARIABLES — NONGKI Design System
-        ═══════════════════════════════════════════ */
-  :root {
-    --brown-900: #1C0F08;
-    --brown-800: #2D1810;
-    --brown-700: #4A2C17;
-    --brown-600: #6B3F22;
-    --brown-500: #8B5130;
-    --brown-400: #A8683E;
-    --brown-300: #C8894A;
-    --brown-200: #DFB48A;
-    --brown-100: #F2DFC9;
-    --brown-50: #FBF5EE;
-
-    --cream: #FEFAF5;
-    --warm-gray: #8A7B72;
-    --text-dark: #1C0F08;
-    --text-mid: #4A3728;
-    --text-soft: #8A7B72;
-
-    --success: #2D7A4F;
-    --danger: #C0392B;
-    --warning: #D4860B;
-
-    --sidebar-w: 260px;
-    --header-h: 64px;
-
-    --shadow-sm: 0 1px 3px rgba(28, 15, 8, .08);
-    --shadow-md: 0 4px 16px rgba(28, 15, 8, .10);
-    --shadow-lg: 0 8px 32px rgba(28, 15, 8, .14);
-
-    --radius-sm: 8px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
-    --radius-xl: 28px;
-  }
-
-  /* ═══════════════════════════════════════════
-           BASE
-        ═══════════════════════════════════════════ */
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text-dark);
-    font-size: 14px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    color: var(--text-dark);
-  }
-
-  /* ═══════════════════════════════════════════
-           HEADER / TOP NAVBAR
-        ═══════════════════════════════════════════ */
-  .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--header-h);
-    background: var(--brown-800);
-    display: flex;
-    align-items: center;
-    padding: 0 1.5rem;
-    z-index: 1050;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
-  }
-
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    text-decoration: none;
-    width: var(--sidebar-w);
-    flex-shrink: 0;
-  }
-
-  .header-brand-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--brown-300);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    color: #fff;
-    flex-shrink: 0;
-  }
-
-  .header-brand-text {
-    font-family: 'Playfair Display', serif;
-    font-weight: 800;
-    font-size: 1.2rem;
-    color: #fff;
-    letter-spacing: .02em;
-  }
-
-  .header-brand-sub {
-    font-size: .65rem;
-    color: var(--brown-200);
-    font-weight: 400;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    line-height: 1;
-    margin-top: 1px;
-  }
-
-  .header-middle {
-    flex: 1;
-    padding: 0 1.5rem;
-  }
-
-  .header-search {
-    position: relative;
-    max-width: 380px;
-  }
-
-  .header-search input {
-    width: 100%;
-    background: rgba(255, 255, 255, .1);
-    border: 1px solid rgba(255, 255, 255, .15);
-    border-radius: 50px;
-    padding: .45rem 1rem .45rem 2.5rem;
-    color: #fff;
-    font-size: .85rem;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: all .2s;
-  }
-
-  .header-search input::placeholder {
-    color: rgba(255, 255, 255, .45);
-  }
-
-  .header-search input:focus {
-    background: rgba(255, 255, 255, .18);
-    border-color: var(--brown-300);
-  }
-
-  .header-search i {
-    position: absolute;
-    left: .85rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, .5);
-    font-size: .9rem;
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-  }
-
-  .header-btn {
-    width: 38px;
-    height: 38px;
-    background: rgba(255, 255, 255, .1);
-    border: 1px solid rgba(255, 255, 255, .12);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, .8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.05rem;
-    cursor: pointer;
-    transition: all .2s;
-    position: relative;
-    text-decoration: none;
-  }
-
-  .header-btn:hover {
-    background: rgba(255, 255, 255, .2);
-    color: #fff;
-  }
-
-  .header-btn .badge-dot {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 8px;
-    height: 8px;
-    background: var(--brown-300);
-    border-radius: 50%;
-    border: 2px solid var(--brown-800);
-  }
-
-  .header-avatar {
-    width: 38px;
-    height: 38px;
-    background: var(--brown-300);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .85rem;
-    font-weight: 700;
-    color: #fff;
-    cursor: pointer;
-    border: 2px solid rgba(255, 255, 255, .2);
-  }
-
-  /* ═══════════════════════════════════════════
-           SIDEBAR
-        ═══════════════════════════════════════════ */
-  .app-sidebar {
-    position: fixed;
-    top: var(--header-h);
-    left: 0;
-    width: var(--sidebar-w);
-    height: calc(100vh - var(--header-h));
-    background: var(--brown-900);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 1040;
-    border-right: 1px solid rgba(255, 255, 255, .05);
-  }
-
-  .sidebar-section {
-    padding: 1.25rem 1rem .5rem;
-  }
-
-  .sidebar-section-label {
-    font-size: .65rem;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--brown-400);
-    padding: 0 .5rem;
-    margin-bottom: .4rem;
-  }
-
-  .nav-item-custom {
-    list-style: none;
-  }
-
-  .nav-link-custom {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: .6rem .75rem;
-    border-radius: var(--radius-sm);
-    color: rgba(255, 255, 255, .6);
-    text-decoration: none;
-    font-size: .88rem;
-    font-weight: 500;
-    transition: all .18s;
-    position: relative;
-    margin-bottom: 2px;
-  }
-
-  .nav-link-custom:hover {
-    background: rgba(255, 255, 255, .07);
-    color: rgba(255, 255, 255, .95);
-  }
-
-  .nav-link-custom.active {
-    background: var(--brown-700);
-    color: #fff;
-  }
-
-  .nav-link-custom.active::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 20%;
-    bottom: 20%;
-    width: 3px;
-    background: var(--brown-300);
-    border-radius: 0 3px 3px 0;
-  }
-
-  .nav-link-custom i {
-    font-size: 1rem;
-    width: 20px;
-    text-align: center;
-    flex-shrink: 0;
-  }
-
-  .nav-link-custom .nav-badge {
-    margin-left: auto;
-    background: var(--brown-300);
-    color: #fff;
-    font-size: .65rem;
-    font-weight: 700;
-    padding: .1rem .45rem;
-    border-radius: 50px;
-  }
-
-  /* Sidebar divider */
-  .sidebar-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, .06);
-    margin: .5rem 1rem;
-  }
-
-  /* Sidebar bottom user card */
-  .sidebar-user {
-    margin-top: auto;
-    padding: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, .06);
-  }
-
-  .sidebar-user-card {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: .65rem .75rem;
-    border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, .05);
-  }
-
-  .sidebar-user-avatar {
-    width: 34px;
-    height: 34px;
-    background: var(--brown-300);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .8rem;
-    font-weight: 700;
-    color: #fff;
-    flex-shrink: 0;
-  }
-
-  .sidebar-user-name {
-    font-size: .85rem;
-    font-weight: 600;
-    color: #fff;
-    line-height: 1.2;
-  }
-
-  .sidebar-user-role {
-    font-size: .7rem;
-    color: var(--brown-300);
-    text-transform: capitalize;
-  }
-
-  .sidebar-user-logout {
-    margin-left: auto;
-    color: rgba(255, 255, 255, .4);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: color .2s;
-    background: none;
-    border: none;
-    padding: 0;
-  }
-
-  .sidebar-user-logout:hover {
-    color: #ff6b6b;
-  }
-
-  /* ═══════════════════════════════════════════
-           MAIN CONTENT
-        ═══════════════════════════════════════════ */
-  .app-main {
-    margin-left: var(--sidebar-w);
-    margin-top: var(--header-h);
-    min-height: calc(100vh - var(--header-h));
-    padding: 2rem;
-  }
-
-  /* Page header inside content */
-  .page-header {
-    margin-bottom: 1.75rem;
-  }
-
-  .page-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: .25rem;
-  }
-
-  .page-subtitle {
-    font-size: .88rem;
-    color: var(--text-soft);
-    font-weight: 400;
-  }
-
-  .page-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    font-size: .78rem;
-    color: var(--text-soft);
-    margin-bottom: .5rem;
-  }
-
-  .page-breadcrumb a {
-    color: var(--brown-500);
-    text-decoration: none;
-  }
-
-  .page-breadcrumb a:hover {
-    color: var(--brown-700);
-  }
-
-  /* ═══════════════════════════════════════════
-           CARDS
-        ═══════════════════════════════════════════ */
-  .card {
-    background: #fff;
-    border: 1px solid rgba(28, 15, 8, .07);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
-
-  .card-header {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid rgba(28, 15, 8, .06);
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .card-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .95rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin: 0;
-  }
-
-  .card-body {
-    padding: 1.25rem;
-  }
-
-  /* Stat card */
-  .stat-card {
-    background: #fff;
-    border: 1px solid rgba(28, 15, 8, .07);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    box-shadow: var(--shadow-sm);
-    transition: transform .2s, box-shadow .2s;
-  }
-
-  .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  .stat-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    margin-bottom: .9rem;
-  }
-
-  .stat-label {
-    font-size: .78rem;
-    font-weight: 600;
-    color: var(--text-soft);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-bottom: .3rem;
-  }
-
-  .stat-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    line-height: 1;
-  }
-
-  .stat-change {
-    font-size: .75rem;
-    font-weight: 600;
-    margin-top: .4rem;
-  }
-
-  .stat-change.up {
-    color: var(--success);
-  }
-
-  .stat-change.down {
-    color: var(--danger);
-  }
-
-  /* ═══════════════════════════════════════════
-           BUTTONS
-        ═══════════════════════════════════════════ */
-  .btn-primary-custom {
-    background: var(--brown-700);
-    color: #fff;
-    border: none;
-    padding: .55rem 1.25rem;
-    border-radius: var(--radius-sm);
-    font-size: .875rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all .2s;
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    text-decoration: none;
-  }
-
-  .btn-primary-custom:hover {
-    background: var(--brown-800);
-    color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(74, 44, 23, .3);
-  }
-
-  .btn-outline-custom {
-    background: transparent;
-    color: var(--brown-700);
-    border: 1.5px solid var(--brown-300);
-    padding: .5rem 1.2rem;
-    border-radius: var(--radius-sm);
-    font-size: .875rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all .2s;
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    text-decoration: none;
-  }
-
-  .btn-outline-custom:hover {
-    background: var(--brown-50);
-    border-color: var(--brown-500);
-    color: var(--brown-800);
-  }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--text-soft);
-    border: none;
-    padding: .45rem .85rem;
-    border-radius: var(--radius-sm);
-    font-size: .875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all .18s;
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-  }
-
-  .btn-ghost:hover {
-    background: var(--brown-50);
-    color: var(--text-dark);
-  }
-
-  /* ═══════════════════════════════════════════
-           BADGES
-        ═══════════════════════════════════════════ */
-  .badge-custom {
-    display: inline-flex;
-    align-items: center;
-    gap: .3rem;
-    padding: .25rem .7rem;
-    border-radius: 50px;
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .02em;
-  }
-
-  .badge-success {
-    background: #D4EDDA;
-    color: var(--success);
-  }
-
-  .badge-warning {
-    background: #FFF3CD;
-    color: var(--warning);
-  }
-
-  .badge-danger {
-    background: #FDDDDB;
-    color: var(--danger);
-  }
-
-  .badge-info {
-    background: var(--brown-100);
-    color: var(--brown-700);
-  }
-
-  /* ═══════════════════════════════════════════
-           TABLE
-        ═══════════════════════════════════════════ */
-  .table-custom {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-
-  .table-custom thead tr th {
-    padding: .75rem 1rem;
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--text-soft);
-    background: var(--brown-50);
-    border-bottom: 1px solid rgba(28, 15, 8, .07);
-  }
-
-  .table-custom tbody tr td {
-    padding: .9rem 1rem;
-    border-bottom: 1px solid rgba(28, 15, 8, .05);
-    font-size: .875rem;
-    color: var(--text-dark);
-    vertical-align: middle;
-  }
-
-  .table-custom tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .table-custom tbody tr:hover td {
-    background: var(--brown-50);
-  }
-
-  /* ═══════════════════════════════════════════
-           FORMS
-        ═══════════════════════════════════════════ */
-  .form-label-custom {
-    font-size: .8rem;
-    font-weight: 700;
-    color: var(--text-mid);
-    margin-bottom: .4rem;
-    display: block;
-    letter-spacing: .02em;
-  }
-
-  .form-control-custom {
-    width: 100%;
-    padding: .6rem .9rem;
-    border: 1.5px solid rgba(28, 15, 8, .12);
-    border-radius: var(--radius-sm);
-    font-size: .875rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text-dark);
-    background: #fff;
-    outline: none;
-    transition: all .18s;
-  }
-
-  .form-control-custom:focus {
-    border-color: var(--brown-400);
-    box-shadow: 0 0 0 3px rgba(200, 137, 74, .15);
-  }
-
-  /* ═══════════════════════════════════════════
-           ALERTS
-        ═══════════════════════════════════════════ */
-  .alert-custom {
-    padding: .85rem 1.1rem;
-    border-radius: var(--radius-sm);
-    font-size: .875rem;
-    font-weight: 500;
-    display: flex;
-    align-items: flex-start;
-    gap: .75rem;
-    border: 1px solid transparent;
-  }
-
-  .alert-success-custom {
-    background: #D4EDDA;
-    border-color: #A8D5B5;
-    color: var(--success);
-  }
-
-  .alert-danger-custom {
-    background: #FDDDDB;
-    border-color: #F5B5B1;
-    color: var(--danger);
-  }
-
-  .alert-warning-custom {
-    background: #FFF3CD;
-    border-color: #FFE38A;
-    color: var(--warning);
-  }
-
-  /* ═══════════════════════════════════════════
-           FOOTER
-        ═══════════════════════════════════════════ */
-  .app-footer {
-    margin-left: var(--sidebar-w);
-    padding: 1.25rem 2rem;
-    border-top: 1px solid rgba(28, 15, 8, .07);
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: .78rem;
-    color: var(--text-soft);
-  }
-
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    font-weight: 600;
-    color: var(--brown-600);
-  }
-
-  /* ═══════════════════════════════════════════
-           RESPONSIVE — Mobile sidebar toggle
-        ═══════════════════════════════════════════ */
-  .sidebar-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, .8);
-    font-size: 1.3rem;
-    cursor: pointer;
-    margin-right: .5rem;
-  }
-
-  @media (max-width: 991px) {
-    .sidebar-toggle {
-      display: block;
-    }
-
-    .app-sidebar {
-      transform: translateX(-100%);
-      transition: transform .25s ease;
-    }
-
-    .app-sidebar.show {
-      transform: translateX(0);
-    }
-
-    .app-main,
-    .app-footer {
-      margin-left: 0;
-    }
-
-    .header-brand {
-      width: auto;
-    }
-
-    .header-search {
-      display: none;
-    }
-  }
-
-  /* ═══════════════════════════════════════════
-           SCROLLBAR
-        ═══════════════════════════════════════════ */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--brown-200);
-    border-radius: 3px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--brown-300);
-  }
-  </style>
-
-  @stack('styles')
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'NONGKI Coffee')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #E8C96A;
+            --gold-dim: rgba(201,168,76,0.12);
+            --dark: #0F0C07;
+            --dark-2: #1A1509;
+            --dark-3: #241E10;
+            --dark-4: #2F2615;
+            --cream: #F5EDD8;
+            --cream-dim: rgba(245,237,216,0.65);
+            --text-muted-c: rgba(245,237,216,0.42);
+            --border: rgba(201,168,76,0.18);
+            --sidebar-w: 260px;
+            --header-h: 64px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--cream);
+            margin: 0;
+        }
+
+        /* HEADER */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: var(--header-h);
+            background: rgba(15,12,7,0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center;
+            padding: 0 1.5rem;
+            z-index: 1000;
+            gap: 1rem;
+        }
+
+        .header-brand {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
+            width: calc(var(--sidebar-w) - 1.5rem);
+        }
+
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 14px rgba(201,168,76,0.3);
+        }
+
+        .brand-icon svg { width: 18px; height: 18px; fill: var(--dark); }
+
+        .brand-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem; font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--gold-light);
+        }
+
+        .header-search {
+            flex: 1; max-width: 400px;
+            position: relative;
+        }
+
+        .header-search svg {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            width: 16px; height: 16px; color: var(--text-muted-c);
+            pointer-events: none;
+        }
+
+        .header-search input {
+            width: 100%;
+            padding: 9px 12px 9px 38px;
+            background: var(--dark-3);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--cream);
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        .header-search input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-dim);
+        }
+
+        .header-actions {
+            margin-left: auto;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .header-btn {
+            width: 38px; height: 38px;
+            background: var(--dark-3); border: 1px solid var(--border);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--cream-dim);
+            transition: all 0.2s;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .header-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+        .header-btn svg { width: 18px; height: 18px; }
+
+        .header-badge {
+            position: absolute; top: 6px; right: 6px;
+            width: 8px; height: 8px;
+            background: var(--gold); border-radius: 50%;
+        }
+
+        .header-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--dark); cursor: pointer;
+            border: 2px solid var(--border);
+            text-decoration: none;
+        }
+
+        .header-avatar:hover { border-color: var(--gold); }
+
+        .sidebar-toggle {
+            display: none;
+            background: none; border: none;
+            color: var(--cream-dim); cursor: pointer;
+        }
+        .sidebar-toggle svg { width: 22px; height: 22px; }
+
+        /* SIDEBAR */
+        .app-sidebar {
+            position: fixed; top: var(--header-h); left: 0; bottom: 0;
+            width: var(--sidebar-w);
+            background: var(--dark-2);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 900;
+        }
+
+        .sidebar-section { padding: 1.2rem 1rem 0.5rem; }
+
+        .sidebar-section-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted-c);
+            padding: 0 0.6rem;
+            margin-bottom: 6px;
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            color: var(--cream-dim);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--gold-dim);
+            color: var(--cream);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(201,168,76,0.08));
+            color: var(--gold-light);
+            border: 1px solid var(--border);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute; left: 0; top: 20%; bottom: 20%;
+            width: 3px; background: var(--gold);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--gold);
+            color: var(--dark);
+            font-size: 0.68rem;
+            padding: 2px 7px;
+            border-radius: 20px;
+        }
+
+        .sidebar-user {
+            margin: auto 1rem 1rem;
+            padding: 12px;
+            background: var(--dark-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .sidebar-user-info {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600; color: var(--dark);
+        }
+
+        .sidebar-user-name { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
+        .sidebar-user-role { font-size: 0.75rem; color: var(--text-muted-c); }
+
+        .btn-logout {
+            width: 100%; padding: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted-c);
+            font-size: 0.82rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .btn-logout:hover { border-color: #e05252; color: #e05252; background: rgba(224,82,82,0.08); }
+
+        /* MAIN CONTENT */
+        .app-main {
+            margin-left: var(--sidebar-w);
+            margin-top: var(--header-h);
+            min-height: calc(100vh - var(--header-h));
+        }
+
+        .page-content {
+            padding: 2rem;
+        }
+
+        /* Utility */
+        .card-nongki {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .card-nongki-header {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--cream);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--dark);
+            border: none;
+            border-radius: 9px;
+            padding: 10px 20px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 6px 18px rgba(201,168,76,0.35);
+            transform: translateY(-1px);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 800;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-toggle { display: flex; }
+            .app-sidebar { transform: translateX(-100%); }
+            .app-sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.show { display: block; }
+            .app-main { margin-left: 0; }
+        }
+
+        @media (max-width: 576px) {
+            .page-content { padding: 1.2rem; }
+            .header-search { display: none; }
+        }
+
+        @yield('styles')
+    </style>
+    @stack('styles')
 </head>
-
 <body>
 
-  {{-- ══════════════════════════════════════
-         HEADER (Always renders)
-    ══════════════════════════════════════ --}}
-  <header class="app-header">
-    {{-- Mobile toggle --}}
-    <button class="sidebar-toggle" id="sidebarToggle">
-      <i class="bi bi-list"></i>
-    </button>
+    <!-- HEADER -->
+    <header class="app-header">
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
 
-    {{-- Brand / Logo --}}
-    <a href="{{ route('menu.index') }}" class="header-brand">
-      <div class="header-brand-icon">
-        <i class="bi bi-cup-hot-fill"></i>
-      </div>
-      <div>
-        <div class="header-brand-text">NONGKI</div>
-        <div class="header-brand-sub">Coffee Shop</div>
-      </div>
-    </a>
-
-    {{-- Search --}}
-    <div class="header-middle">
-      <div class="header-search">
-        <i class="bi bi-search"></i>
-        <input type="text" placeholder="Cari menu, order...">
-      </div>
-    </div>
-
-    {{-- Actions --}}
-    <div class="header-actions">
-      {{-- Cart (pelanggan) --}}
-      @auth
-      @if(Auth::user()->role === 'pelanggan')
-      <a href="{{ route('cart.index') }}" class="header-btn">
-        <i class="bi bi-cart3"></i>
-        @if(count(session('cart', [])) > 0)
-        <span class="badge-dot"></span>
-        @endif
-      </a>
-      @endif
-      @endauth
-
-      {{-- Notifikasi --}}
-      <button class="header-btn">
-        <i class="bi bi-bell"></i>
-        <span class="badge-dot"></span>
-      </button>
-
-      {{-- User Dropdown --}}
-      @auth
-      <div class="dropdown">
-        <div class="header-avatar" data-bs-toggle="dropdown">
-          {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-        </div>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2"
-          style="border-radius:var(--radius-md);min-width:200px;">
-          <li class="px-3 py-2">
-            <div style="font-weight:700;font-size:.9rem;">{{ Auth::user()->name }}</div>
-            <div style="font-size:.75rem;color:var(--text-soft);text-transform:capitalize;">{{ Auth::user()->role }}
+        <a href="{{ route('home') }}" class="header-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h2V5h-2v3zm-2 5c0 2.21-1.79 4-4 4H8c-2.21 0-4-1.79-4-4V5h12v8z"/></svg>
             </div>
-          </li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item" href="{{ route('order.history') }}"><i
-                class="bi bi-clock-history me-2"></i>Riwayat Order</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li>
-            <form action="{{ route('logout') }}" method="POST">
-              @csrf
-              <button class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
-            </form>
-          </li>
-        </ul>
-      </div>
-      @else
-      <a href="{{ route('login') }}" class="btn-primary-custom"
-        style="border-radius:50px;padding:.4rem 1rem;font-size:.8rem;">
-        <i class="bi bi-box-arrow-in-right"></i> Login
-      </a>
-      @endauth
-    </div>
-  </header>
+            <span class="brand-name">NONGKI</span>
+        </a>
 
-  {{-- ══════════════════════════════════════
-         SIDEBAR
-    ══════════════════════════════════════ --}}
-  <aside class="app-sidebar" id="appSidebar">
+        <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Cari menu, pesanan...">
+        </div>
 
-    {{-- ── PELANGGAN MENU ── --}}
-    @auth
-    @if(Auth::user()->role === 'pelanggan')
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Menu</div>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li class="nav-item-custom">
-          <a href="{{ route('menu.index') }}"
-            class="nav-link-custom {{ request()->routeIs('menu.*') ? 'active' : '' }}">
-            <i class="bi bi-cup-hot"></i> Menu Kopi
-          </a>
-        </li>
-        <li class="nav-item-custom">
-          <a href="{{ route('cart.index') }}"
-            class="nav-link-custom {{ request()->routeIs('cart.*') ? 'active' : '' }}">
-            <i class="bi bi-cart3"></i> Keranjang
-            @if(count(session('cart', [])) > 0)
-            <span class="nav-badge">{{ count(session('cart', [])) }}</span>
-            @endif
+        <div class="header-actions">
+            @auth
+                @if(auth()->user()->role !== 'admin')
+                <a href="#" class="header-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                    <span class="header-badge"></span>
+                </a>
+                @endif
             @endauth
-          </a>
-        </li>
-        <li class="nav-item-custom">
-          <a href="{{ route('order.history') }}"
-            class="nav-link-custom {{ request()->routeIs('order.*') ? 'active' : '' }}">
-            <i class="bi bi-clock-history"></i> Riwayat Order
-          </a>
-        </li>
-      </ul>
-    </div>
 
-    {{-- ── MANAGER / ADMIN MENU ── --}}
-    @if(in_array((Auth::user()->role ?? ''), ['manager', 'admin']))
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Overview</div>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li class="nav-item-custom">
-          <a href="{{ route('manager.dashboard') }}"
-            class="nav-link-custom {{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">
-            <i class="bi bi-speedometer2"></i> Dashboard
-          </a>
-        </li>
-        <li class="nav-item-custom">
-          <a href="{{ route('manager.laporan') }}"
-            class="nav-link-custom {{ request()->routeIs('manager.laporan*') ? 'active' : '' }}">
-            <i class="bi bi-bar-chart-line"></i> Laporan
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Manajemen</div>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li class="nav-item-custom">
-          <a href="{{ route('manager.products.index') }}"
-            class="nav-link-custom {{ request()->routeIs('manager.products.index') || request()->routeIs('manager.products.create') || request()->routeIs('manager.products.edit') ? 'active' : '' }}">
-            <i class="bi bi-box-seam"></i> Produk
-          </a>
-        </li>
-        <li class="nav-item-custom">
-          <a href="{{ route('manager.products.trash') }}"
-            class="nav-link-custom {{ request()->routeIs('manager.products.trash') ? 'active' : '' }}">
-            <i class="bi bi-trash"></i> Sampah
-          </a>
-        </li>
-      </ul>
-    </div>
-    @endif
-
-    {{-- ── KASIR MENU ── --}}
-    @if(Auth::user()->role === 'kasir')
-    <div class="sidebar-section">
-      <div class="sidebar-section-label">Kasir</div>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li class="nav-item-custom">
-          <a href="{{ route('kasir.dashboard') }}"
-            class="nav-link-custom {{ request()->routeIs('kasir.*') ? 'active' : '' }}">
-            <i class="bi bi-receipt"></i> Order Masuk
-          </a>
-        </li>
-      </ul>
-    </div>
-    @endif
-    @endauth
-
-    {{-- ── GUEST ── --}}
-    @guest
-    <div class="sidebar-section">
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li class="nav-item-custom">
-          <a href="{{ route('menu.index') }}"
-            class="nav-link-custom {{ request()->routeIs('menu.*') ? 'active' : '' }}">
-            <i class="bi bi-cup-hot"></i> Menu Kopi
-          </a>
-        </li>
-        <li class="nav-item-custom">
-          <a href="{{ route('login') }}" class="nav-link-custom">
-            <i class="bi bi-box-arrow-in-right"></i> Login
-          </a>
-        </li>
-        <li class="nav-item-custom">
-          <a href="{{ route('register') }}" class="nav-link-custom">
-            <i class="bi bi-person-plus"></i> Daftar
-          </a>
-        </li>
-      </ul>
-    </div>
-    @endguest
-
-    {{-- ── USER CARD (bottom) ── --}}
-    @auth
-    <div class="sidebar-user">
-      <div class="sidebar-user-card">
-        <div class="sidebar-user-avatar">
-          {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            @auth
+                <div class="dropdown">
+                    <a href="#" class="header-avatar" data-bs-toggle="dropdown">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;">
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}" style="color:var(--cream);">Profil Saya</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item" style="color:#e05252;">Keluar</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @else
+                <a href="{{ route('login') }}" class="btn-gold" style="padding:8px 16px;">Masuk</a>
+            @endauth
         </div>
-        <div>
-          <div class="sidebar-user-name">{{ Str::limit(Auth::user()->name, 16) }}</div>
-          <div class="sidebar-user-role">{{ Auth::user()->role }}</div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar" id="appSidebar">
+        @auth
+        @php $role = auth()->user()->role ?? 'pelanggan'; @endphp
+
+        @if($role === 'admin')
+        <!-- ADMIN NAVIGATION -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Utama</div>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
         </div>
-        <form action="{{ route('logout') }}" method="POST" class="m-0">
-          @csrf
-          <button type="submit" class="sidebar-user-logout" title="Logout">
-            <i class="bi bi-box-arrow-right"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-    @endauth
 
-  </aside>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Manajemen</div>
+            <a href="{{ route('menu.index') }}" class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2h18v4H3z"/><path d="M3 6v16h18V6"/><path d="M9 10h6m-6 4h4"/></svg>
+                Kelola Menu
+            </a>
+            <a href="{{ route('dashboard') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+                Pesanan
+                <span class="nav-badge">12</span>
+            </a>
+            <a href="{{ route('dashboard') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Pelanggan
+            </a>
+        </div>
 
-  {{-- ══════════════════════════════════════
-         MAIN CONTENT
-    ══════════════════════════════════════ --}}
-  <main class="app-main">
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Laporan</div>
+            <a href="{{ route('dashboard') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Analitik
+            </a>
+            <a href="{{ route('profile.edit') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+                Pengaturan
+            </a>
+        </div>
 
-    {{-- Flash Messages --}}
-    @if(session('success'))
-    <div class="alert-custom alert-success-custom mb-4">
-      <i class="bi bi-check-circle-fill" style="margin-top:1px;flex-shrink:0;"></i>
-      <span>{{ session('success') }}</span>
-    </div>
-    @endif
+        @else
+        <!-- CUSTOMER NAVIGATION -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Menu Utama</div>
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Beranda
+            </a>
+            <a href="{{ route('menu.index') }}" class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h2V5h-2v3zm-2 5c0 2.21-1.79 4-4 4H8c-2.21 0-4-1.79-4-4V5h12v8z"/></svg>
+                Menu Kopi
+            </a>
+        </div>
 
-    @if(session('error'))
-    <div class="alert-custom alert-danger-custom mb-4">
-      <i class="bi bi-exclamation-circle-fill" style="margin-top:1px;flex-shrink:0;"></i>
-      <span>{{ session('error') }}</span>
-    </div>
-    @endif
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Pesanan</div>
+            <a href="#" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                Keranjang
+                <span class="nav-badge">3</span>
+            </a>
+            <a href="#" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+                Riwayat Pesanan
+            </a>
+            <a href="#" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Favorit
+            </a>
+        </div>
 
-    @if(session('info'))
-    <div class="alert-custom alert-warning-custom mb-4">
-      <i class="bi bi-info-circle-fill" style="margin-top:1px;flex-shrink:0;"></i>
-      <span>{{ session('info') }}</span>
-    </div>
-    @endif
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Akun</div>
+            <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile*') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profil Saya
+            </a>
+        </div>
+        @endif
 
-    {{-- PAGE CONTENT --}}
-    @yield('content')
+        <!-- USER CARD -->
+        <div class="sidebar-user">
+            <div class="sidebar-user-info">
+                <div class="sidebar-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</div>
+                <div>
+                    <div class="sidebar-user-name">{{ auth()->user()->name }}</div>
+                    <div class="sidebar-user-role">{{ ucfirst(auth()->user()->role ?? 'Pelanggan') }}</div>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn-logout">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Keluar
+                </button>
+            </form>
+        </div>
+        @endauth
+    </aside>
 
-  </main>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  {{-- ══════════════════════════════════════
-         FOOTER
-    ══════════════════════════════════════ --}}
-  <footer class="app-footer">
-    <div class="footer-brand">
-      <i class="bi bi-cup-hot-fill"></i>
-      NONGKI Coffee Shop
-    </div>
-    <div>
-      &copy; {{ date('Y') }} &mdash; Kelompok 1 Pemrograman Web 2
-    </div>
-    <div>
-      Dibuat dengan <i class="bi bi-heart-fill" style="color:var(--brown-400);"></i> oleh Tim NONGKI
-    </div>
-  </footer>
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+        <div class="page-content">
+            @hasSection('page_header')
+            <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+                <div>
+                    <h1 class="page-title" style="font-family:'Cormorant Garamond',serif;font-size:2rem;">@yield('page_title')</h1>
+                    <div class="page-breadcrumb" style="color:var(--text-muted-c);">@yield('breadcrumb')</div>
+                </div>
+                <div>@yield('page_actions')</div>
+            </div>
+            @endif
 
-  {{-- Bootstrap 5 JS --}}
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            @yield('content')
+        </div>
+    </main>
 
-  <script>
-  // Sidebar toggle (mobile)
-  const toggle = document.getElementById('sidebarToggle');
-  const sidebar = document.getElementById('appSidebar');
-  if (toggle && sidebar) {
-    toggle.addEventListener('click', () => sidebar.classList.toggle('show'));
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
-        sidebar.classList.remove('show');
-      }
-    });
-  }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('appSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
 
-  // Auto-dismiss alerts
-  setTimeout(() => {
-    document.querySelectorAll('.alert-custom').forEach(el => {
-      el.style.transition = 'opacity .5s';
-      el.style.opacity = '0';
-      setTimeout(() => el.remove(), 500);
-    });
-  }, 4000);
-  </script>
+        toggle?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        });
 
-  @stack('scripts')
+        overlay?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+    </script>
+    @stack('scripts')
 </body>
-
 </html>

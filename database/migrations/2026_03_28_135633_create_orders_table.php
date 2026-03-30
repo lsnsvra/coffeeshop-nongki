@@ -16,6 +16,7 @@ return new class extends Migration
         $table->increments('OrderID'); // PRIMARY KEY
 
         $table->integer('UserID');
+        $table->string('order_code')->unique();
         $table->integer('TotalHarga');
 
         $table->string('StatusOrder', 20)->nullable();
