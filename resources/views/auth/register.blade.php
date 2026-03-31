@@ -168,7 +168,7 @@
 
         /* RIGHT PANEL - FORM SECTION */
         .form-panel {
-            width: 560px;
+            width: 520px;
             background: var(--dark-card);
             display: flex;
             flex-direction: column;
@@ -238,18 +238,8 @@
             color: var(--text-muted);
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
         .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group-full {
-            grid-column: 1 / -1;
+            margin-bottom: 1.25rem;
         }
 
         .form-label {
@@ -499,9 +489,6 @@
             .form-panel {
                 padding: 2rem 1.5rem;
             }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -582,89 +569,82 @@
 
         <form action="{{ route('register') }}" method="POST">
             @csrf
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label" for="first_name">Nama Depan</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <input type="text" id="first_name" name="first_name" placeholder="Nama" value="{{ old('first_name') }}" required>
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="last_name">Nama Belakang</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <input type="text" id="last_name" name="last_name" placeholder="Belakang" value="{{ old('last_name') }}">
-                    </div>
+            <!-- Nama Lengkap (Satu Kolom) -->
+            <div class="form-group">
+                <label class="form-label" for="name">Nama Lengkap</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <input type="text" id="name" name="name" placeholder="Nama lengkap" value="{{ old('name') }}" required>
                 </div>
+            </div>
 
-                <div class="form-group form-group-full">
-                    <label class="form-label" for="email">Alamat Email</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="4" width="20" height="16" rx="3"/>
-                            <path d="m2 7 10 7 10-7"/>
-                        </svg>
-                        <input type="email" id="email" name="email" placeholder="kamu@email.com" value="{{ old('email') }}" required>
-                    </div>
+            <!-- Email -->
+            <div class="form-group">
+                <label class="form-label" for="email">Alamat Email</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="3"/>
+                        <path d="m2 7 10 7 10-7"/>
+                    </svg>
+                    <input type="email" id="email" name="email" placeholder="kamu@email.com" value="{{ old('email') }}" required>
                 </div>
+            </div>
 
-                <div class="form-group form-group-full">
-                    <label class="form-label" for="phone">Nomor HP <span style="font-weight:400;text-transform:none;">(opsional)</span></label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6.5-6.5 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                        <input type="tel" id="phone" name="phone" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}">
-                    </div>
+            <!-- No HP (Opsional) -->
+            <div class="form-group">
+                <label class="form-label" for="phone">Nomor HP <span style="font-weight:400;text-transform:none;">(opsional)</span></label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6.5-6.5 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <input type="tel" id="phone" name="phone" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}">
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <!-- Password -->
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" id="password" name="password" placeholder="Min. 8 karakter" required oninput="checkStrength(this.value)">
+                    <span class="toggle-password" onclick="togglePassword('password', this)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
                         </svg>
-                        <input type="password" id="password" name="password" placeholder="Min. 8 karakter" required oninput="checkStrength(this.value)">
-                        <span class="toggle-password" onclick="togglePassword('password', this)">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </span>
-                    </div>
-                    <div class="strength-bar">
-                        <div class="strength-segment" id="s1"></div>
-                        <div class="strength-segment" id="s2"></div>
-                        <div class="strength-segment" id="s3"></div>
-                        <div class="strength-segment" id="s4"></div>
-                    </div>
-                    <div class="strength-text" id="strength-label">Masukkan password</div>
+                    </span>
                 </div>
+                <div class="strength-bar">
+                    <div class="strength-segment" id="s1"></div>
+                    <div class="strength-segment" id="s2"></div>
+                    <div class="strength-segment" id="s3"></div>
+                    <div class="strength-segment" id="s4"></div>
+                </div>
+                <div class="strength-text" id="strength-label">Masukkan password</div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="password_confirmation">Konfirmasi Password</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <!-- Konfirmasi Password -->
+            <div class="form-group">
+                <label class="form-label" for="password_confirmation">Konfirmasi Password</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password" required>
+                    <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
                         </svg>
-                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password" required>
-                        <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </span>
-                    </div>
+                    </span>
                 </div>
             </div>
 
