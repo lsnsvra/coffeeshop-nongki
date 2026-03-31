@@ -6,7 +6,6 @@
     <title>@yield('title', 'NONGKI Coffee')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -175,6 +174,7 @@
             font-size: 0.88rem;
             transition: all 0.2s;
             margin-bottom: 2px;
+            position: relative;
         }
 
         .nav-item:hover {
@@ -206,6 +206,7 @@
             border-radius: 20px;
         }
 
+        /* USER CARD (hanya untuk yang login) */
         .sidebar-user {
             margin: auto 1rem 1rem;
             padding: 12px;
@@ -255,23 +256,6 @@
 
         .page-content {
             padding: 2rem;
-        }
-
-        /* Utility */
-        .card-nongki {
-            background: var(--dark-2);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.5rem;
-        }
-
-        .card-nongki-header {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
-            color: var(--cream);
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border);
         }
 
         .btn-gold {
@@ -377,91 +361,58 @@
         </div>
     </header>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (Selalu Muncul) -->
     <aside class="app-sidebar" id="appSidebar">
-        @auth
-        @php $role = auth()->user()->role ?? 'pelanggan'; @endphp
-
-        @if($role === 'admin')
-        <!-- ADMIN NAVIGATION -->
+        <!-- Menu untuk semua pengunjung (baik login maupun belum) -->
         <div class="sidebar-section">
-            <div class="sidebar-section-label">Utama</div>
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Dashboard
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Manajemen</div>
-            <a href="{{ route('menu.index') }}" class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2h18v4H3z"/><path d="M3 6v16h18V6"/><path d="M9 10h6m-6 4h4"/></svg>
-                Kelola Menu
-            </a>
-            <a href="{{ route('dashboard') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
-                Pesanan
-                <span class="nav-badge">12</span>
-            </a>
-            <a href="{{ route('dashboard') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Pelanggan
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Laporan</div>
-            <a href="{{ route('dashboard') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Analitik
-            </a>
-            <a href="{{ route('profile.edit') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
-                Pengaturan
-            </a>
-        </div>
-
-        @else
-        <!-- CUSTOMER NAVIGATION -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Menu Utama</div>
+            <div class="sidebar-section-label">Navigasi</div>
             <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 Beranda
             </a>
             <a href="{{ route('menu.index') }}" class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h2V5h-2v3zm-2 5c0 2.21-1.79 4-4 4H8c-2.21 0-4-1.79-4-4V5h12v8z"/></svg>
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
                 Menu Kopi
             </a>
+
+            @auth
+                <!-- Menu khusus yang sudah login -->
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Keranjang
+                    <span class="nav-badge">3</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+                    Riwayat Pesanan
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    Favorit
+                </a>
+                <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile*') ? 'active' : '' }}">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profil Saya
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+                    Pengaturan
+                </a>
+            @else
+                <!-- Menu untuk yang belum login -->
+                <a href="{{ route('login') }}" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Masuk
+                </a>
+                <a href="{{ route('register') }}" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                    Daftar
+                </a>
+            @endauth
         </div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Pesanan</div>
-            <a href="#" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                Keranjang
-                <span class="nav-badge">3</span>
-            </a>
-            <a href="#" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
-                Riwayat Pesanan
-            </a>
-            <a href="#" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                Favorit
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Akun</div>
-            <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile*') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Profil Saya
-            </a>
-        </div>
-        @endif
-
-        <!-- USER CARD -->
+        @auth
+        <!-- User card untuk yang sudah login -->
         <div class="sidebar-user">
             <div class="sidebar-user-info">
                 <div class="sidebar-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</div>
@@ -483,7 +434,6 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- MAIN CONTENT -->
     <main class="app-main">
         <div class="page-content">
             @hasSection('page_header')
