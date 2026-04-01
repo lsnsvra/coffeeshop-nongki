@@ -10,6 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $primaryKey = 'ProductID';
+    public $timestamps = false;
     protected $table = 'products';
 
     protected $fillable = [
@@ -24,7 +25,6 @@ class Product extends Model
         'CreatedDate',
         'LastUpdatedBy',
         'LastUpdatedDate',
-        'sales_count',
     ];
 
     // Accessors for view-friendly names
