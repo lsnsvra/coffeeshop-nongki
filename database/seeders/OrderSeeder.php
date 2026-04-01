@@ -24,13 +24,12 @@ class OrderSeeder extends Seeder
                 $status = rand(0, 2) ? 'paid' : 'pending';
                 
                 $order = Order::create([
-'UserID' => $user->id,
-                    'order_code' => 'ORD-' . strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 6)),
-                    'TotalHarga' => $total,
-                    'StatusOrder' => $status,
-                    'payment_method' => rand(0, 1) ? 'QRIS' : 'Cash',
-                    'created_at' => Carbon::now()->subDays(rand(0, 30))->addHours(rand(0, 23))
-                ]);
+'UserID' => $user->UserID,
+                        'order_code' => 'ORD-' . strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 6)),
+                        'TotalHarga' => $total,
+                        'StatusOrder' => $status,
+                        'CreatedDate' => now(),
+                    ]);
 
                 // 2-4 order details
                 $itemCount = rand(2, 4);
@@ -40,7 +39,7 @@ class OrderSeeder extends Seeder
                     $subtotal = $product->price * $qty;
                     
                     OrderDetail::create([
-'OrderID' => $order->id,
+'OrderID' => $order->OrderID,
                         'ProductID' => $product->ProductID,
                         'Qty' => $qty,
                         'Harga' => $product->price,
@@ -48,12 +47,12 @@ class OrderSeeder extends Seeder
                     ]);
 
                     // Update product sales_count
-                    $product->increment('sales_count', $qty);
+                   // $product->increment('sales_count', $qty);
                 }
 
                 // Payment
                 Payment::create([
-'OrderID' => $order->id,
+'OrderID' => $order->OrderID,
                     'Jumlah' => $total,
                     'Metode' => $order->payment_method,
                     'StatusPembayaran' => $status === 'paid' ? 'completed' : 'pending',

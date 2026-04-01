@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    protected $primaryKey = 'OrderID';
+    public $timestamps = false;
     use HasFactory;
 
     protected $fillable = [
@@ -14,7 +16,6 @@ class Order extends Model
         'order_code',
         'TotalHarga',
         'StatusOrder',
-        'payment_method',
         'CompanyCode',
     ];
 
