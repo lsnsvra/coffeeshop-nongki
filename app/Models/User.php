@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,37 +12,80 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Nama tabel yang digunakan.
+     */
+    protected $table = 'users';
+
+    /**
+     * Primary key tabel.
+     */
+    protected $primaryKey = 'UserID';
+
+    /**
+     * Tipe primary key.
+     */
+    protected $keyType = 'int';
+
+    /**
+     * Apakah primary key auto-increment.
+     */
+    public $incrementing = true;
+
+    /**
+     * Nonaktifkan timestamps default Laravel.
+     * Kita akan mengisi CreatedDate dan LastUpdatedDate secara manual.
+     */
+    public $timestamps = false;
+
+    /**
+     * Kolom yang boleh diisi (mass assignable).
      */
     protected $fillable = [
         'Nama',
-        'Email', 
+        'Email',
         'Password',
         'Role',
         'GoogleID',
         'CompanyCode',
+        'Status',
+        'IsDeleted',
+        'CreatedBy',
+        'CreatedDate',
+        'LastUpdatedBy',
+        'LastUpdatedDate',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Atribut yang harus disembunyikan saat serialisasi.
      */
     protected $hidden = [
-        'password',
+        'Password',
         'remember_token',
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * Casting atribut ke tipe data tertentu.
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'role' => 'string',
+        'CreatedDate' => 'datetime',
+        'LastUpdatedDate' => 'datetime',
+        'Status' => 'integer',
+        'IsDeleted' => 'integer',
     ];
+
+    /**
+     * Menentukan kolom yang digunakan untuk autentikasi (email).
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'Email';
+    }
+
+    /**
+     * Menentukan kolom password.
+     */
+    public function getAuthPassword()
+    {
+        return $this->Password;
+    }
 }

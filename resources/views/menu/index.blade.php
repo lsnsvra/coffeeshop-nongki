@@ -341,19 +341,19 @@
     <div class="menu-grid" id="menuGrid">
         @php
         $menus = [
-            ['name'=>'Caramel Latte','cat'=>'susu','desc'=>'Espresso dengan steamed milk dan saus karamel premium yang lembut.','price'=>'Rp 42.000','rating'=>4.9,'count'=>342,'badge'=>'hot','img'=>'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'],
-            ['name'=>'Cold Brew Classic','cat'=>'cold','desc'=>'Cold brew 18 jam dengan aroma biji kopi single origin.','price'=>'Rp 38.000','rating'=>4.8,'count'=>287,'badge'=>'fav','img'=>'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80'],
-            ['name'=>'Matcha Oat Latte','cat'=>'non','desc'=>'Matcha premium Jepang dengan oat milk yang creamy.','price'=>'Rp 45.000','rating'=>4.7,'count'=>241,'badge'=>'new','img'=>'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&q=80'],
-            ['name'=>'Americano','cat'=>'espresso','desc'=>'Double shot espresso dengan hot water. Simple, kuat, sempurna.','price'=>'Rp 28.000','rating'=>4.6,'count'=>198,'badge'=>null,'img'=>'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=80'],
-            ['name'=>'Vanilla Cappuccino','cat'=>'susu','desc'=>'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.','price'=>'Rp 38.000','rating'=>4.8,'count'=>156,'badge'=>null,'img'=>'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&q=80'],
-            ['name'=>'Brown Sugar Latte','cat'=>'susu','desc'=>'Tiger milk dengan gula aren dan espresso yang bold.','price'=>'Rp 44.000','rating'=>4.9,'count'=>312,'badge'=>'hot','img'=>'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80'],
-            ['name'=>'Avocado Coffee','cat'=>'non','desc'=>'Perpaduan unik alpukat creamy dengan espresso shot.','price'=>'Rp 48.000','rating'=>4.5,'count'=>89,'badge'=>'new','img'=>'https://images.unsplash.com/photo-1463797221720-6b07e6426c24?w=400&q=80'],
-            ['name'=>'Croissant Butter','cat'=>'makanan','desc'=>'Croissant all-butter panggang segar setiap pagi.','price'=>'Rp 25.000','rating'=>4.7,'count'=>421,'badge'=>'fav','img'=>'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=400&q=80'],
+            ['id'=>1, 'name'=>'Caramel Latte','cat'=>'susu','desc'=>'Espresso dengan steamed milk dan saus karamel premium yang lembut.','price'=>42000,'price_str'=>'Rp 42.000','rating'=>4.9,'count'=>342,'badge'=>'hot','img'=>'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'],
+            ['id'=>2, 'name'=>'Cold Brew Classic','cat'=>'cold','desc'=>'Cold brew 18 jam dengan aroma biji kopi single origin.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.8,'count'=>287,'badge'=>'fav','img'=>'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80'],
+            ['id'=>3, 'name'=>'Matcha Oat Latte','cat'=>'non','desc'=>'Matcha premium Jepang dengan oat milk yang creamy.','price'=>45000,'price_str'=>'Rp 45.000','rating'=>4.7,'count'=>241,'badge'=>'new','img'=>'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&q=80'],
+            ['id'=>4, 'name'=>'Americano','cat'=>'espresso','desc'=>'Double shot espresso dengan hot water. Simple, kuat, sempurna.','price'=>28000,'price_str'=>'Rp 28.000','rating'=>4.6,'count'=>198,'badge'=>null,'img'=>'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=80'],
+            ['id'=>5, 'name'=>'Vanilla Cappuccino','cat'=>'susu','desc'=>'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.8,'count'=>156,'badge'=>null,'img'=>'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&q=80'],
+            ['id'=>6, 'name'=>'Brown Sugar Latte','cat'=>'susu','desc'=>'Tiger milk dengan gula aren dan espresso yang bold.','price'=>44000,'price_str'=>'Rp 44.000','rating'=>4.9,'count'=>312,'badge'=>'hot','img'=>'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80'],
+            ['id'=>7, 'name'=>'Avocado Coffee','cat'=>'non','desc'=>'Perpaduan unik alpukat creamy dengan espresso shot.','price'=>48000,'price_str'=>'Rp 48.000','rating'=>4.5,'count'=>89,'badge'=>'new','img'=>'https://images.unsplash.com/photo-1463797221720-6b07e6426c24?w=400&q=80'],
+            ['id'=>8, 'name'=>'Croissant Butter','cat'=>'makanan','desc'=>'Croissant all-butter panggang segar setiap pagi.','price'=>25000,'price_str'=>'Rp 25.000','rating'=>4.7,'count'=>421,'badge'=>'fav','img'=>'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=400&q=80'],
         ];
         @endphp
 
         @foreach($menus as $menu)
-        <div class="menu-card" data-cat="{{ $menu['cat'] }}">
+        <div class="menu-card" data-cat="{{ $menu['cat'] }}" data-id="{{ $menu['id'] }}" data-name="{{ $menu['name'] }}" data-price="{{ $menu['price'] }}" data-img="{{ $menu['img'] }}">
             <div class="menu-img-wrap">
                 <img class="menu-img" src="{{ $menu['img'] }}" alt="{{ $menu['name'] }}" loading="lazy">
 
@@ -367,7 +367,7 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </button>
 
-                <span class="menu-price-overlay">{{ $menu['price'] }}</span>
+                <span class="menu-price-overlay">{{ $menu['price_str'] }}</span>
             </div>
 
             <div class="menu-body">
@@ -379,7 +379,7 @@
                         {{ $menu['rating'] }}
                         <span>({{ $menu['count'] }})</span>
                     </div>
-                    <button class="btn-add" onclick="addToCart(this, '{{ $menu['name'] }}')">
+                    <button class="btn-add" onclick="addToCart({{ $menu['id'] }}, '{{ $menu['name'] }}', {{ $menu['price'] }}, '{{ $menu['img'] }}', this)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
                 </div>
@@ -410,10 +410,38 @@
         svg.style.fill = btn.classList.contains('liked') ? 'currentColor' : 'none';
     }
 
-    function addToCart(btn, name) {
+    // Fungsi untuk menambahkan item ke keranjang (localStorage)
+    function addToCart(id, name, price, img, btn) {
+        // Ambil keranjang dari localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Cek apakah item sudah ada di keranjang
+        const existingIndex = cart.findIndex(item => item.id === id);
+        if (existingIndex !== -1) {
+            // Jika sudah ada, tambah quantity
+            cart[existingIndex].quantity += 1;
+        } else {
+            // Jika belum, tambahkan item baru
+            cart.push({
+                id: id,
+                name: name,
+                price: price,
+                img: img,
+                quantity: 1
+            });
+        }
+
+        // Simpan kembali ke localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Efek visual pada tombol
         btn.style.transform = 'scale(0.85)';
         btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         btn.style.background = '#52b788';
+
+        // Tampilkan notifikasi singkat (opsional)
+        const badge = document.querySelector('.header-badge');
+        if (badge) badge.style.display = 'inline-block'; // tampilkan badge jika ada
 
         setTimeout(() => {
             btn.style.transform = '';

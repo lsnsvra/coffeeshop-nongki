@@ -12,35 +12,35 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:100', 'unique:users,Email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => ['nullable', 'string', 'max:20'],
         ]);
 
+        $now = Carbon::now();
+
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'pelanggan',
+            'Nama' => $request->name,
+            'Email' => $request->email,
+            'Password' => Hash::make($request->password),
+            'Role' => 'pelanggan',
+            'Status' => 1,
+            'IsDeleted' => 0,
+            'CreatedDate' => $now,
+            'LastUpdatedDate' => $now,
         ]);
 
         event(new Registered($user));

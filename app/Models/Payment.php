@@ -30,4 +30,11 @@ class Payment extends Model
     {
         return $query->where('StatusPembayaran', 'completed');
     }
+
+    // Scope for today's payments
+public function scopeToday($query)
+{
+    return $query->whereDate('created_at', today());
+}
+
 }

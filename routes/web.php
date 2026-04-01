@@ -40,4 +40,22 @@ Route::middleware('auth')->group(function () {
     })->name('manager.profile');
 });
 
+// ========== FRONTEND DEMO ROUTES (Keranjang, Checkout, Pembayaran) ==========
+Route::get('/cart', function () {
+    return view('cart.index');
+})->name('cart');
+
+Route::get('/checkout', function () {
+    return view('checkout.index');
+})->name('checkout');
+
+Route::get('/payment', function () {
+    return view('payment.index');
+})->name('payment');
+
+Route::get('/payment/success', function () {
+    return view('payment.success');
+})->name('payment.success');
+// ============================================================================
+
 require __DIR__.'/auth.php';
