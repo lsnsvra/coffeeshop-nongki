@@ -19,6 +19,7 @@ return new class extends Migration
         $table->integer('Ukuran');
         $table->integer('Harga');
         $table->integer('Stok');
+        $table->string('image')->nullable();
 
         $table->string('CompanyCode', 20)->nullable();
 
