@@ -65,6 +65,15 @@ Route::get('/pengaturan', function () {
     return view('settings.pengaturan');
 })->name('pengaturan');
 
+// Pembayaran
+Route::get('/pembayaran', function () {
+    return view('payment.index');
+})->name('payment.index');
+
+Route::get('/order-success', function () {
+    return view('payment.success');
+})->name('order.success');
+
 // ============================================================
 // Contoh jika pakai controller (opsional):
 // Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');

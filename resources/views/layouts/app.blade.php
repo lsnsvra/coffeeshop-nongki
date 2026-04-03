@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'NONGKI Coffee')</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,17 +24,14 @@
             --sidebar-w: 260px;
             --header-h: 64px;
         }
-
         *, *::before, *::after { box-sizing: border-box; }
-
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--dark);
             color: var(--cream);
             margin: 0;
         }
-
-        /* HEADER */
+        /* ========== HEADER ========== */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0;
             height: var(--header-h);
@@ -45,14 +43,12 @@
             z-index: 1000;
             gap: 1rem;
         }
-
         .header-brand {
             display: flex; align-items: center; gap: 10px;
             text-decoration: none;
             flex-shrink: 0;
             width: calc(var(--sidebar-w) - 1.5rem);
         }
-
         .brand-icon {
             width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
@@ -60,27 +56,22 @@
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 14px rgba(201,168,76,0.3);
         }
-
         .brand-icon svg { width: 18px; height: 18px; fill: var(--dark); }
-
         .brand-name {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.2rem; font-weight: 600;
             letter-spacing: 0.1em;
             color: var(--gold-light);
         }
-
         .header-search {
             flex: 1; max-width: 400px;
             position: relative;
         }
-
         .header-search svg {
             position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
             width: 16px; height: 16px; color: var(--text-muted-c);
             pointer-events: none;
         }
-
         .header-search input {
             width: 100%;
             padding: 9px 12px 9px 38px;
@@ -91,17 +82,14 @@
             font-size: 0.875rem;
             outline: none;
         }
-
         .header-search input:focus {
             border-color: var(--gold);
             box-shadow: 0 0 0 3px var(--gold-dim);
         }
-
         .header-actions {
             margin-left: auto;
             display: flex; align-items: center; gap: 8px;
         }
-
         .header-btn {
             width: 38px; height: 38px;
             background: var(--dark-3); border: 1px solid var(--border);
@@ -112,16 +100,25 @@
             position: relative;
             text-decoration: none;
         }
-
         .header-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
         .header-btn svg { width: 18px; height: 18px; }
-
-        .header-badge {
-            position: absolute; top: 6px; right: 6px;
-            width: 8px; height: 8px;
-            background: var(--gold); border-radius: 50%;
+        .header-badge-number {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--gold);
+            color: #000;
+            font-size: 10px;
+            font-weight: bold;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 1px solid var(--dark);
         }
-
         .header-avatar {
             width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
@@ -132,17 +129,14 @@
             border: 2px solid var(--border);
             text-decoration: none;
         }
-
         .header-avatar:hover { border-color: var(--gold); }
-
         .sidebar-toggle {
             display: none;
             background: none; border: none;
             color: var(--cream-dim); cursor: pointer;
         }
         .sidebar-toggle svg { width: 22px; height: 22px; }
-
-        /* SIDEBAR */
+        /* ========== SIDEBAR ========== */
         .app-sidebar {
             position: fixed; top: var(--header-h); left: 0; bottom: 0;
             width: var(--sidebar-w);
@@ -153,9 +147,7 @@
             transition: transform 0.3s ease;
             z-index: 900;
         }
-
         .sidebar-section { padding: 1.2rem 1rem 0.5rem; }
-
         .sidebar-section-label {
             font-size: 0.68rem;
             letter-spacing: 0.1em;
@@ -164,7 +156,6 @@
             padding: 0 0.6rem;
             margin-bottom: 6px;
         }
-
         .nav-item {
             display: flex; align-items: center; gap: 10px;
             padding: 10px 12px;
@@ -176,27 +167,22 @@
             margin-bottom: 2px;
             position: relative;
         }
-
         .nav-item:hover {
             background: var(--gold-dim);
             color: var(--cream);
         }
-
         .nav-item.active {
             background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(201,168,76,0.08));
             color: var(--gold-light);
             border: 1px solid var(--border);
         }
-
         .nav-item.active::before {
             content: '';
             position: absolute; left: 0; top: 20%; bottom: 20%;
             width: 3px; background: var(--gold);
             border-radius: 0 3px 3px 0;
         }
-
         .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
-
         .nav-badge {
             margin-left: auto;
             background: var(--gold);
@@ -205,8 +191,6 @@
             padding: 2px 7px;
             border-radius: 20px;
         }
-
-        /* USER CARD (hanya untuk yang login) */
         .sidebar-user {
             margin: auto 1rem 1rem;
             padding: 12px;
@@ -214,12 +198,10 @@
             border: 1px solid var(--border);
             border-radius: 12px;
         }
-
         .sidebar-user-info {
             display: flex; align-items: center; gap: 10px;
             margin-bottom: 10px;
         }
-
         .sidebar-avatar {
             width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
@@ -227,10 +209,8 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 0.8rem; font-weight: 600; color: var(--dark);
         }
-
         .sidebar-user-name { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
         .sidebar-user-role { font-size: 0.75rem; color: var(--text-muted-c); }
-
         .btn-logout {
             width: 100%; padding: 8px;
             background: transparent;
@@ -244,20 +224,14 @@
             justify-content: center;
             gap: 7px;
         }
-
         .btn-logout:hover { border-color: #e05252; color: #e05252; background: rgba(224,82,82,0.08); }
-
-        /* MAIN CONTENT */
+        /* MAIN */
         .app-main {
             margin-left: var(--sidebar-w);
             margin-top: var(--header-h);
             min-height: calc(100vh - var(--header-h));
         }
-
-        .page-content {
-            padding: 2rem;
-        }
-
+        .page-content { padding: 2rem; }
         .btn-gold {
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             color: var(--dark);
@@ -272,19 +246,16 @@
             gap: 7px;
             text-decoration: none;
         }
-
         .btn-gold:hover {
             box-shadow: 0 6px 18px rgba(201,168,76,0.35);
             transform: translateY(-1px);
         }
-
         .sidebar-overlay {
             display: none;
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.6);
             z-index: 800;
         }
-
         @media (max-width: 992px) {
             .sidebar-toggle { display: flex; }
             .app-sidebar { transform: translateX(-100%); }
@@ -292,18 +263,15 @@
             .sidebar-overlay.show { display: block; }
             .app-main { margin-left: 0; }
         }
-
         @media (max-width: 576px) {
             .page-content { padding: 1.2rem; }
             .header-search { display: none; }
         }
-
         @yield('styles')
     </style>
     @stack('styles')
 </head>
 <body>
-
     <!-- HEADER -->
     <header class="app-header">
         <button class="sidebar-toggle" id="sidebarToggle">
@@ -311,34 +279,30 @@
                 <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
-
         <a href="{{ route('home') }}" class="header-brand">
             <div class="brand-icon">
-                <svg viewBox="0 0 24 24"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h2V5h-2v3zm-2 5c0 2.21-1.79 4-4 4H8c-2.21 0-4-1.79-4-4V5h12v8z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </div>
             <span class="brand-name">NONGKI</span>
         </a>
-
         <div class="header-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input type="text" placeholder="Cari menu, pesanan...">
         </div>
-
         <div class="header-actions">
             @auth
                 @if(auth()->user()->role !== 'admin')
-                <a href="#" class="header-btn">
+                <a href="{{ route('keranjang') }}" class="header-btn" id="cartHeaderBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
                     </svg>
-                    <span class="header-badge"></span>
+                    <span class="header-badge-number" id="cartBadgeHeader">0</span>
                 </a>
                 @endif
             @endauth
-
             @auth
                 <div class="dropdown">
                     <a href="#" class="header-avatar" data-bs-toggle="dropdown">
@@ -361,9 +325,8 @@
         </div>
     </header>
 
-    <!-- SIDEBAR (Selalu Muncul) -->
+    <!-- SIDEBAR -->
     <aside class="app-sidebar" id="appSidebar">
-        <!-- Menu untuk semua pengunjung (baik login maupun belum) -->
         <div class="sidebar-section">
             <div class="sidebar-section-label">Navigasi</div>
             <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
@@ -374,13 +337,11 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
                 Menu Kopi
             </a>
-
             @auth
-                <!-- Menu khusus yang sudah login -->
-                <a href="{{ route('keranjang') }}" class="nav-item">
+                <a href="{{ route('keranjang') }}" class="nav-item" id="sidebarCartLink">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                     Keranjang
-                    <span class="nav-badge">3</span>
+                    <span class="nav-badge" id="cartBadgeSidebar">0</span>
                 </a>
                 <a href="{{ route('riwayat.pesanan') }}" class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
@@ -399,7 +360,6 @@
                     Pengaturan
                 </a>
             @else
-                <!-- Menu untuk yang belum login -->
                 <a href="{{ route('login') }}" class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                     Masuk
@@ -410,9 +370,7 @@
                 </a>
             @endauth
         </div>
-
         @auth
-        <!-- User card untuk yang sudah login -->
         <div class="sidebar-user">
             <div class="sidebar-user-info">
                 <div class="sidebar-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</div>
@@ -431,7 +389,6 @@
         </div>
         @endauth
     </aside>
-
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main class="app-main">
@@ -445,26 +402,90 @@
                 <div>@yield('page_actions')</div>
             </div>
             @endif
-
             @yield('content')
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // ========== CART FUNCTIONALITY ==========
+        function getCartCount() {
+            let count = localStorage.getItem('cartCount');
+            return count ? parseInt(count) : 0;
+        }
+
+        function updateBadges(count) {
+            let headerBadge = document.getElementById('cartBadgeHeader');
+            let sidebarBadge = document.getElementById('cartBadgeSidebar');
+            if (headerBadge) {
+                headerBadge.textContent = count;
+                headerBadge.style.display = count > 0 ? 'flex' : 'none';
+                headerBadge.style.transform = 'scale(1.2)';
+                setTimeout(() => headerBadge.style.transform = 'scale(1)', 200);
+            }
+            if (sidebarBadge) {
+                sidebarBadge.textContent = count;
+                sidebarBadge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        function setCartCount(count) {
+            localStorage.setItem('cartCount', count);
+            updateBadges(count);
+        }
+
+        function addToCart(button, itemName = '', price = '') {
+            let current = getCartCount();
+            setCartCount(current + 1);
+            // Optional: store item details
+            let items = JSON.parse(localStorage.getItem('cartItems') || '[]');
+            items.push({ name: itemName, price: price, addedAt: new Date().toISOString() });
+            localStorage.setItem('cartItems', JSON.stringify(items));
+            // Visual feedback
+            if (button) {
+                let original = button.innerHTML;
+                button.innerHTML = '✓';
+                button.style.background = '#52b788';
+                setTimeout(() => {
+                    button.innerHTML = original;
+                    button.style.background = '';
+                }, 800);
+            }
+        }
+
+        // init
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBadges(getCartCount());
+            // Delegate click for .btn-add
+            document.body.addEventListener('click', function(e) {
+                let btn = e.target.closest('.btn-add, .add-to-cart-btn');
+                if (btn) {
+                    e.preventDefault();
+                    let name = btn.getAttribute('data-name') || '';
+                    let price = btn.getAttribute('data-price') || '';
+                    addToCart(btn, name, price);
+                }
+            });
+        });
+
+        window.addToCartHandler = addToCart;
+
+        // Sidebar toggle
         const toggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('appSidebar');
         const overlay = document.getElementById('sidebarOverlay');
-
-        toggle?.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-        });
-
-        overlay?.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-        });
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('show');
+            });
+        }
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
     </script>
     @stack('scripts')
 </body>

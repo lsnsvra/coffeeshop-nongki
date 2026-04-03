@@ -207,14 +207,14 @@
     }
 
     .menu-price-overlay {
-        position: absolute;
-        bottom: 12px;
-        left: 12px;
-        z-index: 2;
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--gold-light);
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    z-index: 2;
+    font-family: inherit; /* FIX: ikut font template */
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
     }
 
     .menu-body {
@@ -410,7 +410,7 @@
         svg.style.fill = btn.classList.contains('liked') ? 'currentColor' : 'none';
     }
 
-    // Fungsi untuk menambahkan item ke keranjang (localStorage)
+    // Fungsi untuk menambahkan item ke keranjang (localStorage) dan update badge
     function addToCart(id, name, price, img, btn) {
         // Ambil keranjang dari localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -434,14 +434,31 @@
         // Simpan kembali ke localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
 
+        // Hitung total jumlah item (quantity)
+        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        localStorage.setItem('cartCount', totalItems);
+
+        // Update badge di header dan sidebar (panggil fungsi global dari layout)
+        if (typeof window.updateCartBadge === 'function') {
+            window.updateCartBadge(totalItems);
+        } else {
+            // fallback jika fungsi belum terdefinisi: update langsung
+            const headerBadge = document.getElementById('cartBadgeHeader');
+            const sidebarBadge = document.getElementById('cartBadgeSidebar');
+            if (headerBadge) {
+                headerBadge.textContent = totalItems;
+                headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+            }
+            if (sidebarBadge) {
+                sidebarBadge.textContent = totalItems;
+                sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            }
+        }
+
         // Efek visual pada tombol
         btn.style.transform = 'scale(0.85)';
         btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         btn.style.background = '#52b788';
-
-        // Tampilkan notifikasi singkat (opsional)
-        const badge = document.querySelector('.header-badge');
-        if (badge) badge.style.display = 'inline-block'; // tampilkan badge jika ada
 
         setTimeout(() => {
             btn.style.transform = '';
@@ -449,5 +466,24 @@
             btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
         }, 1200);
     }
+
+    // Inisialisasi badge saat halaman dimuat (pastikan badge sesuai dengan cartCount)
+    document.addEventListener('DOMContentLoaded', function() {
+        let totalItems = parseInt(localStorage.getItem('cartCount')) || 0;
+        if (typeof window.updateCartBadge === 'function') {
+            window.updateCartBadge(totalItems);
+        } else {
+            const headerBadge = document.getElementById('cartBadgeHeader');
+            const sidebarBadge = document.getElementById('cartBadgeSidebar');
+            if (headerBadge) {
+                headerBadge.textContent = totalItems;
+                headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+            }
+            if (sidebarBadge) {
+                sidebarBadge.textContent = totalItems;
+                sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            }
+        }
+    });
 </script>
 @endpush
