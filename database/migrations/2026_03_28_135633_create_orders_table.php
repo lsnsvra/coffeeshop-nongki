@@ -16,8 +16,14 @@ return new class extends Migration
         $table->increments('OrderID'); // PRIMARY KEY
 
         $table->integer('UserID');
+        $table->unsignedInteger('PaymentMethodID')->nullable();
+
         $table->string('order_code')->unique();
         $table->integer('TotalHarga');
+        $table->foreign('PaymentMethodID')
+            ->references('PaymentMethodID')
+            ->on('payment_methods')
+            ->onDelete('set null');
 
         $table->string('StatusOrder', 20)->nullable();
         $table->dateTime('TanggalOrder')->nullable();
