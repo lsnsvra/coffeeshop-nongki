@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    public $timestamps = false;
+    public $timestamps = true;
     use HasFactory;
 
     protected $fillable = [

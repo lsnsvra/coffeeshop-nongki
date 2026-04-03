@@ -278,7 +278,7 @@
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="hero-badge">✨ Since 2024</div>
+            <div class="hero-badge">✨ Since 2026</div>
             <h1 class="hero-title">
                 Kopi terbaik<br>
                 untuk <em>harimu</em>

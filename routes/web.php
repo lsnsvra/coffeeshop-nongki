@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/menu', 'menu.index')->name('menu.index');
-Route::get('/', [ProductController::class, 'home'])->name('home');
+Route::get('/', function () {
+    return view('home');
+})->name('home');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
@@ -40,22 +42,33 @@ Route::middleware('auth')->group(function () {
     })->name('manager.profile');
 });
 
-// ========== FRONTEND DEMO ROUTES (Keranjang, Checkout, Pembayaran) ==========
-Route::get('/cart', function () {
-    return view('cart.index');
-})->name('cart');
+// Keranjang
+Route::get('/keranjang', function () {
+    return view('cart.keranjang');
+})->name('keranjang');
 
-Route::get('/checkout', function () {
-    return view('checkout.index');
-})->name('checkout');
+// Riwayat Pesanan
+Route::get('/riwayat-pesanan', function () {
+    return view('orders.riwayat-pesanan');
+})->name('riwayat.pesanan');
 
-Route::get('/payment', function () {
-    return view('payment.index');
-})->name('payment');
+// Favorit
+Route::get('/favorit', function () {
+    return view('favorites.favorit');
+})->name('favorit');
 
-Route::get('/payment/success', function () {
-    return view('payment.success');
-})->name('payment.success');
-// ============================================================================
+// Profil Saya
+Route::get('/profil', function () {
+    return view('profile.profil');
+})->name('profil');
 
+// Pengaturan
+Route::get('/pengaturan', function () {
+    return view('settings.pengaturan');
+})->name('pengaturan');
+
+// ============================================================
+// Contoh jika pakai controller (opsional):
+// Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');
+// ============================================================
 require __DIR__.'/auth.php';

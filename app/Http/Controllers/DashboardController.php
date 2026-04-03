@@ -15,8 +15,8 @@ class DashboardController extends Controller
     {
         // Stats
         $ordersToday = Order::today()->count();
-        $revenueToday = Payment::completed()->today()->sum('amount');
-        $activeProducts = Product::where('stock', '>', 0)->count();
+        $revenueToday = Payment::completed()->today()->sum('Jumlah'); // ganti 'amount' jadi 'Jumlah'
+        $activeProducts = Product::where('Stok', '>', 0)->count();
         $pendingOrders = Order::pending()->count();
 
         // Recent orders (latest 5)
@@ -28,7 +28,7 @@ class DashboardController extends Controller
         // Top products (by assuming we track via order details later; for now random/popular)
         $topProducts = Product::orderByRaw('RAND()') // TODO: replace with real sales_count
             ->limit(5)
-            ->get(['name', 'stock']);
+            ->get(['NamaKopi', 'Stok']);
 
         return view('dashboard.index', compact(
             'ordersToday',
