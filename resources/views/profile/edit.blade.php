@@ -1,29 +1,343 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
+@section('title', 'Profil Saya — NONGKI')
+
+@push('styles')
+<style>
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, var(--dark-2) 0%, var(--dark-3) 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .profile-avatar-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--gold);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        background: var(--dark-3);
+    }
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: var(--gold);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid var(--dark-2);
+    }
+    .avatar-upload-btn:hover {
+        background: var(--gold-light);
+        transform: scale(1.05);
+    }
+    .profile-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0.5rem 0 0.25rem;
+    }
+    .profile-email {
+        color: var(--text-muted-c);
+        margin-bottom: 1rem;
+    }
+    .profile-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    .stat-card {
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(4px);
+        border-radius: 16px;
+        padding: 0.75rem 1.5rem;
+        text-align: center;
+        min-width: 100px;
+        border: 1px solid var(--border);
+    }
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--gold);
+        font-family: 'Playfair Display', serif;
+    }
+    .stat-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted-c);
+    }
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    .profile-card {
+        background: var(--dark-2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        transition: all 0.3s;
+    }
+    .profile-card:hover {
+        border-color: var(--gold-dim);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--gold);
+        border-left: 3px solid var(--gold);
+        padding-left: 0.75rem;
+    }
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    .form-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-muted-c);
+        margin-bottom: 0.25rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: var(--dark-3);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--cream);
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-dim);
+    }
+    .btn-gold {
+        background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 40px;
+        font-weight: 600;
+        color: #000;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(201,168,76,0.4);
+    }
+    .btn-outline-gold {
+        background: transparent;
+        border: 1px solid var(--gold);
+        padding: 0.7rem 1.5rem;
+        border-radius: 40px;
+        color: var(--gold);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-outline-gold:hover {
+        background: var(--gold-dim);
+    }
+    .btn-danger {
+        background: transparent;
+        border: 1px solid #e05252;
+        color: #e05252;
+    }
+    .btn-danger:hover {
+        background: rgba(224,82,82,0.1);
+    }
+    @media (max-width: 768px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+        .profile-stats {
+            justify-content: center;
+        }
+    }
+</style>
+@endpush
+
+@section('content')
+<div class="profile-container">
+    <!-- Header Profil -->
+    <div class="profile-header">
+        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+            <div class="profile-avatar-wrapper">
+                @php
+                    $avatar = Auth::user()->avatar ?? null;
+                    $defaultAvatar = 'https://ui-avatars.com/api/?background=C9A84C&color=000&name=' . urlencode(Auth::user()->name);
+                @endphp
+                <img class="profile-avatar" id="avatarPreview" src="{{ $avatar ? asset('storage/' . $avatar) : $defaultAvatar }}" alt="Avatar">
+                <label for="avatarUpload" class="avatar-upload-btn">
+                    <i class="fas fa-camera" style="font-size: 14px;"></i>
+                </label>
+                <input type="file" id="avatarUpload" style="display: none;" accept="image/*">
             </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
+            <div style="flex:1">
+                <div class="profile-name">{{ Auth::user()->name }}</div>
+                <div class="profile-email">{{ Auth::user()->email }}</div>
+                <div class="profile-stats">
+                    <div class="stat-card"><div class="stat-number">87</div><div class="stat-label">Pesanan</div></div>
+                    <div class="stat-card"><div class="stat-number">Rp 4,2jt</div><div class="stat-label">Total Belanja</div></div>
+                    <div class="stat-card"><div class="stat-number">142</div><div class="stat-label">Poin</div></div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+
+    <!-- Grid Form -->
+    <div class="profile-grid">
+        <!-- Form Informasi Pribadi -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-user-edit"></i> Informasi Pribadi</div>
+            <form id="profileForm" method="POST" action="{{ route('profile.update') }}">
+                @csrf
+                @method('PATCH')
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="name" class="form-control" value="{{ old('name', Auth::user()->name) }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email', Auth::user()->email) }}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nomor Telepon</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ old('phone', Auth::user()->phone ?? '') }}" placeholder="+62 812 3456 7890">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tanggal Lahir</label>
+                    <input type="date" name="birthdate" class="form-control" value="{{ old('birthdate', Auth::user()->birthdate ?? '') }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Jenis Kelamin</label>
+                    <select name="gender" class="form-control">
+                        <option value="">Pilih</option>
+                        <option value="Laki-laki" {{ (Auth::user()->gender ?? '') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="Perempuan" {{ (Auth::user()->gender ?? '') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-gold"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Ubah Password -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-lock"></i> Ubah Password</div>
+            <form id="passwordForm" method="POST" action="{{ route('password.update') }}">
+                @csrf
+                @method('PUT')
+                <div class="form-group">
+                    <label class="form-label">Password Saat Ini</label>
+                    <input type="password" name="current_password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password Baru</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Konfirmasi Password Baru</label>
+                    <input type="password" name="password_confirmation" class="form-control" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-gold"><i class="fas fa-key"></i> Update Password</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Hapus Akun (Opsional) -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-trash-alt"></i> Hapus Akun</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted-c); margin-bottom: 1rem;">Setelah akun dihapus, semua data Anda akan hilang secara permanen.</p>
+            <button class="btn-outline-gold btn-danger" id="deleteAccountBtn"><i class="fas fa-exclamation-triangle"></i> Hapus Akun Saya</button>
+        </div>
+
+        <!-- Aktivitas Terbaru (contoh) -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-history"></i> Aktivitas Terbaru</div>
+            <ul style="list-style: none; padding: 0;">
+                <li style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                    <span><i class="fas fa-shopping-cart"></i> Pesanan #NGK-0241</span>
+                    <span style="font-size: 0.75rem;">3 April 2026</span>
+                </li>
+                <li style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                    <span><i class="fas fa-heart"></i> Menambahkan Caramel Latte ke favorit</span>
+                    <span style="font-size: 0.75rem;">2 April 2026</span>
+                </li>
+                <li style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span><i class="fas fa-edit"></i> Memperbarui profil</span>
+                    <span style="font-size: 0.75rem;">1 April 2026</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+    // Preview avatar upload
+    document.getElementById('avatarUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('avatarPreview').src = event.target.result;
+                // Di sini Anda bisa tambahkan AJAX untuk upload ke server
+                // Misal: fetch('/profile/avatar', { method: 'POST', body: formData })
+                alert('Upload avatar: Demo saja. Silakan implementasi backend.');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Delete account confirmation
+    document.getElementById('deleteAccountBtn')?.addEventListener('click', function() {
+        if (confirm('Apakah Anda yakin ingin menghapus akun? Semua data akan hilang.')) {
+            // Kirim request hapus akun
+            // fetch('/profile', { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '...' } })
+            alert('Fitur hapus akun (demo). Silakan implementasi backend.');
+        }
+    });
+</script>
+@endpush

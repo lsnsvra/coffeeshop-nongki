@@ -1,251 +1,224 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Saya - NONGKI')
+@section('title', 'Profil Saya — NONGKI')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
     .profile-container {
         max-width: 1200px;
         margin: 0 auto;
     }
-    .profile-grid {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 2rem;
-    }
-    /* Sidebar kiri */
-    .profile-sidebar {
-        background: var(--dark-2);
+    /* Header Profil */
+    .profile-header {
+        background: linear-gradient(135deg, var(--dark-2) 0%, var(--dark-3) 100%);
+        border-radius: 24px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
         border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 2rem 1.5rem;
-        text-align: center;
-        position: sticky;
-        top: 90px;
-        height: fit-content;
     }
-    .avatar-wrapper {
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .profile-avatar-wrapper {
         position: relative;
         display: inline-block;
-        margin-bottom: 1rem;
     }
-    .avatar {
+    .profile-avatar {
         width: 120px;
         height: 120px;
-        background: linear-gradient(135deg, var(--gold), var(--gold-light));
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        font-weight: 700;
-        color: #1a1a14;
-        border: 3px solid var(--gold-dim);
-        margin: 0 auto;
+        object-fit: cover;
+        border: 4px solid var(--gold);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        background: var(--dark-3);
     }
-    .avatar-edit-btn {
+    .avatar-upload-btn {
         position: absolute;
         bottom: 5px;
         right: 5px;
-        background: var(--dark-3);
-        border: 1px solid var(--border);
+        background: var(--gold);
         border-radius: 50%;
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s;
-        color: var(--gold);
-    }
-    .avatar-edit-btn:hover {
-        background: var(--gold);
+        border: 2px solid var(--dark-2);
         color: #000;
     }
+    .avatar-upload-btn:hover {
+        background: var(--gold-light);
+        transform: scale(1.05);
+    }
     .profile-name {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.6rem;
-        font-weight: 600;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
         margin: 0.5rem 0 0.25rem;
     }
     .profile-email {
-        font-size: 0.85rem;
         color: var(--text-muted-c);
         margin-bottom: 1rem;
     }
-    .member-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(201,168,76,0.12);
-        border: 1px solid rgba(201,168,76,0.3);
-        border-radius: 30px;
-        padding: 4px 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--gold);
-        margin-bottom: 1.5rem;
-    }
-    .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
+    .profile-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
     }
     .stat-card {
-        background: var(--dark-3);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 0.75rem;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(4px);
+        border-radius: 20px;
+        padding: 0.5rem 1.2rem;
         text-align: center;
+        min-width: 100px;
+        border: 1px solid var(--border);
     }
     .stat-number {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.4rem;
+        font-size: 1.6rem;
         font-weight: 700;
         color: var(--gold);
+        font-family: 'Playfair Display', serif;
     }
     .stat-label {
         font-size: 0.7rem;
-        color: var(--text-muted-c);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .btn-sidebar {
-        width: 100%;
-        background: var(--gold);
-        border: none;
-        border-radius: 40px;
-        padding: 10px;
-        font-weight: 600;
-        color: #1a1a14;
-        transition: all 0.2s;
-        margin-top: 0.5rem;
-    }
-    .btn-sidebar-outline {
-        background: transparent;
-        border: 1px solid var(--border);
+        letter-spacing: 1px;
         color: var(--text-muted-c);
-        width: 100%;
-        border-radius: 40px;
-        padding: 10px;
-        margin-top: 0.5rem;
-        transition: all 0.2s;
     }
-    .btn-sidebar-outline:hover {
-        border-color: var(--gold);
-        color: var(--gold);
+    /* Grid Form */
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.8rem;
     }
-    /* Right section */
-    .profile-main {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-    .form-card {
+    .profile-card {
         background: var(--dark-2);
         border: 1px solid var(--border);
-        border-radius: 20px;
-        overflow: hidden;
+        border-radius: 24px;
+        padding: 1.8rem;
+        transition: all 0.3s;
     }
-    .form-card-header {
-        padding: 1.2rem 1.5rem;
-        border-bottom: 1px solid var(--border);
+    .profile-card:hover {
+        border-color: var(--gold-dim);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .card-title {
+        font-size: 1.2rem;
         font-weight: 600;
-        font-size: 1.1rem;
-    }
-    .form-card-body {
-        padding: 1.5rem;
-    }
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--gold);
+        border-left: 3px solid var(--gold);
+        padding-left: 0.8rem;
     }
     .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    .form-group.full-width {
-        grid-column: span 2;
+        margin-bottom: 1.2rem;
     }
     .form-label {
+        display: block;
         font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         color: var(--text-muted-c);
+        margin-bottom: 0.4rem;
         letter-spacing: 0.5px;
     }
-    .form-input, .form-select {
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
         background: var(--dark-3);
         border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 0.7rem 1rem;
+        border-radius: 14px;
         color: var(--cream);
-        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
         transition: all 0.2s;
+    }
+    .form-control:focus {
         outline: none;
-    }
-    .form-input:focus, .form-select:focus {
         border-color: var(--gold);
-        box-shadow: 0 0 0 2px rgba(201,168,76,0.2);
+        box-shadow: 0 0 0 3px var(--gold-dim);
     }
-    .btn-primary {
-        background: var(--gold);
+    .btn-gold {
+        background: linear-gradient(135deg, var(--gold), var(--gold-light));
         border: none;
-        border-radius: 12px;
-        padding: 0.7rem 1.5rem;
+        padding: 0.7rem 1.8rem;
+        border-radius: 40px;
         font-weight: 600;
-        color: #1a1a14;
+        color: #000;
         cursor: pointer;
         transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
-    .btn-primary:hover {
-        background: var(--gold-light);
-        transform: translateY(-1px);
+    .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(201,168,76,0.4);
     }
-    .btn-outline {
+    .btn-outline-gold {
         background: transparent;
-        border: 1px solid var(--border);
-        border-radius: 12px;
+        border: 1px solid var(--gold);
         padding: 0.7rem 1.5rem;
-        color: var(--text-muted-c);
+        border-radius: 40px;
+        color: var(--gold);
+        font-weight: 500;
         cursor: pointer;
         transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
-    .btn-outline:hover {
-        border-color: var(--gold);
-        color: var(--gold);
+    .btn-outline-gold:hover {
+        background: var(--gold-dim);
     }
     .btn-danger {
-        background: transparent;
-        border: 1px solid #e05252;
+        border-color: #e05252;
         color: #e05252;
     }
     .btn-danger:hover {
         background: rgba(224,82,82,0.1);
-        border-color: #e05252;
-        color: #e05252;
     }
-    .divider {
-        height: 1px;
-        background: var(--border);
-        margin: 1rem 0;
+    .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .activity-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    .activity-icon {
+        width: 30px;
+        color: var(--gold);
     }
     @media (max-width: 768px) {
         .profile-grid {
             grid-template-columns: 1fr;
         }
-        .profile-sidebar {
-            position: static;
-        }
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-        .form-group.full-width {
-            grid-column: span 1;
+        .profile-stats {
+            justify-content: center;
         }
     }
 </style>
@@ -253,165 +226,153 @@
 
 @section('content')
 <div class="profile-container">
-    <!-- Page Header -->
-    <div class="page-header" style="margin-bottom: 2rem;">
-        <div>
-            <h1 class="page-title" style="font-family: 'Cormorant Garamond', serif; font-size: 2rem;">Profil Saya</h1>
-            <div class="page-breadcrumb">
-                <a href="{{ route('home') }}">Beranda</a> · Profil
+    <!-- Header Profil dengan Avatar -->
+    <div class="profile-header">
+        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+            <div class="profile-avatar-wrapper">
+                @php
+                    $avatar = Auth::user()->avatar ?? null;
+                    $defaultAvatar = 'https://ui-avatars.com/api/?background=C9A84C&color=000&bold=true&size=120&name=' . urlencode(Auth::user()->name);
+                @endphp
+                <img class="profile-avatar" id="avatarPreview" src="{{ $avatar ? asset('storage/' . $avatar) : $defaultAvatar }}" alt="Avatar">
+                <label for="avatarUpload" class="avatar-upload-btn">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="avatarUpload" style="display: none;" accept="image/*">
+            </div>
+            <div style="flex:1">
+                <div class="profile-name">{{ Auth::user()->name }}</div>
+                <div class="profile-email">{{ Auth::user()->email }}</div>
+                <div class="profile-stats">
+                    <div class="stat-card"><div class="stat-number">87</div><div class="stat-label">Pesanan</div></div>
+                    <div class="stat-card"><div class="stat-number">Rp 4,2jt</div><div class="stat-label">Total Belanja</div></div>
+                    <div class="stat-card"><div class="stat-number">142</div><div class="stat-label">Poin Reward</div></div>
+                </div>
             </div>
         </div>
     </div>
 
-    @auth
-    @php
-        $user = Auth::user();
-        // Data dummy untuk statistik (nanti bisa diambil dari database)
-        $totalOrders = 87;
-        $totalSpent = 4200000;
-        $favoritesCount = 6;
-        $points = 142;
-        $memberLevel = 'Gold';
-    @endphp
+    <!-- Grid Form -->
     <div class="profile-grid">
-        <!-- SIDEBAR KIRI -->
-        <aside class="profile-sidebar">
-            <div class="avatar-wrapper">
-                <div class="avatar">
-                    {{ strtoupper(substr($user->name, 0, 2)) }}
+        <!-- Informasi Pribadi -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-user-edit"></i> Informasi Pribadi</div>
+            <form id="profileForm" method="POST" action="{{ route('profile.update') }}">
+                @csrf
+                @method('PATCH')
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="name" class="form-control" value="{{ old('name', Auth::user()->name) }}" required>
                 </div>
-                <div class="avatar-edit-btn" onclick="alert('Fitur edit foto akan segera hadir')">
-                    ✏️
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email', Auth::user()->email) }}" required>
                 </div>
-            </div>
-            <div class="profile-name">{{ $user->name }}</div>
-            <div class="profile-email">{{ $user->email }}</div>
-            <div class="member-badge">
-                ⭐ Member {{ $memberLevel }}
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">{{ $totalOrders }}</div>
-                    <div class="stat-label">Pesanan</div>
+                <div class="form-group">
+                    <label class="form-label">Nomor Telepon</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ old('phone', Auth::user()->phone ?? '') }}" placeholder="+62 812 3456 7890">
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">Rp {{ number_format($totalSpent / 1000000, 1) }}jt</div>
-                    <div class="stat-label">Belanja</div>
+                <div class="form-group">
+                    <label class="form-label">Tanggal Lahir</label>
+                    <input type="date" name="birthdate" class="form-control" value="{{ old('birthdate', Auth::user()->birthdate ?? '') }}">
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ $favoritesCount }}</div>
-                    <div class="stat-label">Favorit</div>
+                <div class="form-group">
+                    <label class="form-label">Jenis Kelamin</label>
+                    <select name="gender" class="form-control">
+                        <option value="">Pilih</option>
+                        <option value="Laki-laki" {{ (Auth::user()->gender ?? '') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="Perempuan" {{ (Auth::user()->gender ?? '') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ $points }}</div>
-                    <div class="stat-label">Poin</div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-gold"><i class="fas fa-save"></i> Simpan Perubahan</button>
                 </div>
-            </div>
-            <button class="btn-sidebar" onclick="alert('Fitur edit profil cepat')">✏️ Edit Profil</button>
-            <button class="btn-sidebar-outline" onclick="alert('Fitur riwayat poin')">🎁 Tukar Poin</button>
-        </aside>
+            </form>
+        </div>
 
-        <!-- KANAN: FORM -->
-        <div class="profile-main">
-            <!-- Form Informasi Pribadi -->
-            <div class="form-card">
-                <div class="form-card-header">Informasi Pribadi</div>
-                <div class="form-card-body">
-                    <form id="profileForm" method="POST" action="{{ route('profile.update') }}">
-                        @csrf
-                        @method('PATCH')
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-input" name="name" value="{{ old('name', $user->name) }}" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-input" name="email" value="{{ old('email', $user->email) }}" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Nomor Telepon</label>
-                                <input type="tel" class="form-input" name="phone" value="{{ old('phone', $user->phone ?? '') }}" placeholder="+62 812 3456 7890">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tanggal Lahir</label>
-                                <input type="date" class="form-input" name="birthdate" value="{{ old('birthdate', $user->birthdate ?? '') }}">
-                            </div>
-                            <div class="form-group full-width">
-                                <label class="form-label">Alamat (opsional)</label>
-                                <textarea class="form-input" name="address" rows="2" placeholder="Jl. Contoh No. 123, Kota">{{ old('address', $user->address ?? '') }}</textarea>
-                            </div>
-                        </div>
-                        <div class="divider"></div>
-                        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                            <button type="button" class="btn-outline" onclick="resetForm()">Batal</button>
-                            <button type="submit" class="btn-primary">Simpan Perubahan</button>
-                        </div>
-                    </form>
+        <!-- Ubah Password -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-lock"></i> Keamanan Akun</div>
+            <form id="passwordForm" method="POST" action="{{ route('password.update') }}">
+                @csrf
+                @method('PUT')
+                <div class="form-group">
+                    <label class="form-label">Password Saat Ini</label>
+                    <input type="password" name="current_password" class="form-control" required>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Password Baru</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Konfirmasi Password Baru</label>
+                    <input type="password" name="password_confirmation" class="form-control" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-gold"><i class="fas fa-key"></i> Update Password</button>
+                </div>
+            </form>
+        </div>
 
-            <!-- Form Ubah Password -->
-            <div class="form-card">
-                <div class="form-card-header">Keamanan Akun</div>
-                <div class="form-card-body">
-                    <form id="passwordForm" method="POST" action="{{ route('password.update') }}">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label class="form-label">Password Saat Ini</label>
-                                <input type="password" class="form-input" name="current_password" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Password Baru</label>
-                                <input type="password" class="form-input" name="password" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-input" name="password_confirmation" required>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
-                            <button type="submit" class="btn-primary">Update Password</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <!-- Hapus Akun -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-trash-alt"></i> Hapus Akun</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted-c); margin-bottom: 1rem;">Setelah akun dihapus, semua data Anda akan hilang secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
+            <button class="btn-outline-gold btn-danger" id="deleteAccountBtn"><i class="fas fa-exclamation-triangle"></i> Hapus Akun Saya</button>
+        </div>
 
-            <!-- Hapus Akun -->
-            <div class="form-card">
-                <div class="form-card-header">Hapus Akun</div>
-                <div class="form-card-body">
-                    <p style="color: var(--text-muted-c); margin-bottom: 1rem;">Tindakan ini tidak dapat dibatalkan. Semua data Anda akan dihapus permanen.</p>
-                    <form method="POST" action="{{ route('profile.destroy') }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun? Semua data akan hilang.');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-primary btn-danger" style="background: transparent; border-color: #e05252; color: #e05252;">Hapus Akun Saya</button>
-                    </form>
-                </div>
-            </div>
+        <!-- Aktivitas Terbaru -->
+        <div class="profile-card">
+            <div class="card-title"><i class="fas fa-history"></i> Aktivitas Terbaru</div>
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <span><i class="fas fa-shopping-cart activity-icon"></i> Pesanan #NGK-0241</span>
+                    <span style="font-size: 0.75rem;">3 April 2026</span>
+                </li>
+                <li class="activity-item">
+                    <span><i class="fas fa-heart activity-icon"></i> Menambahkan Caramel Latte ke favorit</span>
+                    <span style="font-size: 0.75rem;">2 April 2026</span>
+                </li>
+                <li class="activity-item">
+                    <span><i class="fas fa-edit activity-icon"></i> Memperbarui profil</span>
+                    <span style="font-size: 0.75rem;">1 April 2026</span>
+                </li>
+                <li class="activity-item">
+                    <span><i class="fas fa-trophy activity-icon"></i> Mendapatkan poin reward 50</span>
+                    <span style="font-size: 0.75rem;">30 Maret 2026</span>
+                </li>
+            </ul>
         </div>
     </div>
-    @else
-    <div class="card-nongki" style="text-align: center; padding: 3rem;">
-        <h3>Anda belum login</h3>
-        <p style="margin: 1rem 0;">Silakan login untuk mengakses profil Anda.</p>
-        <a href="{{ route('login') }}" class="btn-gold">Login Sekarang</a>
-    </div>
-    @endauth
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    function resetForm() {
-        // Reset form profile ke nilai awal (refresh halaman atau reload data)
-        window.location.reload();
-    }
-    // Tambahkan validasi sederhana jika diperlukan
-    document.getElementById('profileForm')?.addEventListener('submit', function(e) {
-        // Optional: client-side validation
+    // Preview avatar sebelum upload
+    document.getElementById('avatarUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('avatarPreview').src = event.target.result;
+                // Kirim via AJAX (demo, Anda perlu implementasi endpoint upload)
+                // const formData = new FormData();
+                // formData.append('avatar', file);
+                // fetch('/profile/avatar', { method: 'POST', body: formData, headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                alert('Upload avatar: Demo. Silakan implementasi backend untuk menyimpan foto.');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Konfirmasi hapus akun
+    document.getElementById('deleteAccountBtn')?.addEventListener('click', function() {
+        if (confirm('Apakah Anda yakin ingin menghapus akun? Semua data akan hilang secara permanen.')) {
+            // Kirim request DELETE ke route profile.destroy
+            // fetch('{{ route('profile.destroy') }}', { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+            alert('Fitur hapus akun (demo). Silakan implementasi backend.');
+        }
     });
 </script>
 @endpush
