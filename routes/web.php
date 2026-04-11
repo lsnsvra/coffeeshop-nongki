@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\CartControllers;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -79,3 +79,6 @@ Route::get('/order-success', function () {
 // Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');
 // ============================================================
 require __DIR__.'/auth.php';
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::get('/add-to-cart/{id}', [CartController::class, 'add'])->name('add.to.cart');
