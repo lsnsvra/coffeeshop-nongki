@@ -3,7 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CartControllers;
+use App\Http\Controllers\CartController;
+// 1. Tambahkan pemanggilan GoogleController di sini
+use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +24,12 @@ Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
+// ============================================================
+// ROUTE UNTUK LOGIN GOOGLE
+// ============================================================
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+// ============================================================
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
