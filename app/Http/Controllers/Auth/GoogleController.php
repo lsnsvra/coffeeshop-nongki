@@ -21,52 +21,40 @@ class GoogleController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
+            
+            // Cari user berdasarkan google_id
             $user = User::where('google_id', $googleUser->id)->first();
 
             if ($user) {
                 Auth::login($user);
                 return redirect()->intended(RouteServiceProvider::HOME);
-            } else {
-                $existingUser = User::where('email', $googleUser->email)->first();
-
-                if ($existingUser) {
-                    $existingUser->update(['google_id' => $googleUser->id]);
-                    Auth::login($existingUser);
-                    return redirect('/')->intended(RouteServiceProvider::HOME);
-                }
-
-                
-                // 1. Ambil nama dari Google (Gunakan ->name, bukan ->getName)
-                $namaUser = $googleUser->name;
-                
-                // 2. Rencana Cadangan: Jika nama kosong, gunakan bagian depan email
-                if (empty($namaUser)) {
-                    $namaUser = explode('@', $googleUser->email)[0]; 
-                }
-
-                // 3. Simpan ke database
-                $newUser = User::create([
-                    'Nama' => $namaUser, 
-                    'email' => $googleUser->email,
-                    'google_id' => $googleUser->id,
-                    'Password' => bcrypt('123456dummy') 
-                ]);
-
-                // --- AKHIR BAGIAN YANG DIPERBAIKI ---
-
-                Auth::login($newUser);
+            }
+            
+            // Cek apakah email sudah terdaftar
+            $existingUser = User::where('email', $googleUser->email)->first();
+            if ($existingUser) {
+                // Update google_id untuk user yang sudah ada
+                $existingUser->update(['google_id' => $googleUser->id]);
+                Auth::login($existingUser);
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
-        } catch (Exception $e) {
-            // Kita gunakan fungsi dd() untuk menampilkan error aslinya ke layar
-            // HAPUS ATAU COMMENT BLOK INI NANTI JIKA SUDAH BERHASIL
-            dd([
-                'pesan_error' => $e->getMessage(),
-                'baris' => $e->getLine(),
-                'file' => $e->getFile()
+
+            // Buat user baru (gunakan kolom standar Laravel: name, email, password)
+            $namaUser = $googleUser->name ?? explode('@', $googleUser->email)[0];
+            $newUser = User::create([
+                'name' => $namaUser,           // <-- perbaiki: 'name' bukan 'Nama'
+                'email' => $googleUser->email,
+                'google_id' => $googleUser->id,
+                'password' => bcrypt('123456dummy'), // <-- perbaiki: 'password' bukan 'Password'
+                'role' => 'pelanggan',          // tambahkan role default jika diperlukan
             ]);
-            
-            // return redirect('/login')->with('error', 'Gagal login menggunakan Google.');
+
+            Auth::login($newUser);
+            return redirect()->intended(RouteServiceProvider::HOME);
+
+        } catch (Exception $e) {
+            // Untuk debugging, tampilkan error (hapus atau komentar setelah berhasil)
+            return redirect('/login')->with('error', 'Login Google gagal: ' . $e->getMessage());
         }
     }
 }
