@@ -47,7 +47,7 @@ class GoogleController extends Controller
                 // 3. Simpan ke database
                 $newUser = User::create([
                     'Nama' => $namaUser, 
-                    'email' => $googleUser->email,
+                    'Email' => $googleUser->email,
                     'google_id' => $googleUser->id,
                     'Password' => bcrypt('123456dummy') 
                 ]);
