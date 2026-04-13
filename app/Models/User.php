@@ -54,6 +54,7 @@ class User extends Authenticatable
         'CreatedDate',
         'LastUpdatedBy',
         'LastUpdatedDate',
+        'avatar', // TAMBAHKAN INI
     ];
 
     /**
@@ -79,7 +80,7 @@ class User extends Authenticatable
      */
     public function getAuthIdentifierName()
     {
-        return 'Email';
+        return 'email'; // Ubah ke 'email' (lowercase) karena di database kolomnya 'email'
     }
 
     /**
@@ -88,5 +89,13 @@ class User extends Authenticatable
     public function getAuthPassword()
     {
         return $this->Password;
+    }
+
+    /**
+     * Akses untuk nama (mapping dari Nama ke name).
+     */
+    public function getNameAttribute()
+    {
+        return $this->Nama;
     }
 }

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 
 class GoogleController extends Controller
 {
@@ -33,28 +34,37 @@ class GoogleController extends Controller
             // Cek apakah email sudah terdaftar
             $existingUser = User::where('email', $googleUser->email)->first();
             if ($existingUser) {
-                // Update google_id untuk user yang sudah ada
-                $existingUser->update(['google_id' => $googleUser->id]);
+                $existingUser->update([
+                    'google_id' => $googleUser->id,
+                    'avatar' => $googleUser->avatar,
+                ]);
                 Auth::login($existingUser);
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
 
-            // Buat user baru (gunakan kolom standar Laravel: name, email, password)
+            // Buat user baru - sesuaikan dengan struktur database
             $namaUser = $googleUser->name ?? explode('@', $googleUser->email)[0];
+            $now = Carbon::now();
+            
             $newUser = User::create([
-                'name' => $namaUser,           // <-- perbaiki: 'name' bukan 'Nama'
-                'email' => $googleUser->email,
+                'Nama' => $namaUser,                    // kolom Nama
+                'email' => $googleUser->email,          // kolom email lowercase
                 'google_id' => $googleUser->id,
-                'password' => bcrypt('123456dummy'), // <-- perbaiki: 'password' bukan 'Password'
-                'role' => 'pelanggan',          // tambahkan role default jika diperlukan
+                'avatar' => $googleUser->avatar,
+                'Password' => bcrypt(uniqid()),         // kolom Password
+                'Role' => 'pelanggan',
+                'Status' => 1,
+                'IsDeleted' => 0,
+                'CreatedDate' => $now,
+                'LastUpdatedDate' => $now,
             ]);
 
             Auth::login($newUser);
             return redirect()->intended(RouteServiceProvider::HOME);
 
         } catch (Exception $e) {
-            // Untuk debugging, tampilkan error (hapus atau komentar setelah berhasil)
-            return redirect('/login')->with('error', 'Login Google gagal: ' . $e->getMessage());
+            // Tampilkan error untuk debugging
+            dd($e->getMessage());
         }
     }
 }

@@ -1,386 +1,538 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Admin — NONGKI')
-
-@section('page_header')
-@endsection
-
-@section('page_title', 'Dashboard Admin')
-@section('breadcrumb')
-    <a href="{{ route('dashboard') }}">Beranda</a> · Dashboard
-@endsection
-
-@section('page_actions')
-    <button class="btn-gold">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14m-7-7h14"/></svg>
-        Laporan Baru
-    </button>
-@endsection
+@section('title', 'Beranda - NONGKI Coffee')
 
 @push('styles')
 <style>
-    /* Stat Cards */
-    .stat-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.2rem;
-        margin-bottom: 2rem;
+    /* ========== ANIMATIONS ========== */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .stat-card {
-        background: var(--dark-2);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 1.4rem;
+    @keyframes fadeInLeft {
+        from { opacity: 0; transform: translateX(-40px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(40px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes zoomIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    @keyframes slowZoom {
+        from { transform: scale(1); }
+        to { transform: scale(1.08); }
+    }
+
+    .animate-up { animation: fadeInUp 0.8s ease forwards; }
+    .animate-left { animation: fadeInLeft 0.8s ease forwards; }
+    .animate-right { animation: fadeInRight 0.8s ease forwards; }
+    .animate-zoom { animation: zoomIn 0.6s ease forwards; }
+    .animate-float { animation: float 4s ease-in-out infinite; }
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .delay-3 { animation-delay: 0.3s; opacity: 0; }
+    .delay-4 { animation-delay: 0.4s; opacity: 0; }
+    .delay-5 { animation-delay: 0.5s; opacity: 0; }
+
+    /* Hero Section Premium */
+    .hero-premium {
         position: relative;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
         overflow: hidden;
-        transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    .hero-premium-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80') center/cover no-repeat;
+        z-index: 0;
+        animation: slowZoom 12s ease-out forwards;
     }
 
-    .stat-card::before {
-        content: '';
-        position: absolute; top: 0; left: 0; right: 0; height: 2px;
-        background: linear-gradient(90deg, var(--gold), transparent);
-        opacity: 0.6;
+    .hero-premium-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.85) 100%);
+        z-index: 1;
     }
 
-    .stat-icon {
-        width: 42px; height: 42px;
-        border-radius: 11px;
-        display: flex; align-items: center; justify-content: center;
+    .hero-premium-content {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .greeting-text {
+        font-size: 1rem;
+        color: var(--gold);
+        letter-spacing: 3px;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+    }
+
+    .hero-premium-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        font-weight: 400;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--cream) 0%, var(--gold-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-premium-title em {
+        font-style: italic;
+        -webkit-text-fill-color: var(--gold);
+        background: none;
+    }
+
+    .hero-premium-description {
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+        color: var(--cream-dim);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        animation: float 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator a {
+        color: var(--cream-dim);
+        font-size: 1.5rem;
+        transition: color 0.3s;
+    }
+
+    .scroll-indicator a:hover {
+        color: var(--gold);
+    }
+
+    /* Features Section Premium */
+    .features-premium {
+        padding: 6rem 2rem;
+        background: linear-gradient(180deg, var(--dark) 0%, var(--dark-2) 100%);
+        position: relative;
+    }
+
+    .section-badge {
+        display: inline-block;
+        padding: 4px 16px;
+        background: rgba(201,168,76,0.12);
+        border: 1px solid rgba(201,168,76,0.3);
+        border-radius: 40px;
+        font-size: 0.7rem;
+        color: var(--gold);
+        letter-spacing: 2px;
         margin-bottom: 1rem;
     }
 
-    .stat-icon svg { width: 20px; height: 20px; }
-
-    .stat-icon.gold { background: rgba(201,168,76,0.15); color: var(--gold); }
-    .stat-icon.green { background: rgba(82,183,136,0.12); color: #52b788; }
-    .stat-icon.blue { background: rgba(112,184,255,0.1); color: #70b8ff; }
-    .stat-icon.orange { background: rgba(224,159,62,0.12); color: #e09f3e; }
-
-    .stat-value {
+    .section-title-premium {
+        text-align: center;
         font-family: 'Cormorant Garamond', serif;
-        font-size: 2rem; font-weight: 600;
-        color: var(--cream); line-height: 1;
-        margin-bottom: 4px;
+        font-size: 2.8rem;
+        font-weight: 400;
+        margin-bottom: 3rem;
+        position: relative;
     }
 
-    .stat-label { font-size: 0.8rem; color: var(--text-muted-c); margin-bottom: 12px; }
-
-    .stat-change {
-        display: inline-flex; align-items: center; gap: 5px;
-        font-size: 0.78rem; font-weight: 500;
-        padding: 3px 9px; border-radius: 20px;
+    .section-title-premium span {
+        color: var(--gold);
     }
 
-    .stat-change.up { background: rgba(82,183,136,0.12); color: #52b788; }
-    .stat-change.down { background: rgba(224,82,82,0.12); color: #e05252; }
+    .section-title-premium::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gold), transparent);
+        margin: 1rem auto 0;
+    }
 
-    /* Content Grid */
-    .content-grid {
+    .features-grid-premium {
         display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 1.2rem;
-        margin-bottom: 1.2rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    /* Table */
-    .table-wrap { overflow-x: auto; }
-
-    .nongki-table {
-        width: 100%; border-collapse: collapse;
+    .feature-card-premium {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(26,21,9,0.6);
+        border: 1px solid rgba(201,168,76,0.1);
+        border-radius: 24px;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(8px);
+        position: relative;
+        overflow: hidden;
     }
 
-    .nongki-table th {
-        font-size: 0.72rem; font-weight: 500;
-        letter-spacing: 0.08em; text-transform: uppercase;
-        color: var(--text-muted-c);
-        padding: 10px 14px;
-        border-bottom: 1px solid var(--border);
-        text-align: left;
+    .feature-card-premium::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(201,168,76,0.05), transparent);
+        transition: left 0.6s ease;
     }
 
-    .nongki-table td {
-        padding: 13px 14px;
-        font-size: 0.875rem;
-        color: var(--cream-dim);
-        border-bottom: 1px solid rgba(201,168,76,0.08);
-        vertical-align: middle;
+    .feature-card-premium:hover::before {
+        left: 100%;
     }
 
-    .nongki-table tr:last-child td { border-bottom: none; }
+    .feature-card-premium:hover {
+        border-color: rgba(201,168,76,0.4);
+        transform: translateY(-8px);
+        background: rgba(26,21,9,0.8);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
 
-    .nongki-table tr:hover td { background: rgba(201,168,76,0.04); }
-
-    .order-id { font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--cream); }
-
-    .customer-cell { display: flex; align-items: center; gap: 9px; }
-
-    .mini-avatar {
-        width: 30px; height: 30px;
-        background: var(--dark-4);
-        border: 1px solid var(--border);
+    .feature-icon-premium {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--gold-dim), rgba(201,168,76,0.05));
         border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 0.72rem; font-weight: 600;
-        color: var(--gold); flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        transition: transform 0.3s ease;
     }
 
-    .customer-name { font-size: 0.875rem; color: var(--cream); }
-    .customer-items { font-size: 0.75rem; color: var(--text-muted-c); }
-
-    .price-val { font-weight: 500; color: var(--gold-light); }
-
-    .status-pill {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 4px 10px; border-radius: 20px;
-        font-size: 0.75rem; font-weight: 500;
+    .feature-card-premium:hover .feature-icon-premium {
+        transform: scale(1.1);
     }
 
-    .status-pill::before {
-        content: ''; width: 6px; height: 6px; border-radius: 50%;
-        background: currentColor; opacity: 0.7;
+    .feature-icon-premium i {
+        font-size: 28px;
+        color: var(--gold);
     }
 
-    .status-selesai { background: rgba(82,183,136,0.12); color: #52b788; }
-    .status-proses  { background: rgba(201,168,76,0.12); color: var(--gold); }
-    .status-pending { background: rgba(224,159,62,0.12); color: #e09f3e; }
-    .status-batal   { background: rgba(224,82,82,0.12); color: #e05252; }
-
-    /* Top menu */
-    .top-menu-list { display: flex; flex-direction: column; gap: 10px; }
-
-    .top-menu-item {
-        display: flex; align-items: center; gap: 12px;
-        padding: 10px 12px;
-        background: var(--dark-3);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        transition: border-color 0.2s;
+    .feature-title-premium {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
     }
 
-    .top-menu-item:hover { border-color: var(--gold); }
-
-    .menu-rank {
-        width: 26px; height: 26px;
-        background: var(--gold-dim);
-        border-radius: 7px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 0.75rem; font-weight: 600;
-        color: var(--gold); flex-shrink: 0;
-    }
-
-    .menu-rank.top1 { background: rgba(201,168,76,0.25); }
-
-    .menu-info { flex: 1; }
-    .menu-nm { font-size: 0.875rem; color: var(--cream); font-weight: 500; }
-    .menu-cnt { font-size: 0.75rem; color: var(--text-muted-c); }
-
-    .menu-bar-wrap { width: 60px; }
-    .menu-bar-bg { height: 4px; background: var(--dark-4); border-radius: 2px; overflow: hidden; }
-    .menu-bar-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s; }
-
-    /* Quick actions */
-    .quick-actions {
-        display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-    }
-
-    .quick-btn {
-        background: var(--dark-3);
-        border: 1px solid var(--border);
-        border-radius: 11px;
-        padding: 14px 12px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-        cursor: pointer; transition: all 0.2s;
-        text-decoration: none;
+    .feature-desc-premium {
+        font-size: 0.85rem;
         color: var(--cream-dim);
+        line-height: 1.6;
     }
 
-    .quick-btn:hover { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+    /* Menu Section Premium - HANYA 3 MENU */
+    .menu-premium {
+        padding: 6rem 2rem;
+        background: var(--dark);
+        position: relative;
+    }
 
-    .quick-btn svg { width: 20px; height: 20px; }
-    .quick-btn span { font-size: 0.78rem; font-weight: 500; text-align: center; }
+    .menu-grid-premium {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 3rem auto;
+    }
 
-    @media (max-width: 1200px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 900px)  { .content-grid { grid-template-columns: 1fr; } }
-    @media (max-width: 600px)  { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+    .menu-card-premium {
+        background: var(--dark-2);
+        border: 1px solid rgba(201,168,76,0.1);
+        border-radius: 24px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .menu-card-premium:hover {
+        transform: translateY(-10px);
+        border-color: rgba(201,168,76,0.4);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+
+    .menu-img-premium {
+        height: 220px;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.6s ease;
+        position: relative;
+    }
+
+    .menu-card-premium:hover .menu-img-premium {
+        transform: scale(1.05);
+    }
+
+    .menu-info-premium {
+        padding: 1.2rem;
+        text-align: center;
+    }
+
+    .menu-name-premium {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .menu-price-premium {
+        font-size: 1rem;
+        color: var(--gold);
+        font-weight: 600;
+    }
+
+    .menu-order-btn {
+        margin-top: 1rem;
+        padding: 8px 20px;
+        background: transparent;
+        border: 1px solid var(--gold);
+        border-radius: 40px;
+        color: var(--gold);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+    .menu-order-btn:hover {
+        background: var(--gold);
+        color: var(--dark);
+    }
+
+    .btn-view-all-premium {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .btn-view-all-premium a {
+        color: var(--gold);
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        border: 1px solid rgba(201,168,76,0.3);
+        border-radius: 40px;
+        background: rgba(201,168,76,0.05);
+        transition: all 0.3s;
+    }
+
+    .btn-view-all-premium a:hover {
+        gap: 14px;
+        background: rgba(201,168,76,0.1);
+        border-color: var(--gold);
+    }
+
+    /* Stats Section */
+    .stats-premium {
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, var(--dark-2), var(--dark-3));
+        text-align: center;
+    }
+
+    .stats-grid {
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        flex-wrap: wrap;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .stat-item-premium {
+        text-align: center;
+    }
+
+    .stat-number-premium {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--gold);
+    }
+
+    .stat-label-premium {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+        .features-premium, .menu-premium, .stats-premium {
+            padding: 3rem 1rem;
+        }
+        .menu-grid-premium {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        .stats-grid {
+            gap: 2rem;
+        }
+        .section-title-premium {
+            font-size: 2rem;
+        }
+        .hero-premium {
+            min-height: 70vh;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-
-<!-- Stat Cards -->
-<div class="stat-grid">
-    <div class="stat-card">
-        <div class="stat-icon gold">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    <!-- Hero Section Premium -->
+    <section class="hero-premium">
+        <div class="hero-premium-bg"></div>
+        <div class="hero-premium-overlay"></div>
+        <div class="hero-premium-content">
+            <div class="greeting-text animate-up delay-1">
+                <i class="fas fa-crown"></i> WELCOME BACK
+            </div>
+            <h1 class="hero-premium-title animate-up delay-2">
+                Kopi terbaik<br>
+                untuk <em>harimu</em>
+            </h1>
+            <p class="hero-premium-description animate-up delay-3">
+                Tempat terbaik untuk produktivitas atau sekadar menikmati aroma kopi pilihan di tengah kesibukanmu.
+            </p>
         </div>
-        <div class="stat-value">Rp 4,2jt</div>
-        <div class="stat-label">Pendapatan Hari Ini</div>
-        <span class="stat-change up">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            +12.5%
-        </span>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-icon green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+        <div class="scroll-indicator animate-float">
+            <a href="#features">
+                <i class="fas fa-chevron-down"></i>
+            </a>
         </div>
-        <div class="stat-value">87</div>
-        <div class="stat-label">Total Pesanan</div>
-        <span class="stat-change up">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            +8 dari kemarin
-        </span>
-    </div>
+    </section>
 
-    <div class="stat-card">
-        <div class="stat-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <!-- Features Section Premium -->
+    <section class="features-premium" id="features">
+        <div style="text-align: center;">
+            <span class="section-badge animate-up delay-1">WHY US</span>
+            <h2 class="section-title-premium animate-up delay-2">Kenapa <span>NONGKI</span>?</h2>
         </div>
-        <div class="stat-value">1.284</div>
-        <div class="stat-label">Total Pelanggan</div>
-        <span class="stat-change up">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            +23 bulan ini
-        </span>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-icon orange">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="stat-value">14</div>
-        <div class="stat-label">Pesanan Menunggu</div>
-        <span class="stat-change down">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-            Perlu diproses
-        </span>
-    </div>
-</div>
-
-<!-- Content Grid -->
-<div class="content-grid">
-
-    <!-- Recent Orders -->
-    <div class="card-nongki">
-        <div style="display:flex;align-items:center;justify-content:space-between;" class="card-nongki-header">
-            <span>Pesanan Terbaru</span>
-            <a href="{{ route('menu.index') }}" style="font-size:0.8rem;color:var(--gold);text-decoration:none;font-family:'DM Sans',sans-serif;">Lihat semua →</a>
-        </div>
-        <div class="table-wrap">
-            <table class="nongki-table">
-                <thead>
-                    <tr>
-                        <th>ID Pesanan</th>
-                        <th>Pelanggan</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                    $dummyOrders = [
-                        ['id'=>'#NGK-0241','name'=>'Rizki A.','items'=>'Latte, Croissant','total'=>'Rp 55.000','status'=>'selesai'],
-                        ['id'=>'#NGK-0240','name'=>'Sari W.','items'=>'Americano × 2','total'=>'Rp 48.000','status'=>'proses'],
-                        ['id'=>'#NGK-0239','name'=>'Budi S.','items'=>'Matcha, Sandwich','total'=>'Rp 72.000','status'=>'pending'],
-                        ['id'=>'#NGK-0238','name'=>'Dewi P.','items'=>'Cappuccino','total'=>'Rp 32.000','status'=>'selesai'],
-                        ['id'=>'#NGK-0237','name'=>'Andi K.','items'=>'Cold Brew × 3','total'=>'Rp 90.000','status'=>'batal'],
-                    ];
-                    @endphp
-
-                    @foreach($dummyOrders as $order)
-                    <tr>
-                        <td><span class="order-id">{{ $order['id'] }}</span></td>
-                        <td>
-                            <div class="customer-cell">
-                                <div class="mini-avatar">{{ strtoupper(substr($order['name'], 0, 2)) }}</div>
-                                <div>
-                                    <div class="customer-name">{{ $order['name'] }}</div>
-                                    <div class="customer-items">{{ $order['items'] }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="price-val">{{ $order['total'] }}</span></td>
-                        <td>
-                            <span class="status-pill status-{{ $order['status'] }}">
-                                {{ ucfirst($order['status']) }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="#" style="font-size:0.78rem;color:var(--gold);text-decoration:none;">Detail</a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Right Column -->
-    <div style="display:flex;flex-direction:column;gap:1.2rem;">
-
-        <!-- Top Menu -->
-        <div class="card-nongki">
-            <div class="card-nongki-header">Menu Terlaris</div>
-            <div class="top-menu-list">
-                @php
-                $topMenus = [
-                    ['rank'=>1,'name'=>'Caramel Latte','count'=>'342 terjual','pct'=>100],
-                    ['rank'=>2,'name'=>'Cold Brew Classic','count'=>'287 terjual','pct'=>84],
-                    ['rank'=>3,'name'=>'Matcha Oat Latte','count'=>'241 terjual','pct'=>70],
-                    ['rank'=>4,'name'=>'Americano','count'=>'198 terjual','pct'=>58],
-                    ['rank'=>5,'name'=>'Vanilla Cappuccino','count'=>'156 terjual','pct'=>46],
-                ];
-                @endphp
-                @foreach($topMenus as $menu)
-                <div class="top-menu-item">
-                    <div class="menu-rank {{ $menu['rank'] === 1 ? 'top1' : '' }}">{{ $menu['rank'] }}</div>
-                    <div class="menu-info">
-                        <div class="menu-nm">{{ $menu['name'] }}</div>
-                        <div class="menu-cnt">{{ $menu['count'] }}</div>
-                    </div>
-                    <div class="menu-bar-wrap">
-                        <div class="menu-bar-bg">
-                            <div class="menu-bar-fill" style="width:{{ $menu['pct'] }}%"></div>
-                        </div>
-                    </div>
+        <div class="features-grid-premium">
+            <div class="feature-card-premium animate-up delay-1">
+                <div class="feature-icon-premium">
+                    <i class="fas fa-utensils"></i>
                 </div>
-                @endforeach
+                <h3 class="feature-title-premium">50+ Menu Pilihan</h3>
+                <p class="feature-desc-premium">Dari espresso klasik hingga kreasi spesial, semua tersedia untuk menemani harimu.</p>
+            </div>
+            <div class="feature-card-premium animate-up delay-2">
+                <div class="feature-icon-premium">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title-premium">Pesan Lebih Cepat</h3>
+                <p class="feature-desc-premium">Pesan online, ambil tanpa antri. Lebih praktis untuk harimu yang padat.</p>
+            </div>
+            <div class="feature-card-premium animate-up delay-3">
+                <div class="feature-icon-premium">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="feature-title-premium">Simpan Favorit</h3>
+                <p class="feature-desc-premium">Simpan menu favoritmu dan lihat riwayat pesanan kapan saja.</p>
             </div>
         </div>
+    </section>
 
-        <!-- Quick Actions -->
-        <div class="card-nongki">
-            <div class="card-nongki-header">Aksi Cepat</div>
-            <div class="quick-actions">
-                <a href="{{ route('menu.index') }}" class="quick-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                    <span>Tambah Menu</span>
-                </a>
-                <a href="{{ route('menu.index') }}" class="quick-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
-                    <span>Kelola Pesanan</span>
-                </a>
-                <a href="{{ route('dashboard') }}" class="quick-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    <span>Lihat Laporan</span>
-                </a>
-                <a href="{{ route('profile.edit') }}" class="quick-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
-                    <span>Pengaturan</span>
-                </a>
+    <!-- Menu Populer Section Premium - HANYA 3 MENU TERATAS -->
+    <section class="menu-premium">
+        <div style="text-align: center;">
+            <span class="section-badge animate-up delay-1">BEST SELLER</span>
+            <h2 class="section-title-premium animate-up delay-2">Menu <span>Populer</span></h2>
+            <p style="color: var(--text-muted); margin-top: -1rem;" class="animate-up delay-3">Pilihan favorit pelanggan kami</p>
+        </div>
+        <div class="menu-grid-premium">
+            <!-- Menu 1: Americano -->
+            <div class="menu-card-premium animate-zoom delay-1">
+                <div class="menu-img-premium" style="background-image: url('{{ asset('images/products/americano.jpeg') }}');"></div>
+                <div class="menu-info-premium">
+                    <div class="menu-name-premium">Americano</div>
+                    <div class="menu-price-premium">Rp 28.000</div>
+                    <button class="menu-order-btn" onclick="window.location.href='{{ route('menu.index') }}'">
+                        <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                    </button>
+                </div>
+            </div>
+            <!-- Menu 2: Coffee Milk Aren Sugar -->
+            <div class="menu-card-premium animate-zoom delay-2">
+                <div class="menu-img-premium" style="background-image: url('{{ asset('images/products/coffe_milk_aren_sugar.jpeg') }}');"></div>
+                <div class="menu-info-premium">
+                    <div class="menu-name-premium">Coffee Milk Aren Sugar</div>
+                    <div class="menu-price-premium">Rp 35.000</div>
+                    <button class="menu-order-btn" onclick="window.location.href='{{ route('menu.index') }}'">
+                        <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                    </button>
+                </div>
+            </div>
+            <!-- Menu 3: Hazelnut Coffee -->
+            <div class="menu-card-premium animate-zoom delay-3">
+                <div class="menu-img-premium" style="background-image: url('{{ asset('images/products/halzenutt_coffe.jpeg') }}');"></div>
+                <div class="menu-info-premium">
+                    <div class="menu-name-premium">Hazelnut Coffee</div>
+                    <div class="menu-price-premium">Rp 40.000</div>
+                    <button class="menu-order-btn" onclick="window.location.href='{{ route('menu.index') }}'">
+                        <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                    </button>
+                </div>
             </div>
         </div>
+        <div class="btn-view-all-premium animate-up delay-4">
+            <a href="{{ route('menu.index') }}">
+                Lihat Semua Menu
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
 
-    </div>
-</div>
-
+    <!-- Stats Section -->
+    <section class="stats-premium">
+        <div class="stats-grid">
+            <div class="stat-item-premium animate-up delay-1">
+                <div class="stat-number-premium">50+</div>
+                <div class="stat-label-premium">MENU VARIAN</div>
+            </div>
+            <div class="stat-item-premium animate-up delay-2">
+                <div class="stat-number-premium">4.9</div>
+                <div class="stat-label-premium">CUSTOMER RATING</div>
+            </div>
+            <div class="stat-item-premium animate-up delay-3">
+                <div class="stat-number-premium">10K+</div>
+                <div class="stat-label-premium">HAPPY CUSTOMERS</div>
+            </div>
+        </div>
+    </section>
 @endsection

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'NONGKI Coffee')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -121,14 +120,25 @@
             border: 1px solid var(--dark);
         }
         .header-avatar {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; font-weight: 600;
-            color: var(--dark); cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
             border: 2px solid var(--border);
             text-decoration: none;
+            overflow: hidden;
+        }
+        .header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .header-avatar:hover { border-color: var(--gold); }
         .sidebar-toggle {
@@ -204,11 +214,23 @@
             margin-bottom: 10px;
         }
         .sidebar-avatar {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; font-weight: 600; color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--dark);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .sidebar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .sidebar-user-name { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
         .sidebar-user-role { font-size: 0.75rem; color: var(--text-muted-c); }
@@ -307,11 +329,21 @@
             @auth
                 <div class="dropdown">
                     <a href="#" class="header-avatar" data-bs-toggle="dropdown">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                        @if(auth()->user()->avatar)
+                            <img src="{{ auth()->user()->avatar }}" alt="Avatar">
+                        @else
+                            {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                        @endif
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;">
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}" style="color:var(--cream);">Profil Saya</a></li>
+                        <li>
+                            <div style="padding:8px 12px; border-bottom:1px solid var(--border);">
+                                <div style="font-weight:600;">{{ auth()->user()->name }}</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">{{ auth()->user()->email }}</div>
+                            </div>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profil Saya</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -330,7 +362,7 @@
     <aside class="app-sidebar" id="appSidebar">
         <div class="sidebar-section">
             <div class="sidebar-section-label">Navigasi</div>
-            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 Beranda
             </a>
@@ -374,7 +406,13 @@
         @auth
         <div class="sidebar-user">
             <div class="sidebar-user-info">
-                <div class="sidebar-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</div>
+                <div class="sidebar-avatar">
+                    @if(auth()->user()->avatar)
+                        <img src="{{ auth()->user()->avatar }}" alt="Avatar">
+                    @else
+                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                    @endif
+                </div>
                 <div>
                     <div class="sidebar-user-name">{{ auth()->user()->name }}</div>
                     <div class="sidebar-user-role">{{ ucfirst(auth()->user()->role ?? 'Pelanggan') }}</div>
@@ -438,11 +476,9 @@
         function addToCart(button, itemName = '', price = '') {
             let current = getCartCount();
             setCartCount(current + 1);
-            // Optional: store item details
             let items = JSON.parse(localStorage.getItem('cartItems') || '[]');
             items.push({ name: itemName, price: price, addedAt: new Date().toISOString() });
             localStorage.setItem('cartItems', JSON.stringify(items));
-            // Visual feedback
             if (button) {
                 let original = button.innerHTML;
                 button.innerHTML = '✓';
@@ -454,10 +490,8 @@
             }
         }
 
-        // init
         document.addEventListener('DOMContentLoaded', function() {
             updateBadges(getCartCount());
-            // Delegate click for .btn-add
             document.body.addEventListener('click', function(e) {
                 let btn = e.target.closest('.btn-add, .add-to-cart-btn');
                 if (btn) {
@@ -471,7 +505,6 @@
 
         window.addToCartHandler = addToCart;
 
-        // Sidebar toggle
         const toggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('appSidebar');
         const overlay = document.getElementById('sidebarOverlay');
