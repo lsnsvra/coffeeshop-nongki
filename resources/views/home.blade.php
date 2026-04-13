@@ -79,10 +79,13 @@
             }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes shimmerText {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         @keyframes float {
@@ -101,6 +104,30 @@
         .delay-4 { animation-delay: 0.4s; opacity: 0; }
         .delay-5 { animation-delay: 0.5s; opacity: 0; }
 
+.shimmer-word {
+    display: inline-block;
+    font-style: normal;
+    background: linear-gradient(90deg, 
+        #C9A84C 0%, 
+        #E8C96A 40%,
+        #FFFFFF 50%,
+        #E8C96A 60%,
+        #C9A84C 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmerText 2s ease-in-out infinite;
+}
+
+@keyframes shimmerText {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
         /* ========== HERO SECTION ========== */
         .hero {
             position: relative;
@@ -197,17 +224,6 @@
             color: var(--gold);
             position: relative;
             display: inline-block;
-        }
-
-        .hero-title em::before {
-            content: '';
-            position: absolute;
-            bottom: 8px;
-            left: 0;
-            right: 0;
-            height: 8px;
-            background: rgba(201,168,76,0.2);
-            z-index: -1;
         }
 
         .hero-description {
@@ -353,9 +369,8 @@
             transform: scale(1.1);
         }
 
-        .feature-icon svg {
-            width: 32px;
-            height: 32px;
+        .feature-icon i {
+            font-size: 28px;
             color: var(--gold);
         }
 
@@ -402,7 +417,7 @@
         }
 
         .menu-img {
-            height: 200px;
+            height: 250px;
             background-size: cover;
             background-position: center;
             transition: transform 0.6s ease;
@@ -584,15 +599,15 @@
             <div class="since-badge animate-left delay-1">SINCE 2026</div>
             <h1 class="hero-title animate-up delay-2">
                 Kopi terbaik<br>
-                untuk <em>harimu</em>
+                untuk <em class="shimmer-word">harimu</em>
             </h1>
             <p class="hero-description animate-up delay-3">
                 Tempat terbaik untuk produktivitas atau sekadar menikmati aroma kopi pilihan di tengah kesibukanmu.
             </p>
             <div class="hero-buttons animate-up delay-4">
-                <a href="{{ route('menu.index') }}" class="btn-primary">
-                    <i class="fas fa-coffee"></i>
-                    Lihat Menu
+                <a href="{{ route('register') }}" class="btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Daftar
                 </a>
                 <a href="{{ route('login') }}" class="btn-secondary">
                     <i class="fas fa-user"></i>
@@ -631,45 +646,38 @@
     </section>
 
     <!-- Menu Preview Section -->
-    <section class="menu-preview">
-        <h2 class="section-title">Menu <span>Populer</span></h2>
-        <div class="menu-grid">
-            <div class="menu-card animate-zoom delay-1">
-                <div class="menu-img" style="background-image: url('https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80');"></div>
-                <div class="menu-info">
-                    <div class="menu-name">Caramel Latte</div>
-                    <div class="menu-price">Rp 42.000</div>
-                </div>
-            </div>
-            <div class="menu-card animate-zoom delay-2">
-                <div class="menu-img" style="background-image: url('https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80');"></div>
-                <div class="menu-info">
-                    <div class="menu-name">Cold Brew Classic</div>
-                    <div class="menu-price">Rp 38.000</div>
-                </div>
-            </div>
-            <div class="menu-card animate-zoom delay-3">
-                <div class="menu-img" style="background-image: url('https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&q=80');"></div>
-                <div class="menu-info">
-                    <div class="menu-name">Matcha Oat Latte</div>
-                    <div class="menu-price">Rp 45.000</div>
-                </div>
-            </div>
-            <div class="menu-card animate-zoom delay-4">
-                <div class="menu-img" style="background-image: url('https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=80');"></div>
-                <div class="menu-info">
-                    <div class="menu-name">Americano</div>
-                    <div class="menu-price">Rp 28.000</div>
-                </div>
+<section class="menu-preview">
+    <h2 class="section-title">Menu <span>Populer</span></h2>
+    <div class="menu-grid">
+        <div class="menu-card animate-zoom delay-1">
+            <div class="menu-img" style="background-image: url('{{ asset('images/products/halzenutt_coffe.jpeg') }}');"></div>
+            <div class="menu-info">
+                <div class="menu-name">Hazelnut Coffee</div>
+                <div class="menu-price">Rp 40.000</div>
             </div>
         </div>
-        <div class="btn-view-all animate-up delay-5">
-            <a href="{{ route('menu.index') }}">
-                Lihat Semua Menu
-                <i class="fas fa-arrow-right"></i>
-            </a>
+        <div class="menu-card animate-zoom delay-2">
+            <div class="menu-img" style="background-image: url('{{ asset('images/products/matcha_latte.jpeg') }}');"></div>
+            <div class="menu-info">
+                <div class="menu-name">Matcha Latte</div>
+                <div class="menu-price">Rp 45.000</div>
+            </div>
         </div>
-    </section>
+        <div class="menu-card animate-zoom delay-3">
+            <div class="menu-img" style="background-image: url('{{ asset('images/products/french_fries.jpeg') }}');"></div>
+            <div class="menu-info">
+                <div class="menu-name">French Fries</div>
+                <div class="menu-price">Rp 22.000</div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-view-all animate-up delay-4">
+        <a href="{{ route('menu.index') }}">
+            Lihat Semua Menu
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
 
     <!-- CTA Section -->
     <section class="cta-section">
@@ -690,7 +698,7 @@
             <a href="#">Bantuan</a>
             <a href="#">Tentang Kami</a>
         </div>
-        <p>© 2026 NONGKI Coffee. Hak cipta dilindungi.</p>
+        <p>©️ 2026 NONGKI Coffee. Hak cipta dilindungi.</p>
     </footer>
 </body>
 </html>

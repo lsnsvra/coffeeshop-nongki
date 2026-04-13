@@ -6,7 +6,6 @@
     <title>NONGKI Coffee - Kopi Terbaik untuk Harimu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -18,9 +17,7 @@
             --gold: #C9A84C;
             --gold-light: #E8C96A;
             --gold-dim: rgba(201,168,76,0.15);
-            --dark: #0A0A0A;
-            --dark-2: #111111;
-            --dark-3: #1A1A1A;
+            --dark: #0F0C07;
             --cream: #F5EDD8;
             --cream-dim: rgba(245,237,216,0.7);
             --text-muted: rgba(245,237,216,0.5);
@@ -34,74 +31,7 @@
             overflow-x: hidden;
         }
 
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .animate-up { animation: fadeInUp 0.8s ease forwards; }
-        .animate-left { animation: fadeInLeft 0.8s ease forwards; }
-        .animate-right { animation: fadeInRight 0.8s ease forwards; }
-        .animate-zoom { animation: zoomIn 0.6s ease forwards; }
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .delay-4 { animation-delay: 0.4s; opacity: 0; }
-        .delay-5 { animation-delay: 0.5s; opacity: 0; }
-
-        /* ========== HERO SECTION ========== */
+        /* Hero Section */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -110,7 +40,6 @@
             justify-content: center;
             text-align: center;
             padding: 2rem;
-            overflow: hidden;
         }
 
         .hero-bg {
@@ -120,14 +49,8 @@
             right: 0;
             bottom: 0;
             background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80') center/cover no-repeat;
-            filter: brightness(0.35) saturate(0.8);
+            filter: brightness(0.3) saturate(0.7);
             z-index: 0;
-            transform: scale(1.05);
-            transition: transform 8s ease;
-        }
-
-        .hero:hover .hero-bg {
-            transform: scale(1.1);
         }
 
         .hero-overlay {
@@ -136,7 +59,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at center, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.85) 100%);
+            background: radial-gradient(circle at center, rgba(15,12,7,0.4) 0%, rgba(15,12,7,0.85) 100%);
             z-index: 1;
         }
 
@@ -145,6 +68,43 @@
             z-index: 2;
             max-width: 800px;
             margin: 0 auto;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Efek Shimmer untuk "harimu" */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, 
+                var(--gold) 0%, 
+                var(--gold-light) 25%, 
+                var(--gold) 50%, 
+                var(--gold-light) 75%, 
+                var(--gold) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer 3s linear infinite;
+            font-style: italic;
         }
 
         .logo {
@@ -153,83 +113,43 @@
 
         .logo-text {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             color: var(--gold-light);
-            position: relative;
-            display: inline-block;
-        }
-
-        .logo-text::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 25%;
-            width: 50%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
         .since-badge {
             display: inline-block;
-            padding: 6px 20px;
-            background: rgba(201,168,76,0.12);
+            padding: 4px 12px;
+            background: rgba(201,168,76,0.15);
             border: 1px solid rgba(201,168,76,0.3);
             border-radius: 40px;
             font-size: 0.7rem;
             color: var(--gold-light);
             margin-bottom: 1.5rem;
             letter-spacing: 2px;
-            backdrop-filter: blur(4px);
         }
 
-     .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.8rem, 7vw, 5rem);
-    font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-}
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
 
-.hero-title em {
-    font-style: italic;
-    position: relative;
-    display: inline-block;
-    background: linear-gradient(
-        120deg,
-        var(--gold) 0%,
-        var(--gold-light) 30%,
-        #fff 50%,
-        var(--gold-light) 70%,
-        var(--gold) 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: shimmer 3s linear 3;
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200% center;
-    }
-    100% {
-        background-position: 200% center;
-    }
-}
         .hero-description {
-            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
             color: var(--cream-dim);
             max-width: 550px;
             margin: 0 auto 2rem;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         .hero-buttons {
             display: flex;
-            gap: 1.2rem;
+            gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -244,86 +164,53 @@
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
+            gap: 8px;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(201,168,76,0.4);
-            color: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201,168,76,0.4);
         }
 
         .btn-secondary {
-            border: 1px solid rgba(201,168,76,0.4);
+            border: 1px solid var(--border, rgba(201,168,76,0.3));
             color: var(--cream);
             padding: 12px 32px;
             border-radius: 40px;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
-            background: rgba(201,168,76,0.05);
-            backdrop-filter: blur(4px);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            background: transparent;
         }
 
         .btn-secondary:hover {
             border-color: var(--gold);
             color: var(--gold);
-            background: rgba(201,168,76,0.15);
-            transform: translateY(-3px);
+            background: rgba(201,168,76,0.1);
         }
 
-        /* ========== FEATURES SECTION ========== */
+        /* Features Section */
         .features {
-            padding: 6rem 2rem;
-            background: linear-gradient(180deg, var(--dark) 0%, var(--dark-2) 100%);
+            padding: 5rem 2rem;
+            background: var(--dark);
             position: relative;
         }
 
         .section-title {
             text-align: center;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 400;
             margin-bottom: 3rem;
-            position: relative;
         }
 
         .section-title span {
             color: var(--gold);
         }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            background: var(--gold);
-            margin: 1rem auto 0;
-        }
-
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -332,44 +219,36 @@
         .feature-card {
             text-align: center;
             padding: 2rem;
-            background: rgba(26,21,9,0.6);
+            background: rgba(26,21,9,0.5);
             border: 1px solid rgba(201,168,76,0.1);
-            border-radius: 24px;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            transition: all 0.3s ease;
         }
 
         .feature-card:hover {
-            border-color: rgba(201,168,76,0.4);
-            transform: translateY(-8px);
-            background: rgba(26,21,9,0.8);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: rgba(201,168,76,0.3);
+            transform: translateY(-5px);
         }
 
         .feature-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--gold-dim), rgba(201,168,76,0.05));
+            width: 60px;
+            height: 60px;
+            background: rgba(201,168,76,0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1);
+            margin: 0 auto 1rem;
         }
 
         .feature-icon svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             color: var(--gold);
         }
 
         .feature-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
@@ -377,149 +256,10 @@
         .feature-desc {
             font-size: 0.85rem;
             color: var(--cream-dim);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        /* ========== MENU PREVIEW SECTION ========== */
-        .menu-preview {
-            padding: 6rem 2rem;
-            background: var(--dark);
-            position: relative;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.8rem;
-            max-width: 1200px;
-            margin: 2rem auto;
-        }
-
-        .menu-card {
-            background: var(--dark-2);
-            border: 1px solid rgba(201,168,76,0.1);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .menu-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(201,168,76,0.4);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .menu-img {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            transition: transform 0.6s ease;
-        }
-
-        .menu-card:hover .menu-img {
-            transform: scale(1.05);
-        }
-
-        .menu-info {
-            padding: 1.2rem;
-        }
-
-        .menu-name {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .menu-price {
-            font-size: 0.9rem;
-            color: var(--gold);
-            font-weight: 600;
-        }
-
-        .btn-view-all {
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .btn-view-all a {
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: gap 0.3s ease;
-            padding: 10px 24px;
-            border: 1px solid rgba(201,168,76,0.3);
-            border-radius: 40px;
-            background: rgba(201,168,76,0.05);
-        }
-
-        .btn-view-all a:hover {
-            gap: 14px;
-            background: rgba(201,168,76,0.1);
-            border-color: var(--gold);
-        }
-
-        /* ========== CTA SECTION ========== */
-        .cta-section {
-            padding: 5rem 2rem;
-            background: linear-gradient(135deg, var(--dark-2), var(--dark-3));
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -20%;
-            width: 140%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
-            animation: float 15s ease infinite;
-        }
-
-        .cta-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta-description {
-            color: var(--cream-dim);
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-cta {
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            color: var(--dark);
-            padding: 14px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(201,168,76,0.4);
-            color: var(--dark);
-        }
-
-        /* ========== FOOTER ========== */
+        /* Footer */
         .footer {
             padding: 2rem;
             text-align: center;
@@ -531,9 +271,8 @@
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 0.5rem;
-            flex-wrap: wrap;
         }
 
         .footer-links a {
@@ -546,9 +285,8 @@
             color: var(--gold);
         }
 
-        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            .features, .menu-preview, .cta-section {
+            .features {
                 padding: 3rem 1rem;
             }
             .hero-buttons {
@@ -556,27 +294,8 @@
                 align-items: center;
             }
             .btn-primary, .btn-secondary {
-                width: 220px;
+                width: 200px;
                 justify-content: center;
-            }
-            .section-title {
-                font-size: 2rem;
-            }
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-links {
-                gap: 1rem;
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
             }
         }
     </style>
@@ -587,27 +306,36 @@
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="logo animate-zoom">
+            <div class="logo">
                 <div class="logo-text">NONGKI</div>
             </div>
-            <div class="since-badge animate-left delay-1">SINCE 2026</div>
-            <h1 class="hero-title animate-up delay-2">
+            <div class="since-badge">SINCE 2024</div>
+            <h1 class="hero-title">
                 Kopi terbaik<br>
-                untuk <em>harimu</em>
+                untuk <em class="shimmer-text">harimu</em>
             </h1>
-            <p class="hero-description animate-up delay-3">
+            <p class="hero-description">
                 Tempat terbaik untuk produktivitas atau sekadar menikmati aroma kopi pilihan di tengah kesibukanmu.
             </p>
             <div class="hero-buttons">
-    <a href="{{ route('register') }}" class="btn-primary">
-        <i class="fas fa-user-plus"></i>
-        Daftar
-    </a>
-    <a href="{{ route('login') }}" class="btn-secondary">
-        <i class="fas fa-sign-in-alt"></i>
-        Masuk Akun
-    </a>
-</div>
+                <a href="{{ route('register') }}" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <line x1="19" y1="8" x2="19" y2="14"/>
+                        <line x1="22" y1="11" x2="16" y2="11"/>
+                    </svg>
+                    Daftar
+                </a>
+                <a href="{{ route('login') }}" class="btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
+                    Masuk Akun
+                </a>
+            </div>
         </div>
     </section>
 
@@ -615,70 +343,35 @@
     <section class="features">
         <h2 class="section-title">Kenapa <span>NONGKI</span>?</h2>
         <div class="features-grid">
-            <div class="feature-card animate-up delay-1">
+            <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-utensils"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                    </svg>
                 </div>
                 <h3 class="feature-title">50+ Menu Pilihan</h3>
                 <p class="feature-desc">Dari espresso klasik hingga kreasi spesial, semua tersedia untuk menemani harimu.</p>
             </div>
-            <div class="feature-card animate-up delay-2">
+            <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-bolt"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
                 </div>
                 <h3 class="feature-title">Pesan Lebih Cepat</h3>
                 <p class="feature-desc">Pesan online, ambil tanpa antri. Lebih praktis untuk harimu yang padat.</p>
             </div>
-            <div class="feature-card animate-up delay-3">
+            <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-heart"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
                 </div>
                 <h3 class="feature-title">Simpan Favorit</h3>
                 <p class="feature-desc">Simpan menu favoritmu dan lihat riwayat pesanan kapan saja.</p>
             </div>
         </div>
-    </section>
-
-   <!-- Menu Preview Section -->
-<section class="menu-preview">
-    <h2 class="section-title">Menu <span>Populer</span></h2>
-    <div class="menu-grid">
-        @php
-        // Menu populer (diambil 4 dari database)
-        $popularMenus = [
-            ['name' => 'Coffee Milk Aren Sugar', 'price' => 'Rp 35.000', 'img' => 'images/products/coffe_milk_aren_sugar.jpeg'],
-            ['name' => 'Matcha Latte', 'price' => 'Rp 45.000', 'img' => 'images/products/matcha_latte.jpeg'],
-            ['name' => 'Chicken Katsu Curry', 'price' => 'Rp 45.000', 'img' => 'images/products/chicken_katsu_curry.jpeg'],
-        ];
-        @endphp
-
-        @foreach($popularMenus as $menu)
-        <div class="menu-card animate-zoom delay-{{ $loop->iteration }}">
-            <div class="menu-img" style="background-image: url('{{ asset($menu['img']) }}');"></div>
-            <div class="menu-info">
-                <div class="menu-name">{{ $menu['name'] }}</div>
-                <div class="menu-price">{{ $menu['price'] }}</div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-    <div class="btn-view-all animate-up delay-5">
-        <a href="{{ route('menu.index') }}">
-            Lihat Semua Menu
-            <i class="fas fa-arrow-right"></i>
-        </a>
-    </div>
-</section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <h2 class="cta-title">Siap menikmati <span style="color: var(--gold);">kopi terbaik</span>?</h2>
-        <p class="cta-description">Daftar sekarang dan dapatkan pengalaman memesan kopi yang lebih mudah.</p>
-        <a href="{{ route('register') }}" class="btn-cta">
-            <i class="fas fa-user-plus"></i>
-            Daftar Sekarang
-            <i class="fas fa-arrow-right"></i>
-        </a>
     </section>
 
     <!-- Footer -->
@@ -687,9 +380,8 @@
             <a href="#">Privasi</a>
             <a href="#">Syarat</a>
             <a href="#">Bantuan</a>
-            <a href="#">Tentang Kami</a>
         </div>
-        <p>© 2026 NONGKI Coffee. Hak cipta dilindungi.</p>
+        <p>©️ 2026 NONGKI Coffee. Hak cipta dilindungi.</p>
     </footer>
 </body>
 </html>

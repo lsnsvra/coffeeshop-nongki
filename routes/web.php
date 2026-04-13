@@ -7,35 +7,20 @@ use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-Route::get('/menu', [ProductController::class, 'index'])->name('menu.index');
-
 // ============================================================
-// ROUTE LANDING PAGE (UNTUK GUEST)
+// ROUTE LANDING PAGE
 // ============================================================
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
     }
-    return view('welcome');
-})->name('welcome');
+    return view('home');
+})->name('home');
 
 // ============================================================
-// ROUTE BERANDA UNTUK USER YANG SUDAH LOGIN
+// ROUTE MENU
 // ============================================================
-Route::get('/home', function () {
-    return view('home');
-})->middleware(['auth'])->name('home');
+Route::get('/menu', [ProductController::class, 'index'])->name('menu.index');
 
 // ============================================================
 // ROUTE PRODUCT
@@ -43,23 +28,23 @@ Route::get('/home', function () {
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // ============================================================
-// ROUTE UNTUK LOGIN GOOGLE
+// ROUTE LOGIN GOOGLE
 // ============================================================
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // ============================================================
-// ROUTE DASHBOARD (ADMIN)
+// ROUTE DASHBOARD (HANYA AUTH, TANPA VERIFIED)
 // ============================================================
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('dashboard');
+    ->middleware(['auth'])->name('dashboard');
 
 Route::get('/manager/dashboard', function () {
     return redirect()->route('dashboard');
-})->middleware(['auth', 'verified'])->name('manager.dashboard');
+})->middleware(['auth'])->name('manager.dashboard');
 
 // ============================================================
-// ROUTE PROFILE (AUTH)
+// ROUTE PROFILE
 // ============================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
