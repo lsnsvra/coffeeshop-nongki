@@ -9,11 +9,11 @@
         position: relative;
         border-radius: 18px;
         overflow: hidden;
-        min-height: 250px;
-        margin-bottom: 2rem;
+        min-height: 200px;
+        margin-bottom: 1.5rem;
         display: flex;
         align-items: flex-end;
-        padding: 2rem;
+        padding: 1.5rem;
     }
 
     .menu-hero::before {
@@ -38,10 +38,10 @@
 
     .hero-title {
         font-family: 'Cormorant Garamond', serif;
-        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
         font-weight: 400;
         color: var(--cream);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
     .hero-title em {
@@ -50,7 +50,7 @@
     }
 
     .hero-sub {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         color: var(--cream-dim);
     }
 
@@ -58,17 +58,17 @@
     .filter-bar {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 2rem;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
         flex-wrap: wrap;
     }
 
     .filter-pill {
-        padding: 0.5rem 1.25rem;
+        padding: 0.4rem 1rem;
         background: var(--dark-3);
         border: 1px solid var(--border);
         border-radius: 40px;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-weight: 500;
         color: var(--cream-dim);
         cursor: pointer;
@@ -92,45 +92,42 @@
     }
 
     .sort-select {
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.8rem;
         background: var(--dark-3);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 8px;
         color: var(--cream-dim);
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         outline: none;
         cursor: pointer;
     }
 
-    .sort-select:focus {
-        border-color: var(--gold);
-    }
-
-    /* Menu Grid */
+    /* Menu Grid - Ukuran lebih kecil */
     .menu-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1rem;
     }
 
     .menu-card {
         background: var(--dark-2);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 12px;
         overflow: hidden;
         transition: all 0.3s ease;
     }
 
     .menu-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-3px);
         border-color: var(--gold);
-        box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
 
     .menu-img-wrap {
         position: relative;
-        height: 200px;
+        height: 160px;
         overflow: hidden;
+        background: var(--dark-3);
     }
 
     .menu-img {
@@ -148,17 +145,18 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(15,12,7,0.7) 0%, transparent 60%);
+        background: linear-gradient(to top, rgba(15,12,7,0.6) 0%, transparent 50%);
+        pointer-events: none;
     }
 
     .menu-badge {
         position: absolute;
-        top: 12px;
-        left: 12px;
+        top: 8px;
+        left: 8px;
         z-index: 2;
-        padding: 4px 12px;
+        padding: 2px 8px;
         border-radius: 20px;
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         font-weight: 600;
     }
 
@@ -179,11 +177,11 @@
 
     .menu-fav {
         position: absolute;
-        top: 12px;
-        right: 12px;
+        top: 8px;
+        right: 8px;
         z-index: 2;
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         background: rgba(15,12,7,0.6);
         backdrop-filter: blur(4px);
         border-radius: 50%;
@@ -206,37 +204,49 @@
         border-color: #e05252;
     }
 
+    .menu-fav svg {
+        width: 14px;
+        height: 14px;
+    }
+
     .menu-price-overlay {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-    z-index: 2;
-    font-family: inherit; /* FIX: ikut font template */
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--gold);
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        z-index: 2;
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--gold);
+        background: rgba(0,0,0,0.5);
+        padding: 2px 8px;
+        border-radius: 20px;
     }
 
     .menu-body {
-        padding: 1rem;
+        padding: 0.75rem;
     }
 
     .menu-name {
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: var(--cream);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .menu-desc {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         color: var(--cream-dim);
-        line-height: 1.5;
-        margin-bottom: 1rem;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        min-height: 32px;
     }
 
     .menu-footer {
@@ -248,14 +258,14 @@
     .menu-rating {
         display: flex;
         align-items: center;
-        gap: 4px;
-        font-size: 0.8rem;
+        gap: 3px;
+        font-size: 0.7rem;
         color: var(--gold);
     }
 
     .menu-rating svg {
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
         fill: var(--gold);
     }
 
@@ -264,11 +274,11 @@
     }
 
     .btn-add {
-        width: 34px;
-        height: 34px;
+        width: 28px;
+        height: 28px;
         background: var(--gold);
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -277,27 +287,36 @@
         color: var(--dark);
     }
 
+    .btn-add svg {
+        width: 14px;
+        height: 14px;
+    }
+
     .btn-add:hover {
         background: var(--gold-light);
         transform: scale(1.05);
     }
 
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 4rem;
-        color: var(--text-muted-c);
-    }
-
     @media (max-width: 600px) {
         .menu-grid {
             grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
         }
         .filter-bar .ms-auto {
             width: 100%;
         }
         .sort-select {
             width: 100%;
+        }
+        .menu-img-wrap {
+            height: 120px;
+        }
+        .menu-name {
+            font-size: 0.8rem;
+        }
+        .menu-desc {
+            font-size: 0.65rem;
+            -webkit-line-clamp: 1;
         }
     }
 
@@ -314,25 +333,23 @@
     <div class="menu-hero">
         <div class="hero-content">
             <h1 class="hero-title">Pilih kopi<br><em>favoritmu.</em></h1>
-            <p class="hero-sub">50+ menu segar tersedia setiap hari</p>
+            <p class="hero-sub">Menu segar tersedia setiap hari</p>
         </div>
     </div>
 
     <!-- Filter Bar -->
     <div class="filter-bar">
         <button class="filter-pill active" onclick="filterMenu('semua', this)">Semua</button>
-        <button class="filter-pill" onclick="filterMenu('espresso', this)">Espresso</button>
-        <button class="filter-pill" onclick="filterMenu('susu', this)">Kopi Susu</button>
-        <button class="filter-pill" onclick="filterMenu('cold', this)">Cold Brew</button>
-        <button class="filter-pill" onclick="filterMenu('non', this)">Non-Kopi</button>
+        <button class="filter-pill" onclick="filterMenu('kopi', this)">Kopi</button>
+        <button class="filter-pill" onclick="filterMenu('non-kopi', this)">Non-Kopi</button>
         <button class="filter-pill" onclick="filterMenu('makanan', this)">Makanan</button>
 
         <div class="ms-auto">
-            <select class="sort-select">
-                <option>Terpopuler</option>
-                <option>Harga Terendah</option>
-                <option>Harga Tertinggi</option>
-                <option>Terbaru</option>
+            <select class="sort-select" id="sortSelect">
+                <option value="default">Terpopuler</option>
+                <option value="price_asc">Harga Terendah</option>
+                <option value="price_desc">Harga Tertinggi</option>
+                <option value="name_asc">Nama A-Z</option>
             </select>
         </div>
     </div>
@@ -340,22 +357,36 @@
     <!-- Menu Grid -->
     <div class="menu-grid" id="menuGrid">
         @php
+        // Daftar menu lengkap dengan path gambar yang dipastikan ada (Caramel Latte dihapus)
         $menus = [
-            ['id'=>1, 'name'=>'Caramel Latte','cat'=>'susu','desc'=>'Espresso dengan steamed milk dan saus karamel premium yang lembut.','price'=>42000,'price_str'=>'Rp 42.000','rating'=>4.9,'count'=>342,'badge'=>'hot','img'=>'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80'],
-            ['id'=>2, 'name'=>'Cold Brew Classic','cat'=>'cold','desc'=>'Cold brew 18 jam dengan aroma biji kopi single origin.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.8,'count'=>287,'badge'=>'fav','img'=>'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80'],
-            ['id'=>3, 'name'=>'Matcha Oat Latte','cat'=>'non','desc'=>'Matcha premium Jepang dengan oat milk yang creamy.','price'=>45000,'price_str'=>'Rp 45.000','rating'=>4.7,'count'=>241,'badge'=>'new','img'=>'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&q=80'],
-            ['id'=>4, 'name'=>'Americano','cat'=>'espresso','desc'=>'Double shot espresso dengan hot water. Simple, kuat, sempurna.','price'=>28000,'price_str'=>'Rp 28.000','rating'=>4.6,'count'=>198,'badge'=>null,'img'=>'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=80'],
-            ['id'=>5, 'name'=>'Vanilla Cappuccino','cat'=>'susu','desc'=>'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.8,'count'=>156,'badge'=>null,'img'=>'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&q=80'],
-            ['id'=>6, 'name'=>'Brown Sugar Latte','cat'=>'susu','desc'=>'Tiger milk dengan gula aren dan espresso yang bold.','price'=>44000,'price_str'=>'Rp 44.000','rating'=>4.9,'count'=>312,'badge'=>'hot','img'=>'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80'],
-            ['id'=>7, 'name'=>'Avocado Coffee','cat'=>'non','desc'=>'Perpaduan unik alpukat creamy dengan espresso shot.','price'=>48000,'price_str'=>'Rp 48.000','rating'=>4.5,'count'=>89,'badge'=>'new','img'=>'https://images.unsplash.com/photo-1463797221720-6b07e6426c24?w=400&q=80'],
-            ['id'=>8, 'name'=>'Croissant Butter','cat'=>'makanan','desc'=>'Croissant all-butter panggang segar setiap pagi.','price'=>25000,'price_str'=>'Rp 25.000','rating'=>4.7,'count'=>421,'badge'=>'fav','img'=>'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=400&q=80'],
+            // KOPI
+            ['id'=>1, 'name'=>'Americano','cat'=>'kopi','desc'=>'Double shot espresso dengan hot water. Simple, kuat, sempurna.','price'=>28000,'price_str'=>'Rp 28.000','rating'=>4.6,'count'=>198,'badge'=>null,'img'=>'images/products/americano.jpeg'],
+            ['id'=>2, 'name'=>'Coffee Milk Aren Sugar','cat'=>'kopi','desc'=>'Kopi susu dengan gula aren, manis dan creamy.','price'=>35000,'price_str'=>'Rp 35.000','rating'=>4.7,'count'=>215,'badge'=>null,'img'=>'images/products/coffe_milk_aren_sugar.jpeg'],
+            ['id'=>3, 'name'=>'Coffee Milk Pandan','cat'=>'kopi','desc'=>'Kopi susu dengan aroma pandan yang harum.','price'=>35000,'price_str'=>'Rp 35.000','rating'=>4.6,'count'=>178,'badge'=>'new','img'=>'images/products/coffe_milk_pandan.jpeg'],
+            ['id'=>4, 'name'=>'Hazelnut Coffee','cat'=>'kopi','desc'=>'Kopi dengan sentuhan rasa hazelnut yang khas.','price'=>40000,'price_str'=>'Rp 40.000','rating'=>4.8,'count'=>234,'badge'=>null,'img'=>'images/products/halzenutt_coffe.jpeg'],
+            ['id'=>5, 'name'=>'Machiatto','cat'=>'kopi','desc'=>'Espresso dengan busa susu yang lembut.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.7,'count'=>156,'badge'=>null,'img'=>'images/products/machiatto.jpeg'],
+            ['id'=>6, 'name'=>'Vanilla Latte','cat'=>'kopi','desc'=>'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.8,'count'=>156,'badge'=>null,'img'=>'images/products/vanilla_latte.jpeg'],
+            
+            // NON KOPI
+            ['id'=>7, 'name'=>'Matcha Latte','cat'=>'non-kopi','desc'=>'Matcha premium Jepang dengan oat milk yang creamy.','price'=>45000,'price_str'=>'Rp 45.000','rating'=>4.9,'count'=>241,'badge'=>'fav','img'=>'images/products/matcha_latte.jpeg'],
+            ['id'=>8, 'name'=>'Chocolate Avocado','cat'=>'non-kopi','desc'=>'Perpaduan coklat dan alpukat yang creamy.','price'=>40000,'price_str'=>'Rp 40.000','rating'=>4.5,'count'=>89,'badge'=>'new','img'=>'images/products/chocolate_avocado.jpeg'],
+            ['id'=>9, 'name'=>'Chocolate Drink','cat'=>'non-kopi','desc'=>'Minuman coklat hangat yang nikmat.','price'=>30000,'price_str'=>'Rp 30.000','rating'=>4.6,'count'=>112,'badge'=>null,'img'=>'images/products/chocolate.jpeg'],
+            ['id'=>10, 'name'=>'Mango Smoothie','cat'=>'non-kopi','desc'=>'Smoothie mangga segar dengan potongan buah asli.','price'=>35000,'price_str'=>'Rp 35.000','rating'=>4.7,'count'=>98,'badge'=>null,'img'=>'images/products/manggo_smoothie.jpeg'],
+            
+            // MAKANAN
+            ['id'=>11, 'name'=>'Baked Macaroni','cat'=>'makanan','desc'=>'Macaroni panggang dengan keju leleh.','price'=>32000,'price_str'=>'Rp 32.000','rating'=>4.6,'count'=>145,'badge'=>null,'img'=>'images/products/baked_macaroni.jpeg'],
+            ['id'=>12, 'name'=>'Chicken Katsu Curry','cat'=>'makanan','desc'=>'Chicken katsu dengan saus kari Jepang.','price'=>45000,'price_str'=>'Rp 45.000','rating'=>4.8,'count'=>167,'badge'=>'hot','img'=>'images/products/chicken_katsu_curry.jpeg'],
+            ['id'=>13, 'name'=>'Enoki Crispy','cat'=>'makanan','desc'=>'Jamur enoki goreng crispy.','price'=>25000,'price_str'=>'Rp 25.000','rating'=>4.5,'count'=>89,'badge'=>null,'img'=>'images/products/enoki_crispy.jpeg'],
+            ['id'=>14, 'name'=>'French Fries','cat'=>'makanan','desc'=>'Kentang goreng crispy dengan saus pilihan.','price'=>22000,'price_str'=>'Rp 22.000','rating'=>4.6,'count'=>234,'badge'=>null,'img'=>'images/products/french_fries.jpeg'],
+            ['id'=>15, 'name'=>'Noodles','cat'=>'makanan','desc'=>'Mie goreng spesial dengan topping.','price'=>28000,'price_str'=>'Rp 28.000','rating'=>4.5,'count'=>98,'badge'=>null,'img'=>'images/products/noodles.jpeg'],
         ];
         @endphp
 
         @foreach($menus as $menu)
-        <div class="menu-card" data-cat="{{ $menu['cat'] }}" data-id="{{ $menu['id'] }}" data-name="{{ $menu['name'] }}" data-price="{{ $menu['price'] }}" data-img="{{ $menu['img'] }}">
+        <div class="menu-card" data-cat="{{ $menu['cat'] }}" data-id="{{ $menu['id'] }}" data-name="{{ $menu['name'] }}" data-price="{{ $menu['price'] }}" data-img="{{ asset($menu['img']) }}">
             <div class="menu-img-wrap">
-                <img class="menu-img" src="{{ $menu['img'] }}" alt="{{ $menu['name'] }}" loading="lazy">
+                <img class="menu-img" src="{{ asset($menu['img']) }}" alt="{{ $menu['name'] }}" loading="lazy" 
+                     onerror="this.src='https://placehold.co/400x200?text=' + encodeURIComponent('{{ $menu['name'] }}')">
 
                 @if($menu['badge'])
                 <span class="menu-badge badge-{{ $menu['badge'] }}">
@@ -363,8 +394,8 @@
                 </span>
                 @endif
 
-                <button class="menu-fav" onclick="toggleFav(this)">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <button class="menu-fav" onclick="handleFavClick(this, {{ $menu['id'] }}, '{{ addslashes($menu['name']) }}', {{ $menu['price'] }}, '{{ asset($menu['img']) }}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </button>
 
                 <span class="menu-price-overlay">{{ $menu['price_str'] }}</span>
@@ -379,8 +410,8 @@
                         {{ $menu['rating'] }}
                         <span>({{ $menu['count'] }})</span>
                     </div>
-                    <button class="btn-add" onclick="addToCart({{ $menu['id'] }}, '{{ $menu['name'] }}', {{ $menu['price'] }}, '{{ $menu['img'] }}', this)">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <button class="btn-add" onclick="addToCart({{ $menu['id'] }}, '{{ addslashes($menu['name']) }}', {{ $menu['price'] }}, '{{ asset($menu['img']) }}', this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
                 </div>
             </div>
@@ -391,10 +422,44 @@
 
 @push('scripts')
 <script>
+    // ========== FUNGSI FAVORIT ==========
+    function getFavorites() {
+        let favs = localStorage.getItem('favorites');
+        return favs ? JSON.parse(favs) : [];
+    }
+
+    function saveFavorites(favs) {
+        localStorage.setItem('favorites', JSON.stringify(favs));
+    }
+
+    function isFavorite(id) {
+        let favs = getFavorites();
+        return favs.some(item => item.id == id);
+    }
+
+    function toggleFavorite(id, name, price, img) {
+        let favs = getFavorites();
+        const index = favs.findIndex(item => item.id == id);
+        if (index === -1) {
+            favs.push({ id, name, price, img });
+        } else {
+            favs.splice(index, 1);
+        }
+        saveFavorites(favs);
+        return favs.length;
+    }
+
+    function handleFavClick(btn, id, name, price, img) {
+        btn.classList.toggle('liked');
+        const svg = btn.querySelector('svg');
+        svg.style.fill = btn.classList.contains('liked') ? 'currentColor' : 'none';
+        toggleFavorite(id, name, price, img);
+    }
+
+    // ========== FILTER ==========
     function filterMenu(cat, btn) {
         document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
-
         document.querySelectorAll('.menu-card').forEach(card => {
             if (cat === 'semua' || card.dataset.cat === cat) {
                 card.style.display = '';
@@ -404,86 +469,84 @@
         });
     }
 
-    function toggleFav(btn) {
-        btn.classList.toggle('liked');
-        const svg = btn.querySelector('svg');
-        svg.style.fill = btn.classList.contains('liked') ? 'currentColor' : 'none';
-    }
+    // ========== SORTING ==========
+    document.getElementById('sortSelect')?.addEventListener('change', function() {
+        const sortValue = this.value;
+        const grid = document.getElementById('menuGrid');
+        const cards = Array.from(document.querySelectorAll('.menu-card'));
+        if (sortValue === 'default') return;
+        cards.sort((a, b) => {
+            if (sortValue === 'name_asc') return a.dataset.name.localeCompare(b.dataset.name);
+            if (sortValue === 'price_asc') return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+            if (sortValue === 'price_desc') return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+            return 0;
+        });
+        cards.forEach(card => grid.appendChild(card));
+    });
 
-    // Fungsi untuk menambahkan item ke keranjang (localStorage) dan update badge
+    // ========== ADD TO CART ==========
     function addToCart(id, name, price, img, btn) {
-        // Ambil keranjang dari localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        // Cek apakah item sudah ada di keranjang
-        const existingIndex = cart.findIndex(item => item.id === id);
-        if (existingIndex !== -1) {
-            // Jika sudah ada, tambah quantity
-            cart[existingIndex].quantity += 1;
+        const index = cart.findIndex(item => item.id == id);
+        if (index !== -1) {
+            cart[index].quantity += 1;
         } else {
-            // Jika belum, tambahkan item baru
-            cart.push({
-                id: id,
-                name: name,
-                price: price,
-                img: img,
-                quantity: 1
-            });
+            cart.push({ id, name, price, img, quantity: 1 });
         }
-
-        // Simpan kembali ke localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
-
-        // Hitung total jumlah item (quantity)
         let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         localStorage.setItem('cartCount', totalItems);
 
-        // Update badge di header dan sidebar (panggil fungsi global dari layout)
-        if (typeof window.updateCartBadge === 'function') {
-            window.updateCartBadge(totalItems);
-        } else {
-            // fallback jika fungsi belum terdefinisi: update langsung
-            const headerBadge = document.getElementById('cartBadgeHeader');
-            const sidebarBadge = document.getElementById('cartBadgeSidebar');
-            if (headerBadge) {
-                headerBadge.textContent = totalItems;
-                headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-            }
-            if (sidebarBadge) {
-                sidebarBadge.textContent = totalItems;
-                sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-            }
+        // Update badge
+        const headerBadge = document.getElementById('cartBadgeHeader');
+        const sidebarBadge = document.getElementById('cartBadgeSidebar');
+        if (headerBadge) {
+            headerBadge.textContent = totalItems;
+            headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+        if (sidebarBadge) {
+            sidebarBadge.textContent = totalItems;
+            sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
         }
 
-        // Efek visual pada tombol
+        // Efek visual
         btn.style.transform = 'scale(0.85)';
-        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         btn.style.background = '#52b788';
-
         setTimeout(() => {
             btn.style.transform = '';
             btn.style.background = '';
-            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
         }, 1200);
     }
 
-    // Inisialisasi badge saat halaman dimuat (pastikan badge sesuai dengan cartCount)
+    // ========== INISIALISASI IKON FAVORIT ==========
+    function initFavoriteIcons() {
+        document.querySelectorAll('.menu-card').forEach(card => {
+            const id = card.dataset.id;
+            const favBtn = card.querySelector('.menu-fav');
+            if (favBtn && isFavorite(id)) {
+                favBtn.classList.add('liked');
+                const svg = favBtn.querySelector('svg');
+                if (svg) svg.style.fill = 'currentColor';
+            }
+        });
+    }
+
+    // ========== INISIALISASI BADGE KERANJANG ==========
     document.addEventListener('DOMContentLoaded', function() {
         let totalItems = parseInt(localStorage.getItem('cartCount')) || 0;
-        if (typeof window.updateCartBadge === 'function') {
-            window.updateCartBadge(totalItems);
-        } else {
-            const headerBadge = document.getElementById('cartBadgeHeader');
-            const sidebarBadge = document.getElementById('cartBadgeSidebar');
-            if (headerBadge) {
-                headerBadge.textContent = totalItems;
-                headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-            }
-            if (sidebarBadge) {
-                sidebarBadge.textContent = totalItems;
-                sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-            }
+        const headerBadge = document.getElementById('cartBadgeHeader');
+        const sidebarBadge = document.getElementById('cartBadgeSidebar');
+        if (headerBadge) {
+            headerBadge.textContent = totalItems;
+            headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
         }
+        if (sidebarBadge) {
+            sidebarBadge.textContent = totalItems;
+            sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+        }
+        initFavoriteIcons();
     });
 </script>
 @endpush

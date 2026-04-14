@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Exception;
-use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class GoogleController extends Controller
 {
@@ -21,27 +20,28 @@ class GoogleController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-            $user = User::where('google_id', $googleUser->id)->first();
-
-            if ($user) {
-                Auth::login($user);
-                return redirect()->intended(RouteServiceProvider::HOME);
+            
+            // Cari user berdasarkan email
+            $user = User::where('email', $googleUser->getEmail())->first();
+            
+            if (!$user) {
+                // Buat user baru
+                $user = User::create([
+                    'Nama' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'Password' => bcrypt(Str::random(16)),
+                    'Role' => 'pelanggan',
+                    'Status' => 1,
+                    'IsDeleted' => 0,
+                    'CreatedDate' => Carbon::now(),
+                    'LastUpdatedDate' => Carbon::now(),
+                ]);
             } else {
-                $existingUser = User::where('email', $googleUser->email)->first();
-
-                if ($existingUser) {
-                    $existingUser->update(['google_id' => $googleUser->id]);
-                    Auth::login($existingUser);
-                    return redirect('/')->intended(RouteServiceProvider::HOME);
-                }
-
-                
-                // 1. Ambil nama dari Google (Gunakan ->name, bukan ->getName)
-                $namaUser = $googleUser->name;
-                
-                // 2. Rencana Cadangan: Jika nama kosong, gunakan bagian depan email
-                if (empty($namaUser)) {
-                    $namaUser = explode('@', $googleUser->email)[0]; 
+                // Update google_id jika belum ada
+                if (empty($user->google_id)) {
+                    $user->google_id = $googleUser->getId();
+                    $user->save();
                 }
 
                 // 3. Simpan ke database
@@ -57,16 +57,15 @@ class GoogleController extends Controller
                 Auth::login($newUser);
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
-        } catch (Exception $e) {
-            // Kita gunakan fungsi dd() untuk menampilkan error aslinya ke layar
-            // HAPUS ATAU COMMENT BLOK INI NANTI JIKA SUDAH BERHASIL
-            dd([
-                'pesan_error' => $e->getMessage(),
-                'baris' => $e->getLine(),
-                'file' => $e->getFile()
-            ]);
             
-            // return redirect('/login')->with('error', 'Gagal login menggunakan Google.');
+            // Login user
+            Auth::login($user);
+            
+            // Redirect ke dashboard
+            return redirect('/dashboard');
+            
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Login Google gagal: ' . $e->getMessage());
         }
     }
 }

@@ -8,36 +8,45 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+// ============================================================
+// ROUTE LANDING PAGE
+// ============================================================
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('home');
+})->name('home');
 
+// ============================================================
+// ROUTE MENU
+// ============================================================
 Route::get('/menu', [ProductController::class, 'index'])->name('menu.index');
-Route::get('/', [ProductController::class, 'home'])->name('home');
 
+// ============================================================
+// ROUTE PRODUCT
+// ============================================================
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // ============================================================
-// ROUTE UNTUK LOGIN GOOGLE
+// ROUTE LOGIN GOOGLE
 // ============================================================
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-// ============================================================
 
+// ============================================================
+// ROUTE DASHBOARD (HANYA AUTH, TANPA VERIFIED)
+// ============================================================
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('dashboard');
+    ->middleware(['auth'])->name('dashboard');
 
 Route::get('/manager/dashboard', function () {
     return redirect()->route('dashboard');
-})->middleware(['auth', 'verified'])->name('manager.dashboard');
+})->middleware(['auth'])->name('manager.dashboard');
 
+// ============================================================
+// ROUTE PROFILE
+// ============================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -48,32 +57,44 @@ Route::middleware('auth')->group(function () {
     })->name('manager.profile');
 });
 
-// Keranjang
+// ============================================================
+// ROUTE KERANJANG
+// ============================================================
 Route::get('/keranjang', function () {
     return view('cart.keranjang');
 })->name('keranjang');
 
-// Riwayat Pesanan
+// ============================================================
+// ROUTE RIWAYAT PESANAN
+// ============================================================
 Route::get('/riwayat-pesanan', function () {
     return view('orders.riwayat-pesanan');
 })->name('riwayat.pesanan');
 
-// Favorit
+// ============================================================
+// ROUTE FAVORIT
+// ============================================================
 Route::get('/favorit', function () {
     return view('favorites.favorit');
 })->name('favorit');
 
-// Profil Saya
+// ============================================================
+// ROUTE PROFIL
+// ============================================================
 Route::get('/profil', function () {
     return view('profile.profil');
 })->name('profil');
 
-// Pengaturan
+// ============================================================
+// ROUTE PENGATURAN
+// ============================================================
 Route::get('/pengaturan', function () {
     return view('settings.pengaturan');
 })->name('pengaturan');
 
-// Pembayaran
+// ============================================================
+// ROUTE PEMBAYARAN & ORDER SUCCESS
+// ============================================================
 Route::get('/pembayaran', function () {
     return view('payment.index');
 })->name('payment.index');
@@ -83,8 +104,7 @@ Route::get('/order-success', function () {
 })->name('order.success');
 
 // ============================================================
-// Contoh jika pakai controller (opsional):
-// Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');
+// ROUTE AUTH (LARAVEL BAWAAN)
 // ============================================================
 require __DIR__.'/auth.php';
 

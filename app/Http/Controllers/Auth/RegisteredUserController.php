@@ -25,16 +25,16 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:100', 'unique:users,Email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:100', 'unique:users,email'], // perhatikan: unique:users,email (lowercase)
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'phone' => ['nullable', 'string', 'max:20'],
         ]);
 
         $now = Carbon::now();
 
         $user = User::create([
             'Nama' => $request->name,
-            'Email' => $request->email,
+            'email' => $request->email,      // kolom email (huruf kecil)
+            'Email' => $request->email,      // jika ada kolom Email (huruf besar)
             'Password' => Hash::make($request->password),
             'Role' => 'pelanggan',
             'Status' => 1,
@@ -44,7 +44,6 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
