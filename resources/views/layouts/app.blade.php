@@ -31,6 +31,7 @@
             color: var(--cream);
             margin: 0;
         }
+
         /* ========== HEADER ========== */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0;
@@ -119,10 +120,11 @@
             padding: 0 4px;
             border: 1px solid var(--dark);
         }
+
+        /* ========== AVATAR (FIXED) ========== */
         .header-avatar {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -134,19 +136,81 @@
             border: 2px solid var(--border);
             text-decoration: none;
             overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
         }
+        .header-avatar:hover { border-color: var(--gold); }
         .header-avatar img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+            border-radius: 50%;
         }
-        .header-avatar:hover { border-color: var(--gold); }
+        .header-avatar .avatar-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-radius: 50%;
+        }
+
+        .sidebar-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        }
+        .sidebar-avatar img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+        }
+        .sidebar-avatar .avatar-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 12px;
+        }
+
         .sidebar-toggle {
             display: none;
             background: none; border: none;
             color: var(--cream-dim); cursor: pointer;
         }
         .sidebar-toggle svg { width: 22px; height: 22px; }
+
         /* ========== SIDEBAR ========== */
         .app-sidebar {
             position: fixed; top: var(--header-h); left: 0; bottom: 0;
@@ -207,30 +271,11 @@
             padding: 12px;
             background: var(--dark-3);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
         }
         .sidebar-user-info {
             display: flex; align-items: center; gap: 10px;
             margin-bottom: 10px;
-        }
-        .sidebar-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--dark);
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        .sidebar-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
         .sidebar-user-name { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
         .sidebar-user-role { font-size: 0.75rem; color: var(--text-muted-c); }
@@ -248,7 +293,8 @@
             gap: 7px;
         }
         .btn-logout:hover { border-color: #e05252; color: #e05252; background: rgba(224,82,82,0.08); }
-        /* MAIN */
+
+        /* ========== MAIN ========== */
         .app-main {
             margin-left: var(--sidebar-w);
             margin-top: var(--header-h);
@@ -279,6 +325,7 @@
             background: rgba(0,0,0,0.6);
             z-index: 800;
         }
+
         @media (max-width: 992px) {
             .sidebar-toggle { display: flex; }
             .app-sidebar { transform: translateX(-100%); }
@@ -290,60 +337,91 @@
             .page-content { padding: 1.2rem; }
             .header-search { display: none; }
         }
+
         @yield('styles')
     </style>
     @stack('styles')
 </head>
 <body>
-    <!-- HEADER -->
+
+    <!-- ========== HEADER ========== -->
     <header class="app-header">
         <button class="sidebar-toggle" id="sidebarToggle">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
+
         <a href="{{ route('home') }}" class="header-brand">
             <div class="brand-icon">
                 <svg viewBox="0 0 24 24"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </div>
             <span class="brand-name">NONGKI</span>
         </a>
+
         <div class="header-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input type="text" placeholder="Cari menu, pesanan...">
         </div>
+
         <div class="header-actions">
             @auth
                 @if(auth()->user()->role !== 'admin')
-                <a href="{{ route('keranjang') }}" class="header-btn" id="cartHeaderBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                    </svg>
-                    <span class="header-badge-number" id="cartBadgeHeader">0</span>
-                </a>
+                    <a href="{{ route('keranjang') }}" class="header-btn" id="cartHeaderBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span class="header-badge-number" id="cartBadgeHeader" style="display:none;">0</span>
+                    </a>
                 @endif
-            @endauth
-            @auth
+
+                @php
+                    $user = auth()->user();
+                    $avatar = $user->avatar;
+
+                    if ($avatar && (str_starts_with($avatar, 'http://') || str_starts_with($avatar, 'https://'))) {
+                        // Support berbagai format URL Google: =s96-c, =s96, tanpa suffix
+                        $avatarUrl = preg_replace('/=s\d+(-c)?$/', '=s256-c', $avatar);
+                        // Jika tidak berubah (tidak ada =s suffix), tambahkan manual
+                        if ($avatarUrl === $avatar && !str_contains($avatar, '=s')) {
+                            $avatarUrl = rtrim($avatar, '/') . '=s256-c';
+                        }
+                    } elseif ($avatar) {
+                        $avatarUrl = asset('storage/' . $avatar);
+                    } else {
+                        $avatarUrl = null;
+                    }
+                    $initials = strtoupper(substr($user->name ?? 'U', 0, 2));
+                @endphp
+
                 <div class="dropdown">
-                    <a href="#" class="header-avatar" data-bs-toggle="dropdown">
-                        @if(auth()->user()->avatar)
-                            <img src="{{ auth()->user()->avatar }}" alt="Avatar">
+                    <a href="#" class="header-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                        @if($avatarUrl)
+                            <img src="{{ $avatarUrl }}" alt="{{ $initials }}"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="avatar-fallback" style="display:none;">{{ $initials }}</span>
                         @else
-                            {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                            <span class="avatar-fallback">{{ $initials }}</span>
                         @endif
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;">
+                    <ul class="dropdown-menu dropdown-menu-end"
+                        style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;">
                         <li>
                             <div style="padding:8px 12px; border-bottom:1px solid var(--border);">
-                                <div style="font-weight:600;">{{ auth()->user()->name }}</div>
-                                <div style="font-size:0.7rem; color:var(--text-muted);">{{ auth()->user()->email }}</div>
+                                <div style="font-weight:600;color:var(--cream);">{{ $user->name }}</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted-c);">{{ $user->email }}</div>
                             </div>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profil Saya</a></li>
+                        <li><hr class="dropdown-divider" style="border-color:var(--border);"></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}"
+                               style="color:var(--cream-dim);">Profil Saya</a>
+                        </li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -358,113 +436,181 @@
         </div>
     </header>
 
-    <!-- SIDEBAR -->
+    <!-- ========== SIDEBAR ========== -->
     <aside class="app-sidebar" id="appSidebar">
         <div class="sidebar-section">
             <div class="sidebar-section-label">Navigasi</div>
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+
+            <a href="{{ route('dashboard') }}"
+               class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
                 Beranda
             </a>
-            <a href="{{ route('menu.index') }}" class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+
+            <a href="{{ route('menu.index') }}"
+               class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                </svg>
                 Menu Kopi
             </a>
+
             @auth
-                <a href="{{ route('keranjang') }}" class="nav-item {{ request()->routeIs('keranjang') ? 'active' : '' }}" id="sidebarCartLink">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <a href="{{ route('keranjang') }}"
+                   class="nav-item {{ request()->routeIs('keranjang') ? 'active' : '' }}"
+                   id="sidebarCartLink">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
                     Keranjang
-                    <span class="nav-badge" id="cartBadgeSidebar">0</span>
+                    <span class="nav-badge" id="cartBadgeSidebar" style="display:none;">0</span>
                 </a>
-                <a href="{{ route('riwayat.pesanan') }}" class="nav-item {{ request()->routeIs('riwayat.pesanan') ? 'active' : '' }}">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+
+                <a href="{{ route('riwayat.pesanan') }}"
+                   class="nav-item {{ request()->routeIs('riwayat.pesanan') ? 'active' : '' }}">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                        <rect x="9" y="3" width="6" height="4" rx="2"/>
+                    </svg>
                     Riwayat Pesanan
                 </a>
-                <a href="{{ route('favorit') }}" class="nav-item {{ request()->routeIs('favorit') ? 'active' : '' }}">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+
+                <a href="{{ route('favorit') }}"
+                   class="nav-item {{ request()->routeIs('favorit') ? 'active' : '' }}">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
                     Favorit
                 </a>
-                <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile*') ? 'active' : '' }}">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+
+                <a href="{{ route('profile.edit') }}"
+                   class="nav-item {{ request()->routeIs('profile*') ? 'active' : '' }}">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
                     Profil Saya
                 </a>
-                <a href="{{ route('pengaturan') }}" class="nav-item {{ request()->routeIs('pengaturan') ? 'active' : '' }}">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+
+                <a href="{{ route('pengaturan') }}"
+                   class="nav-item {{ request()->routeIs('pengaturan') ? 'active' : '' }}">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2M2 12h2m16 0h2"/>
+                    </svg>
                     Pengaturan
                 </a>
             @else
                 <a href="{{ route('login') }}" class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
                     Masuk
                 </a>
                 <a href="{{ route('register') }}" class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <line x1="19" y1="8" x2="19" y2="14"/>
+                        <line x1="22" y1="11" x2="16" y2="11"/>
+                    </svg>
                     Daftar
                 </a>
             @endauth
         </div>
+
         @auth
         <div class="sidebar-user">
             <div class="sidebar-user-info">
                 <div class="sidebar-avatar">
-                    @if(auth()->user()->avatar)
-                        <img src="{{ auth()->user()->avatar }}" alt="Avatar">
+                    @if($avatarUrl)
+                        <img src="{{ $avatarUrl }}" alt="{{ $initials }}"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span class="avatar-fallback" style="display:none;">{{ $initials }}</span>
                     @else
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                        <span class="avatar-fallback">{{ $initials }}</span>
                     @endif
                 </div>
                 <div>
-                    <div class="sidebar-user-name">{{ auth()->user()->name }}</div>
-                    <div class="sidebar-user-role">{{ ucfirst(auth()->user()->role ?? 'Pelanggan') }}</div>
+                    <div class="sidebar-user-name">{{ $user->name }}</div>
+                    <div class="sidebar-user-role">{{ ucfirst($user->role ?? 'Pelanggan') }}</div>
                 </div>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="btn-logout">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
                     Keluar
                 </button>
             </form>
         </div>
         @endauth
     </aside>
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+    <!-- ========== MAIN CONTENT ========== -->
     <main class="app-main">
         <div class="page-content">
             @hasSection('page_header')
-            <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+            <div class="page-header"
+                 style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
                 <div>
-                    <h1 class="page-title" style="font-family:'Cormorant Garamond',serif;font-size:2rem;">@yield('page_title')</h1>
-                    <div class="page-breadcrumb" style="color:var(--text-muted-c);">@yield('breadcrumb')</div>
+                    <h1 class="page-title"
+                        style="font-family:'Cormorant Garamond',serif;font-size:2rem;">
+                        @yield('page_title')
+                    </h1>
+                    <div class="page-breadcrumb" style="color:var(--text-muted-c);">
+                        @yield('breadcrumb')
+                    </div>
                 </div>
                 <div>@yield('page_actions')</div>
             </div>
             @endif
+
             @yield('content')
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ========== CART FUNCTIONALITY ==========
+        // ========== CART ==========
         function getCartCount() {
-            let count = localStorage.getItem('cartCount');
-            return count ? parseInt(count) : 0;
+            return parseInt(localStorage.getItem('cartCount') || '0');
         }
 
         function updateBadges(count) {
-            let headerBadge = document.getElementById('cartBadgeHeader');
-            let sidebarBadge = document.getElementById('cartBadgeSidebar');
+            const headerBadge  = document.getElementById('cartBadgeHeader');
+            const sidebarBadge = document.getElementById('cartBadgeSidebar');
+
             if (headerBadge) {
-                headerBadge.textContent = count;
-                headerBadge.style.display = count > 0 ? 'flex' : 'none';
-                headerBadge.style.transform = 'scale(1.2)';
-                setTimeout(() => headerBadge.style.transform = 'scale(1)', 200);
+                if (count > 0) {
+                    headerBadge.textContent = count;
+                    headerBadge.style.display = 'flex';
+                    headerBadge.style.transform = 'scale(1.2)';
+                    setTimeout(() => headerBadge.style.transform = 'scale(1)', 200);
+                } else {
+                    headerBadge.style.display = 'none';
+                }
             }
+
             if (sidebarBadge) {
-                sidebarBadge.textContent = count;
-                sidebarBadge.style.display = count > 0 ? 'inline-block' : 'none';
+                if (count > 0) {
+                    sidebarBadge.textContent = count;
+                    sidebarBadge.style.display = 'inline-block';
+                } else {
+                    sidebarBadge.style.display = 'none';
+                }
             }
         }
 
@@ -474,13 +620,13 @@
         }
 
         function addToCart(button, itemName = '', price = '') {
-            let current = getCartCount();
-            setCartCount(current + 1);
-            let items = JSON.parse(localStorage.getItem('cartItems') || '[]');
+            setCartCount(getCartCount() + 1);
+            const items = JSON.parse(localStorage.getItem('cartItems') || '[]');
             items.push({ name: itemName, price: price, addedAt: new Date().toISOString() });
             localStorage.setItem('cartItems', JSON.stringify(items));
+
             if (button) {
-                let original = button.innerHTML;
+                const original = button.innerHTML;
                 button.innerHTML = '✓';
                 button.style.background = '#52b788';
                 setTimeout(() => {
@@ -490,24 +636,25 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateBadges(getCartCount());
-            document.body.addEventListener('click', function(e) {
-                let btn = e.target.closest('.btn-add, .add-to-cart-btn');
+
+            document.body.addEventListener('click', function (e) {
+                const btn = e.target.closest('.btn-add, .add-to-cart-btn');
                 if (btn) {
                     e.preventDefault();
-                    let name = btn.getAttribute('data-name') || '';
-                    let price = btn.getAttribute('data-price') || '';
-                    addToCart(btn, name, price);
+                    addToCart(btn, btn.getAttribute('data-name') || '', btn.getAttribute('data-price') || '');
                 }
             });
         });
 
         window.addToCartHandler = addToCart;
 
-        const toggle = document.getElementById('sidebarToggle');
+        // ========== SIDEBAR TOGGLE ==========
+        const toggle  = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('appSidebar');
         const overlay = document.getElementById('sidebarOverlay');
+
         if (toggle) {
             toggle.addEventListener('click', () => {
                 sidebar.classList.toggle('open');
