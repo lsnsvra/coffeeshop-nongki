@@ -49,26 +49,28 @@
 
     /* Hero Section Premium */
     .hero-premium {
-        position: relative;
-        min-height: 85vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 2rem;
-        overflow: hidden;
-    }
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+    border-radius: 16px 16px  16px;   
+}
 
-    .hero-premium-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80') center/cover no-repeat;
-        z-index: 0;
-        animation: slowZoom 12s ease-out forwards;
-    }
+.hero-premium-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80') center/cover no-repeat;
+    z-index: 0;
+    animation: slowZoom 12s ease-out forwards;
+    border-radius: 16px 16px 16px;   
+}
 
     .hero-premium-overlay {
         position: absolute;
