@@ -12,12 +12,8 @@ use Illuminate\Support\Facades\Route;
 // ROUTE LANDING PAGE
 // ============================================================
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
     return view('home');
 })->name('home');
-
 // ============================================================
 // ROUTE MENU & PRODUCT
 // ============================================================
