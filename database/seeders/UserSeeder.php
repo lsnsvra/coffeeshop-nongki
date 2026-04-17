@@ -2,50 +2,51 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
         DB::table('users')->insert([
             [
-                'Nama' => 'Admin Manager',
-                'Email' => 'admin@coffeeshop.com',
+                'Nama' => 'Admin NONGKI',
+                'Email' => 'admin@nongki.com',
                 'Password' => Hash::make('password'),
                 'Role' => 'admin',
-                'GoogleID' => null,
-                'CompanyCode' => null,
+                'google_id' => null,
+                'avatar' => null,
+                'Status' => 1,
+                'IsDeleted' => 0,
+                'CreatedDate' => Carbon::now(),
+                'LastUpdatedDate' => Carbon::now(),
             ],
             [
-                'Nama' => 'Manager Nongki',
-                'Email' => 'manager@coffeeshop.com',
-                'Password' => Hash::make('password'),
-                'Role' => 'manager',
-                'GoogleID' => null,
-                'CompanyCode' => null,
-            ],
-            [
-                'Nama' => 'Kasir 1',
-                'Email' => 'kasir@coffeeshop.com',
+                'Nama' => 'Kasir NONGKI',
+                'Email' => 'kasir@nongki.com',
                 'Password' => Hash::make('password'),
                 'Role' => 'kasir',
-                'GoogleID' => null,
-                'CompanyCode' => null,
+                'google_id' => null,
+                'avatar' => null,
+                'Status' => 1,
+                'IsDeleted' => 0,
+                'CreatedDate' => Carbon::now(),
+                'LastUpdatedDate' => Carbon::now(),
             ],
             [
-                'Nama' => 'Pelanggan Biasa',
-                'Email' => 'pelanggan@coffeeshop.com',
+                'Nama' => 'Pelanggan Setia',
+                'Email' => 'user@nongki.com',
                 'Password' => Hash::make('password'),
-                'Role' => 'pelanggan',
-                'GoogleID' => null,
-                'CompanyCode' => null,
+                'Role' => 'user',   // 🟡 middleware memakai 'user'
+                'google_id' => null,
+                'avatar' => null,
+                'Status' => 1,
+                'IsDeleted' => 0,
+                'CreatedDate' => Carbon::now(),
+                'LastUpdatedDate' => Carbon::now(),
             ],
         ]);
     }

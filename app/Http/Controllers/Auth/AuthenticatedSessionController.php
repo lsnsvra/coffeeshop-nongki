@@ -32,7 +32,6 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         // 2. Ambil data User yang baru saja berhasil login
-        // (Baris komentar di bawah ini wajib ada untuk menghilangkan garis merah di VS Code)
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
@@ -45,30 +44,44 @@ class AuthenticatedSessionController extends Controller
             'two_factor_expires_at' => Carbon::now('Asia/Jakarta')->addMinutes(5),
         ]);
 
-        // 5. Kirim Email OTP (Gunakan $user->Email sesuai nama kolom di database kamu)
+        // 5. Kirim Email OTP
         try {
             Mail::to($user->Email)->send(new SendOtpMail($otp));
         } catch (\Exception $e) {
-            // Jika butuh debugging email, buka komentar di bawah ini:
-            // dd($e->getMessage());
+            // Abaikan error email untuk development
         }
 
-        // 6. Ambil ID User sebelum logout (Gunakan UserID sesuai database kamu)
+        // 6. Ambil ID User sebelum logout
         $id_user = $user->UserID;
-        
+
         // 7. LOGOUT SEMENTARA (Agar user tidak bisa potong jalan ke dashboard)
         Auth::logout();
 
-        // 8. Bersihkan session lama untuk keamanan 
+        // 8. Bersihkan session lama
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // 9. SIMPAN ID KE SESSION BARU (Posisinya harus di sini agar tidak terhapus)
+        // 9. SIMPAN ID KE SESSION BARU
         session(['2fa_user_id' => $id_user]);
 
-        // 10. Lempar ke halaman verifikasi OTP EMAIL dengan pesan sukses
+        // 10. Lempar ke halaman verifikasi OTP EMAIL
         return redirect()->route('otp.email.verify.form')
             ->with('message', 'Kode verifikasi keamanan telah dikirim ke email Anda.');
+    }
+
+    /**
+     * (Method ini sudah tidak dipanggil langsung dari store(),
+     *  tapi tetap dipertahankan untuk digunakan setelah verifikasi OTP berhasil)
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->Role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->Role === 'kasir') {
+            return redirect()->route('kasir.pos');
+        }
+
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
