@@ -11,574 +11,615 @@
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    :root {
-      --gold: #C9A84C;
-      --gold-light: #E8C96A;
-      --gold-dark: #A8883A;
-      --gold-dim: rgba(201, 168, 76, 0.12);
-      --dark-bg: #0A0A0A;
-      --dark-card: #111111;
-      --dark-surface: #1A1A1A;
-      --dark-elevated: #222222;
-      --text-primary: #FFFFFF;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --border: rgba(255, 255, 255, 0.08);
-      --error: #E05252;
-      --success: #52B788;
-    }
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dark: #A8883A;
+    --gold-dim: rgba(201, 168, 76, 0.12);
+    --dark-bg: #0A0A0A;
+    --dark-card: #111111;
+    --dark-surface: #1A1A1A;
+    --dark-elevated: #222222;
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --border: rgba(255, 255, 255, 0.08);
+    --error: #E05252;
+    --success: #52B788;
+  }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--dark-bg);
-      color: var(--text-primary);
-      min-height: 100vh;
-      display: flex;
-    }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+  }
 
-    /* Simple elegant animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(25px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .animate-fade {
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    .animate-slide {
-      animation: slideUp 0.6s ease forwards;
+  /* Simple elegant animations */
+  @keyframes fadeIn {
+    from {
       opacity: 0;
     }
 
-    .delay-1 { animation-delay: 0.05s; }
-    .delay-2 { animation-delay: 0.1s; }
-    .delay-3 { animation-delay: 0.15s; }
-    .delay-4 { animation-delay: 0.2s; }
-    .delay-5 { animation-delay: 0.25s; }
-    .delay-6 { animation-delay: 0.3s; }
+    to {
+      opacity: 1;
+    }
+  }
 
-    /* LEFT PANEL - BRAND SECTION */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(25px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade {
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  .animate-slide {
+    animation: slideUp 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  .delay-1 {
+    animation-delay: 0.05s;
+  }
+
+  .delay-2 {
+    animation-delay: 0.1s;
+  }
+
+  .delay-3 {
+    animation-delay: 0.15s;
+  }
+
+  .delay-4 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-5 {
+    animation-delay: 0.25s;
+  }
+
+  .delay-6 {
+    animation-delay: 0.3s;
+  }
+
+  /* LEFT PANEL - BRAND SECTION */
+  .brand-panel {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .brand-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand-logo {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(145deg, var(--gold), var(--gold-dark));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .logo-icon:hover {
+    transform: scale(1.03);
+  }
+
+  .logo-icon svg {
+    width: 28px;
+    height: 28px;
+    color: var(--dark-bg);
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+  }
+
+  .logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 10px rgba(201, 168, 76, 0.2);
+  }
+
+  .brand-content {
+    position: relative;
+    z-index: 2;
+    max-width: 400px;
+  }
+
+  .brand-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .brand-title em {
+    font-style: italic;
+    color: var(--gold);
+    position: relative;
+    display: inline-block;
+  }
+
+  .brand-title em::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .brand-description {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .benefit-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--gold-dim);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .benefit-icon svg {
+    width: 14px;
+    height: 14px;
+    color: var(--gold);
+  }
+
+  .benefit-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .brand-footer {
+    position: relative;
+    z-index: 2;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+
+  /* RIGHT PANEL - FORM SECTION */
+  .form-panel {
+    width: 560px;
+    background: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem;
+    position: relative;
+    overflow-y: auto;
+    border-left: 1px solid var(--border);
+  }
+
+  .form-panel::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .form-panel::-webkit-scrollbar-track {
+    background: var(--dark-surface);
+  }
+
+  .form-panel::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 4px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--dark-surface);
+    padding: 0.5rem;
+    border-radius: 14px;
+    margin-bottom: 2rem;
+  }
+
+  .auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .auth-tab.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--dark-bg);
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+  }
+
+  .auth-tab:not(.active):hover {
+    color: var(--gold);
+  }
+
+  .form-header {
+    margin-bottom: 2rem;
+  }
+
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #fff, var(--gold-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+  }
+
+  .input-wrapper input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 2.75rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .input-wrapper input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-dim);
+  }
+
+  .input-wrapper input:focus+.input-icon {
+    color: var(--gold);
+  }
+
+  .input-wrapper input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+  }
+
+  .toggle-password:hover {
+    color: var(--gold);
+  }
+
+  /* Password Strength */
+  .strength-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .strength-segment {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .strength-segment.weak {
+    background: var(--error);
+  }
+
+  .strength-segment.fair {
+    background: #E09F3E;
+  }
+
+  .strength-segment.good {
+    background: #70B8FF;
+  }
+
+  .strength-segment.strong {
+    background: var(--success);
+  }
+
+  .strength-text {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Terms */
+  .terms-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    cursor: pointer;
+  }
+
+  .terms-wrapper input {
+    display: none;
+  }
+
+  .terms-checkmark {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    background: var(--dark-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .terms-wrapper input:checked+.terms-checkmark {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .terms-wrapper input:checked+.terms-checkmark::after {
+    content: '';
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid var(--dark-bg);
+    border-bottom: 2px solid var(--dark-bg);
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  .terms-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .terms-text a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .terms-text a:hover {
+    text-decoration: underline;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 12px;
+    color: var(--dark-bg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .btn-submit:hover::before {
+    left: 100%;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(201, 168, 76, 0.4);
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .divider-text {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn-google {
+    width: 100%;
+    padding: 0.875rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-google:hover {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+    transform: translateY(-1px);
+  }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .form-footer a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .form-footer a:hover {
+    color: var(--gold-light);
+    text-decoration: underline;
+  }
+
+  .error-message {
+    background: rgba(224, 82, 82, 0.1);
+    border: 1px solid rgba(224, 82, 82, 0.3);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--error);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 900px) {
     .brand-panel {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 3rem;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80');
-      background-size: cover;
-      background-position: center;
-    }
-
-    .brand-panel::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 30% 50%, rgba(201,168,76,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .brand-logo {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-icon {
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(145deg, var(--gold), var(--gold-dark));
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 24px rgba(201,168,76,0.3);
-      transition: transform 0.3s ease;
-    }
-
-    .logo-icon:hover {
-      transform: scale(1.03);
-    }
-
-    .logo-icon svg {
-      width: 28px;
-      height: 28px;
-      color: var(--dark-bg);
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-    }
-
-    .logo-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 2px 10px rgba(201,168,76,0.2);
-    }
-
-    .brand-content {
-      position: relative;
-      z-index: 2;
-      max-width: 400px;
-    }
-
-    .brand-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3.2rem;
-      font-weight: 400;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      position: relative;
-    }
-
-    .brand-title em {
-      font-style: italic;
-      color: var(--gold);
-      position: relative;
-      display: inline-block;
-    }
-
-    .brand-title em::after {
-      content: '';
-      position: absolute;
-      bottom: 8px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-    }
-
-    .brand-description {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-
-    .benefits {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .benefit-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .benefit-icon {
-      width: 28px;
-      height: 28px;
-      background: var(--gold-dim);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .benefit-icon svg {
-      width: 14px;
-      height: 14px;
-      color: var(--gold);
-    }
-
-    .benefit-text {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .brand-footer {
-      position: relative;
-      z-index: 2;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
-    }
-
-    /* RIGHT PANEL - FORM SECTION */
-    .form-panel {
-      width: 560px;
-      background: rgba(17,17,17,0.95);
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 3rem;
-      position: relative;
-      overflow-y: auto;
-      border-left: 1px solid var(--border);
-    }
-
-    .form-panel::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .form-panel::-webkit-scrollbar-track {
-      background: var(--dark-surface);
-    }
-
-    .form-panel::-webkit-scrollbar-thumb {
-      background: var(--gold);
-      border-radius: 4px;
-    }
-
-    .auth-tabs {
-      display: flex;
-      gap: 0.5rem;
-      background: var(--dark-surface);
-      padding: 0.5rem;
-      border-radius: 14px;
-      margin-bottom: 2rem;
-    }
-
-    .auth-tab {
-      flex: 1;
-      text-align: center;
-      padding: 0.75rem;
-      border-radius: 10px;
-      text-decoration: none;
-      color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    .auth-tab.active {
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--dark-bg);
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(201,168,76,0.3);
-    }
-
-    .auth-tab:not(.active):hover {
-      color: var(--gold);
-    }
-
-    .form-header {
-      margin-bottom: 2rem;
-    }
-
-    .form-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      font-weight: 500;
-      background: linear-gradient(135deg, #fff, var(--gold-light));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-subtitle {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 18px;
-      height: 18px;
-      color: var(--text-muted);
-      transition: color 0.3s ease;
-    }
-
-    .input-wrapper input {
-      width: 100%;
-      padding: 0.875rem 1rem 0.875rem 2.75rem;
-      background: var(--dark-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text-primary);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .input-wrapper input:focus {
-      outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px var(--gold-dim);
-    }
-
-    .input-wrapper input:focus+.input-icon {
-      color: var(--gold);
-    }
-
-    .input-wrapper input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: color 0.3s ease;
-    }
-
-    .toggle-password:hover {
-      color: var(--gold);
-    }
-
-    /* Password Strength */
-    .strength-bar {
-      display: flex;
-      gap: 4px;
-      margin-top: 8px;
-    }
-
-    .strength-segment {
-      flex: 1;
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
-    .strength-segment.weak { background: var(--error); }
-    .strength-segment.fair { background: #E09F3E; }
-    .strength-segment.good { background: #70B8FF; }
-    .strength-segment.strong { background: var(--success); }
-
-    .strength-text {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* Terms */
-    .terms-wrapper {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      margin: 1.5rem 0;
-      cursor: pointer;
-    }
-
-    .terms-wrapper input {
       display: none;
     }
 
-    .terms-checkmark {
-      width: 18px;
-      height: 18px;
-      border: 1.5px solid var(--border);
-      border-radius: 5px;
-      background: var(--dark-surface);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-      transition: all 0.3s ease;
-    }
-
-    .terms-wrapper input:checked+.terms-checkmark {
-      background: var(--gold);
-      border-color: var(--gold);
-    }
-
-    .terms-wrapper input:checked+.terms-checkmark::after {
-      content: '';
-      width: 10px;
-      height: 6px;
-      border-left: 2px solid var(--dark-bg);
-      border-bottom: 2px solid var(--dark-bg);
-      transform: rotate(-45deg) translateY(-1px);
-    }
-
-    .terms-text {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-    }
-
-    .terms-text a {
-      color: var(--gold);
-      text-decoration: none;
-    }
-
-    .terms-text a:hover {
-      text-decoration: underline;
-    }
-
-    .btn-submit {
+    .form-panel {
       width: 100%;
-      padding: 0.875rem;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      border: none;
-      border-radius: 12px;
-      color: var(--dark-bg);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
     }
+  }
 
-    .btn-submit::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s ease;
+  @media (max-width: 560px) {
+    .form-panel {
+      padding: 2rem 1.5rem;
     }
-
-    .btn-submit:hover::before {
-      left: 100%;
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(201, 168, 76, 0.4);
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-    }
-
-    .divider-text {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .btn-google {
-      width: 100%;
-      padding: 0.875rem;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text-primary);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-
-    .btn-google:hover {
-      border-color: var(--gold);
-      background: var(--gold-dim);
-      transform: translateY(-1px);
-    }
-
-    .form-footer {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .form-footer a {
-      color: var(--gold);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    .form-footer a:hover {
-      color: var(--gold-light);
-      text-decoration: underline;
-    }
-
-    .error-message {
-      background: rgba(224, 82, 82, 0.1);
-      border: 1px solid rgba(224, 82, 82, 0.3);
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1.5rem;
-      color: var(--error);
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 900px) {
-      .brand-panel {
-        display: none;
-      }
-      .form-panel {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .form-panel {
-        padding: 2rem 1.5rem;
-      }
-    }
+  }
   </style>
 </head>
 
@@ -586,12 +627,13 @@
   <div class="brand-panel animate-fade">
     <div class="brand-logo">
       <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
-          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
-          <line x1="6" y1="1" x2="6" y2="4"/>
-          <line x1="10" y1="1" x2="10" y2="4"/>
-          <line x1="14" y1="1" x2="14" y2="4"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+          <line x1="6" y1="1" x2="6" y2="4" />
+          <line x1="10" y1="1" x2="10" y2="4" />
+          <line x1="14" y1="1" x2="14" y2="4" />
         </svg>
       </div>
       <span class="logo-text">NONGKI</span>
@@ -609,7 +651,8 @@
         <div class="benefit-item">
           <div class="benefit-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           </div>
           <span class="benefit-text">Akses 50+ menu kopi & non-kopi pilihan</span>
@@ -626,7 +669,8 @@
         <div class="benefit-item">
           <div class="benefit-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
           </div>
           <span class="benefit-text">Simpan favorit dan riwayat pesananmu</span>
@@ -664,7 +708,7 @@
       @csrf
 
       <div class="form-group animate-slide delay-3">
-        <label class="form-label" for="name">Nama Lengkap</label>
+        <label class="form-label" for="name">Nama</label>
         <div class="input-wrapper">
           <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -686,12 +730,13 @@
       </div>
 
       <div class="form-group animate-slide delay-4">
-        <label class="form-label" for="phone">Nomor HP <span style="font-weight:400;text-transform:none;">(opsional)</span></label>
+        <label class="form-label" for="phone">Nomor HP </label>
         <div class="input-wrapper">
           <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6.5-6.5 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6.5-6.5 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
           </svg>
-          <input type="tel" id="phone" name="phone" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}">
+          <input type="tel" id="phone" name="phone_number" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}">
         </div>
       </div>
 
@@ -727,7 +772,8 @@
             <rect x="3" y="11" width="18" height="11" rx="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password" required>
+          <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password"
+            required>
           <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -741,7 +787,8 @@
         <input type="checkbox" name="terms" required>
         <span class="terms-checkmark"></span>
         <span class="terms-text">
-          Dengan mendaftar, saya menyetujui <a href="#">Syarat & Ketentuan</a> serta <a href="#">Kebijakan Privasi</a> NONGKI Coffee.
+          Dengan mendaftar, saya menyetujui <a href="#">Syarat & Ketentuan</a> serta <a href="#">Kebijakan Privasi</a>
+          NONGKI Coffee.
         </span>
       </label>
 
@@ -759,10 +806,14 @@
 
     <a href="{{ route('google.login') }}" class="btn-google animate-slide delay-6">
       <svg width="18" height="18" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+        <path fill="#4285F4"
+          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+        <path fill="#34A853"
+          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+        <path fill="#FBBC05"
+          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+        <path fill="#EA4335"
+          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
       </svg>
       Daftar dengan Google
     </a>
@@ -773,46 +824,49 @@
   </div>
 
   <script>
-    function togglePassword(id, element) {
-      const input = document.getElementById(id);
-      const type = input.type === 'password' ? 'text' : 'password';
-      input.type = type;
-      element.style.color = type === 'text' ? 'var(--gold)' : 'var(--text-muted)';
-      
-      const svg = element.querySelector('svg');
-      if (type === 'text') {
-        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><line x1="3" y1="3" x2="21" y2="21"/><circle cx="12" cy="12" r="3"/>';
-      } else {
-        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-      }
+  function togglePassword(id, element) {
+    const input = document.getElementById(id);
+    const type = input.type === 'password' ? 'text' : 'password';
+    input.type = type;
+    element.style.color = type === 'text' ? 'var(--gold)' : 'var(--text-muted)';
+
+    const svg = element.querySelector('svg');
+    if (type === 'text') {
+      svg.innerHTML =
+        '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><line x1="3" y1="3" x2="21" y2="21"/><circle cx="12" cy="12" r="3"/>';
+    } else {
+      svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  function checkStrength(val) {
+    const segs = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document
+      .getElementById('s4')
+    ];
+    const label = document.getElementById('strength-label');
+
+    if (!val) {
+      segs.forEach(s => s.className = 'strength-segment');
+      label.textContent = 'Masukkan password';
+      return;
     }
 
-    function checkStrength(val) {
-      const segs = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')];
-      const label = document.getElementById('strength-label');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
 
-      if (!val) {
-        segs.forEach(s => s.className = 'strength-segment');
-        label.textContent = 'Masukkan password';
-        return;
-      }
+    const levels = ['weak', 'fair', 'good', 'strong'];
+    const texts = ['Lemah', 'Cukup', 'Baik', 'Kuat'];
 
-      let score = 0;
-      if (val.length >= 8) score++;
-      if (/[A-Z]/.test(val)) score++;
-      if (/[0-9]/.test(val)) score++;
-      if (/[^A-Za-z0-9]/.test(val)) score++;
+    segs.forEach((s, i) => {
+      s.className = 'strength-segment' + (i < score ? ' ' + levels[score - 1] : '');
+    });
 
-      const levels = ['weak', 'fair', 'good', 'strong'];
-      const texts = ['Lemah', 'Cukup', 'Baik', 'Kuat'];
-
-      segs.forEach((s, i) => {
-        s.className = 'strength-segment' + (i < score ? ' ' + levels[score - 1] : '');
-      });
-
-      label.textContent = 'Kekuatan: ' + (texts[score - 1] || 'Sangat lemah');
-      label.style.color = score >= 3 ? 'var(--success)' : score >= 2 ? 'var(--gold)' : 'var(--error)';
-    }
+    label.textContent = 'Kekuatan: ' + (texts[score - 1] || 'Sangat lemah');
+    label.style.color = score >= 3 ? 'var(--success)' : score >= 2 ? 'var(--gold)' : 'var(--error)';
+  }
   </script>
 </body>
 

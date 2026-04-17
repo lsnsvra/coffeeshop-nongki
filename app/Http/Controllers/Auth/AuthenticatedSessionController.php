@@ -8,12 +8,15 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
+use Carbon\Carbon;
+use App\Mail\SendOtpMail;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Menampilkan halaman form login biasa (Email & Password).
      */
     public function create(): View
     {
@@ -21,19 +24,55 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Memproses request login dan mengirimkan OTP ke Email.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // 1. Validasi Email & Password
         $request->authenticate();
 
-        $request->session()->regenerate();
+        // 2. Ambil data User yang baru saja berhasil login
+        // (Baris komentar di bawah ini wajib ada untuk menghilangkan garis merah di VS Code)
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // 3. Generate Kode OTP (6 Digit)
+        $otp = rand(100000, 999999);
+
+        // 4. Update data OTP User di Database dengan timezone Jakarta
+        $user->update([
+            'two_factor_code' => $otp,
+            'two_factor_expires_at' => Carbon::now('Asia/Jakarta')->addMinutes(5),
+        ]);
+
+        // 5. Kirim Email OTP (Gunakan $user->Email sesuai nama kolom di database kamu)
+        try {
+            Mail::to($user->Email)->send(new SendOtpMail($otp));
+        } catch (\Exception $e) {
+            // Jika butuh debugging email, buka komentar di bawah ini:
+            // dd($e->getMessage());
+        }
+
+        // 6. Ambil ID User sebelum logout (Gunakan UserID sesuai database kamu)
+        $id_user = $user->UserID;
+        
+        // 7. LOGOUT SEMENTARA (Agar user tidak bisa potong jalan ke dashboard)
+        Auth::logout();
+
+        // 8. Bersihkan session lama untuk keamanan 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // 9. SIMPAN ID KE SESSION BARU (Posisinya harus di sini agar tidak terhapus)
+        session(['2fa_user_id' => $id_user]);
+
+        // 10. Lempar ke halaman verifikasi OTP EMAIL dengan pesan sukses
+        return redirect()->route('otp.email.verify.form')
+            ->with('message', 'Kode verifikasi keamanan telah dikirim ke email Anda.');
     }
 
     /**
-     * Destroy an authenticated session.
+     * Memproses Logout user dari sistem.
      */
     public function destroy(Request $request): RedirectResponse
     {

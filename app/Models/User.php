@@ -21,11 +21,14 @@ class User extends Authenticatable
         'email',
         'google_id',
         'Password',
+        'phone_number',
         'Role',
         'Status',
         'IsDeleted',
         'CreatedDate',
         'LastUpdatedDate',
+        'two_factor_code',
+        'two_factor_expires_at',
     ];
 
     protected $hidden = [
