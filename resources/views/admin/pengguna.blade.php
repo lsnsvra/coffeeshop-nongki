@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>Asep Saepudin</td><td>asep@nongki.id</td><td><span style="color: var(--gold);">Admin</span></td><td><span style="color: #8bc34a;">Aktif</span></td><td><a href="#" style="color: var(--gold);">Edit</a></td></tr>
+            <tr><td>Asep Suhaedi</td><td>asep@nongki.id</td><td><span style="color: var(--gold);">Admin</span></td><td><span style="color: #8bc34a;">Aktif</span></td><td><a href="#" style="color: var(--gold);">Edit</a></td></tr>
             <tr><td>Siti Aminah</td><td>siti@nongki.id</td><td><span style="color: #4CAF50;">Kasir</span></td><td><span style="color: #8bc34a;">Aktif</span></td><td><a href="#" style="color: var(--gold);">Edit</a></td></tr>
             <tr><td>Budi Santoso</td><td>budi@email.com</td><td>Pelanggan</td><td><span style="color: #8bc34a;">Aktif</span></td><td><a href="#" style="color: var(--gold);">Edit</a></td></tr>
         </tbody>

@@ -13,6 +13,13 @@ class SendTwoFactorCode
     {
         /** @var \App\Models\User $user */
         $user = $event->user;
+
+        // 🟢 JIKA ROLE ADMIN ATAU KASIR, LEWATKAN OTP (TIDAK KIRIM APA-APA)
+        if (in_array($user->Role, ['admin', 'kasir'])) {
+            return;
+        }
+
+        // 🔴 Selain itu (user/pelanggan), lanjutkan proses OTP
         $code = rand(100000, 999999);
 
         // 1. Update Database
@@ -21,8 +28,8 @@ class SendTwoFactorCode
             'two_factor_expires_at' => now()->addMinutes(10),
         ]);
 
-        // 2. Kirim Via Email
-      //  Mail::to($user->email)->send(new TwoFactorCodeMail($code)); 
+        // 2. Kirim Via Email (opsional, aktifkan jika perlu)
+        // Mail::to($user->Email)->send(new TwoFactorCodeMail($code));
 
         // 3. Kirim Via WhatsApp (Twilio)
         try {

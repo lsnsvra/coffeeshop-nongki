@@ -24,54 +24,57 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Memproses request login dan mengirimkan OTP ke Email.
+     * Memproses request login.
+     * - Admin & Kasir: langsung redirect tanpa OTP.
+     * - User biasa: dikirim OTP dan diarahkan ke halaman verifikasi.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // 1. Validasi Email & Password
+        // 1. Validasi Email & Password (otomatis login)
         $request->authenticate();
+        $request->session()->regenerate();
 
-        // 2. Ambil data User yang baru saja berhasil login
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 3. Generate Kode OTP (6 Digit)
+        // 2. Jika role adalah admin atau kasir, langsung redirect tanpa OTP
+        if (in_array($user->Role, ['admin', 'kasir'])) {
+            return $this->authenticated($request, $user);
+        }
+
+        // 3. Untuk role selain admin/kasir (misal: user/pelanggan), lanjutkan proses OTP
         $otp = rand(100000, 999999);
 
-        // 4. Update data OTP User di Database dengan timezone Jakarta
         $user->update([
-            'two_factor_code' => $otp,
+            'two_factor_code'       => $otp,
             'two_factor_expires_at' => Carbon::now('Asia/Jakarta')->addMinutes(5),
         ]);
 
-        // 5. Kirim Email OTP
+        // 4. Kirim Email OTP
         try {
             Mail::to($user->Email)->send(new SendOtpMail($otp));
         } catch (\Exception $e) {
             // Abaikan error email untuk development
         }
 
-        // 6. Ambil ID User sebelum logout
+        // 5. Ambil ID User sebelum logout
         $id_user = $user->UserID;
 
-        // 7. LOGOUT SEMENTARA (Agar user tidak bisa potong jalan ke dashboard)
+        // 6. LOGOUT SEMENTARA (agar user tidak bisa langsung ke dashboard)
         Auth::logout();
-
-        // 8. Bersihkan session lama
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // 9. SIMPAN ID KE SESSION BARU
+        // 7. Simpan ID user ke session baru untuk verifikasi OTP
         session(['2fa_user_id' => $id_user]);
 
-        // 10. Lempar ke halaman verifikasi OTP EMAIL
+        // 8. Arahkan ke halaman verifikasi OTP email
         return redirect()->route('otp.email.verify.form')
             ->with('message', 'Kode verifikasi keamanan telah dikirim ke email Anda.');
     }
 
     /**
-     * (Method ini sudah tidak dipanggil langsung dari store(),
-     *  tapi tetap dipertahankan untuk digunakan setelah verifikasi OTP berhasil)
+     * Redirect setelah autentikasi berhasil berdasarkan role.
      */
     protected function authenticated(Request $request, $user)
     {
@@ -92,7 +95,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
