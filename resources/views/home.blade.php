@@ -671,12 +671,6 @@
             </div>
         </div>
     </div>
-    <div class="btn-view-all animate-up delay-4">
-        <a href="{{ route('menu.index') }}">
-            Lihat Semua Menu
-            <i class="fas fa-arrow-right"></i>
-        </a>
-    </div>
 </section>
 
     <!-- CTA Section -->
