@@ -176,3 +176,11 @@ Route::get('/optimize', function() {
     Artisan::call('cache:clear');
     return "Konfigurasi berhasil diperbarui!";
 });
+
+Route::get('/clear-cache', function() {
+    Artisan::call('config:clear'); // Pakai clear saja
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    return "Cache cleared and Config is fresh!";
+});
