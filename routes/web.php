@@ -167,3 +167,13 @@ Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->grou
 // ROUTE AUTH (LARAVEL BAWAAN - REGISTER, LOGIN, DLL)
 // ============================================================
 require __DIR__.'/auth.php';
+
+// Tambahkan di bagian paling bawah file routes/web.php
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/up', function() {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    return "Konfigurasi Berhasil Diperbarui!";
+});
