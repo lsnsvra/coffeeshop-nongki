@@ -140,6 +140,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/pengguna', function () {
         return view('admin.pengguna');
     })->name('pengguna');
+
+    Route::get('/notifikasi', function () {
+    return view('admin.notifikasi');
+    })->name('notifikasi');
+
 });
 
 // ============================================================
