@@ -346,7 +346,7 @@
         </a>
 
         {{-- Role badge tampil di samping logo --}}
-        @auth
+       @auth
             @if($userRole === 'admin')
                 <span class="header-role-badge role-badge-admin">
                     <i class="fa-solid fa-shield-halved" style="font-size:0.65rem;"></i> Admin
@@ -354,10 +354,6 @@
             @elseif($userRole === 'kasir')
                 <span class="header-role-badge role-badge-kasir">
                     <i class="fa-solid fa-cash-register" style="font-size:0.65rem;"></i> Kasir
-                </span>
-            @else
-                <span class="header-role-badge role-badge-user">
-                    <i class="fa-solid fa-user" style="font-size:0.65rem;"></i> Pelanggan
                 </span>
             @endif
         @endauth
