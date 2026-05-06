@@ -87,10 +87,6 @@
         font-weight: 600;
     }
 
-    .filter-bar .ms-auto {
-        margin-left: auto;
-    }
-
     .sort-select {
         padding: 0.4rem 0.8rem;
         background: var(--dark-3);
@@ -149,10 +145,11 @@
         pointer-events: none;
     }
 
+    /* Badge ditaruh di kanan agar tidak tumpang tindih dengan favorit */
     .menu-badge {
         position: absolute;
         top: 8px;
-        left: 8px;
+        right: 8px; 
         z-index: 2;
         padding: 2px 8px;
         border-radius: 20px;
@@ -160,25 +157,15 @@
         font-weight: 600;
     }
 
-    .badge-hot {
-        background: rgba(224,82,82,0.9);
-        color: white;
-    }
+    .badge-hot { background: rgba(224,82,82,0.9); color: white; }
+    .badge-new { background: var(--gold); color: var(--dark); }
+    .badge-fav { background: rgba(82,183,136,0.9); color: white; }
 
-    .badge-new {
-        background: var(--gold);
-        color: var(--dark);
-    }
-
-    .badge-fav {
-        background: rgba(82,183,136,0.9);
-        color: white;
-    }
-
+    /* Favorit ditaruh di kiri (Aksi Kiri) */
     .menu-fav {
         position: absolute;
         top: 8px;
-        right: 8px;
+        left: 8px; 
         z-index: 2;
         width: 28px;
         height: 28px;
@@ -194,20 +181,12 @@
         color: var(--text-muted-c);
     }
 
-    .menu-fav:hover {
+    .menu-fav:hover, .menu-fav.liked {
         color: #e05252;
         border-color: #e05252;
     }
 
-    .menu-fav.liked {
-        color: #e05252;
-        border-color: #e05252;
-    }
-
-    .menu-fav svg {
-        width: 14px;
-        height: 14px;
-    }
+    .menu-fav svg { width: 14px; height: 14px; }
 
     .menu-price-overlay {
         position: absolute;
@@ -223,9 +202,7 @@
         border-radius: 20px;
     }
 
-    .menu-body {
-        padding: 0.75rem;
-    }
+    .menu-body { padding: 0.75rem; }
 
     .menu-name {
         font-size: 0.9rem;
@@ -263,15 +240,8 @@
         color: var(--gold);
     }
 
-    .menu-rating svg {
-        width: 12px;
-        height: 12px;
-        fill: var(--gold);
-    }
-
-    .menu-rating span {
-        color: var(--text-muted-c);
-    }
+    .menu-rating svg { width: 12px; height: 12px; fill: var(--gold); }
+    .menu-rating span { color: var(--text-muted-c); }
 
     .btn-add {
         width: 28px;
@@ -287,10 +257,7 @@
         color: var(--dark);
     }
 
-    .btn-add svg {
-        width: 14px;
-        height: 14px;
-    }
+    .btn-add svg { width: 14px; height: 14px; }
 
     .btn-add:hover {
         background: var(--gold-light);
@@ -302,28 +269,14 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem;
         }
-        .filter-bar .ms-auto {
-            width: 100%;
-        }
-        .sort-select {
-            width: 100%;
-        }
-        .menu-img-wrap {
-            height: 120px;
-        }
-        .menu-name {
-            font-size: 0.8rem;
-        }
-        .menu-desc {
-            font-size: 0.65rem;
-            -webkit-line-clamp: 1;
-        }
+        .sort-select { width: 100%; }
+        .menu-img-wrap { height: 120px; }
+        .menu-name { font-size: 0.8rem; }
+        .menu-desc { font-size: 0.65rem; -webkit-line-clamp: 1; }
     }
 
     @media (max-width: 400px) {
-        .menu-grid {
-            grid-template-columns: 1fr;
-        }
+        .menu-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endpush
@@ -337,6 +290,15 @@
         </div>
     </div>
 
+    @section('search_bar')
+<div class="header-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" placeholder="Cari menu, pesanan...">
+</div>
+@endsection
+
     <!-- Filter Bar -->
     <div class="filter-bar">
         <button class="filter-pill active" onclick="filterMenu('semua', this)">Semua</button>
@@ -344,7 +306,8 @@
         <button class="filter-pill" onclick="filterMenu('non-kopi', this)">Non-Kopi</button>
         <button class="filter-pill" onclick="filterMenu('makanan', this)">Makanan</button>
 
-        <div class="ms-auto">
+        <!-- Dropdown Sort (Aksi ditarik ke kiri karena class ms-auto dihapus) -->
+        <div>
             <select class="sort-select" id="sortSelect">
                 <option value="default">Terpopuler</option>
                 <option value="price_asc">Harga Terendah</option>
@@ -354,71 +317,123 @@
         </div>
     </div>
 
-    <!-- Menu Grid -->
+   <!-- Menu Grid dari Database -->
     <div class="menu-grid" id="menuGrid">
+        @foreach($products as $product)
         @php
-        // Daftar menu lengkap dengan path gambar yang dipastikan ada (Caramel Latte dihapus)
-        $menus = [
-            // KOPI
-            ['id'=>1, 'name'=>'Americano','cat'=>'kopi','desc'=>'Double shot espresso dengan hot water. Simple, kuat, sempurna.','price'=>28000,'price_str'=>'Rp 28.000','rating'=>4.6,'count'=>198,'badge'=>null,'img'=>'images/products/americano.jpeg'],
-            ['id'=>2, 'name'=>'Coffee Milk Aren Sugar','cat'=>'kopi','desc'=>'Kopi susu dengan gula aren, manis dan creamy.','price'=>35000,'price_str'=>'Rp 35.000','rating'=>4.7,'count'=>215,'badge'=>null,'img'=>'images/products/coffe_milk_aren_sugar.jpeg'],
-            ['id'=>3, 'name'=>'Coffee Milk Pandan','cat'=>'kopi','desc'=>'Kopi susu dengan aroma pandan yang harum.','price'=>35000,'price_str'=>'Rp 35.000','rating'=>4.6,'count'=>178,'badge'=>'new','img'=>'images/products/coffe_milk_pandan.jpeg'],
-            ['id'=>4, 'name'=>'Hazelnut Coffee','cat'=>'kopi','desc'=>'Kopi dengan sentuhan rasa hazelnut yang khas.','price'=>40000,'price_str'=>'Rp 40.000','rating'=>4.8,'count'=>234,'badge'=>null,'img'=>'images/products/halzenutt_coffe.jpeg'],
-            ['id'=>5, 'name'=>'Machiatto','cat'=>'kopi','desc'=>'Espresso dengan busa susu yang lembut.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.7,'count'=>156,'badge'=>null,'img'=>'images/products/machiatto.jpeg'],
-            ['id'=>6, 'name'=>'Vanilla Latte','cat'=>'kopi','desc'=>'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.','price'=>38000,'price_str'=>'Rp 38.000','rating'=>4.8,'count'=>156,'badge'=>null,'img'=>'images/products/vanilla_latte.jpeg'],
+            // Trik PHP: Menentukan kategori secara otomatis berdasarkan nama menu
+            $kategori = 'kopi'; // Defaultnya kita anggap kopi
             
-            // NON KOPI
-            ['id'=>7, 'name'=>'Matcha Latte','cat'=>'non-kopi','desc'=>'Matcha premium Jepang dengan oat milk yang creamy.','price'=>45000,'price_str'=>'Rp 45.000','rating'=>4.9,'count'=>241,'badge'=>'fav','img'=>'images/products/matcha_latte.jpeg'],
-            ['id'=>8, 'name'=>'Chocolate Avocado','cat'=>'non-kopi','desc'=>'Perpaduan coklat dan alpukat yang creamy.','price'=>40000,'price_str'=>'Rp 40.000','rating'=>4.5,'count'=>89,'badge'=>'new','img'=>'images/products/chocolate_avocado.jpeg'],
-            ['id'=>9, 'name'=>'Chocolate Drink','cat'=>'non-kopi','desc'=>'Minuman coklat hangat yang nikmat.','price'=>30000,'price_str'=>'Rp 30.000','rating'=>4.6,'count'=>112,'badge'=>null,'img'=>'images/products/chocolate.jpeg'],
-            ['id'=>10, 'name'=>'Mango Smoothie','cat'=>'non-kopi','desc'=>'Smoothie mangga segar dengan potongan buah asli.','price'=>35000,'price_str'=>'Rp 35.000','rating'=>4.7,'count'=>98,'badge'=>null,'img'=>'images/products/manggo_smoothie.jpeg'],
-            
-            // MAKANAN
-            ['id'=>11, 'name'=>'Baked Macaroni','cat'=>'makanan','desc'=>'Macaroni panggang dengan keju leleh.','price'=>32000,'price_str'=>'Rp 32.000','rating'=>4.6,'count'=>145,'badge'=>null,'img'=>'images/products/baked_macaroni.jpeg'],
-            ['id'=>12, 'name'=>'Chicken Katsu Curry','cat'=>'makanan','desc'=>'Chicken katsu dengan saus kari Jepang.','price'=>45000,'price_str'=>'Rp 45.000','rating'=>4.8,'count'=>167,'badge'=>'hot','img'=>'images/products/chicken_katsu_curry.jpeg'],
-            ['id'=>13, 'name'=>'Enoki Crispy','cat'=>'makanan','desc'=>'Jamur enoki goreng crispy.','price'=>25000,'price_str'=>'Rp 25.000','rating'=>4.5,'count'=>89,'badge'=>null,'img'=>'images/products/enoki_crispy.jpeg'],
-            ['id'=>14, 'name'=>'French Fries','cat'=>'makanan','desc'=>'Kentang goreng crispy dengan saus pilihan.','price'=>22000,'price_str'=>'Rp 22.000','rating'=>4.6,'count'=>234,'badge'=>null,'img'=>'images/products/french_fries.jpeg'],
-            ['id'=>15, 'name'=>'Noodles','cat'=>'makanan','desc'=>'Mie goreng spesial dengan topping.','price'=>28000,'price_str'=>'Rp 28.000','rating'=>4.5,'count'=>98,'badge'=>null,'img'=>'images/products/noodles.jpeg'],
-        ];
+            // Daftar menu yang masuk non-kopi
+            $nonKopi = ['Matcha Latte', 'Chocolate Drink', 'Chocolate Avocado', 'Manggo Smoothie'];
+            // Daftar menu yang masuk makanan
+            $makanan = ['French Fries', 'Baked Macaroni', 'Chicken Katsu Curry', 'Enoki Crispy', 'Noodles'];
+
+            // Cek apakah nama menu ada di dalam daftar di atas
+            if (in_array($product->NamaKopi, $nonKopi)) {
+                $kategori = 'non-kopi';
+            } elseif (in_array($product->NamaKopi, $makanan)) {
+                $kategori = 'makanan';
+            }
         @endphp
 
-        @foreach($menus as $menu)
-        <div class="menu-card" data-cat="{{ $menu['cat'] }}" data-id="{{ $menu['id'] }}" data-name="{{ $menu['name'] }}" data-price="{{ $menu['price'] }}" data-img="{{ asset($menu['img']) }}">
+        <!-- Perhatikan data-cat sekarang menggunakan variabel $kategori dari trik di atas -->
+        <div class="menu-card" data-cat="{{ $kategori }}" data-id="{{ $product->id ?? $loop->iteration }}" data-name="{{ $product->NamaKopi }}" data-price="{{ $product->Harga }}">
             <div class="menu-img-wrap">
-                <img class="menu-img" src="{{ asset($menu['img']) }}" alt="{{ $menu['name'] }}" loading="lazy" 
-                     onerror="this.src='https://placehold.co/400x200?text=' + encodeURIComponent('{{ $menu['name'] }}')">
+                <img class="menu-img" src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->NamaKopi }}" loading="lazy" 
+                     onerror="this.src='https://placehold.co/400x200?text=' + encodeURIComponent('{{ $product->NamaKopi }}')">
 
-                @if($menu['badge'])
-                <span class="menu-badge badge-{{ $menu['badge'] }}">
-                    {{ $menu['badge'] === 'hot' ? '🔥 Hot' : ($menu['badge'] === 'new' ? '✨ Baru' : '⭐ Favorit') }}
-                </span>
-                @endif
-
-                <button class="menu-fav" onclick="handleFavClick(this, {{ $menu['id'] }}, '{{ addslashes($menu['name']) }}', {{ $menu['price'] }}, '{{ asset($menu['img']) }}')">
+                <!-- 1. Tombol Favorit (Aksi Kiri) -->
+                <button class="menu-fav" onclick="handleFavClick(this, {{ $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </button>
 
-                <span class="menu-price-overlay">{{ $menu['price_str'] }}</span>
+                <span class="menu-price-overlay">Rp {{ number_format($product->Harga, 0, ',', '.') }}</span>
             </div>
 
             <div class="menu-body">
-                <div class="menu-name">{{ $menu['name'] }}</div>
-                <div class="menu-desc">{{ $menu['desc'] }}</div>
+                <div class="menu-name">{{ $product->NamaKopi }}</div>
+             @php
+                    // Default deskripsi diubah jadi "Menu" biar aman kalau ada makanan baru
+                    $desc = 'Menu spesial dari NONGKI yang disajikan segar setiap hari.';
+                    $rating = '4.6';
+                    $count = rand(80, 250); // Angka ulasan acak biar terlihat natural
+                    
+                    $nama_lower = strtolower($product->NamaKopi);
+
+                    // KOPI
+                    if (str_contains($nama_lower, 'americano')) {
+                        $desc = 'Double shot espresso dengan hot water. Simple, kuat, sempurna.';
+                        $rating = '4.6';
+                    } elseif (str_contains($nama_lower, 'aren')) {
+                        $desc = 'Kopi susu dengan gula aren, manis dan creamy.';
+                        $rating = '4.7';
+                    } elseif (str_contains($nama_lower, 'pandan')) {
+                        $desc = 'Kopi susu dengan aroma pandan yang harum.';
+                        $rating = '4.6';
+                    } elseif (str_contains($nama_lower, 'hazelnut') || str_contains($nama_lower, 'halzenut')) {
+                        $desc = 'Kopi dengan sentuhan rasa hazelnut yang khas.';
+                        $rating = '4.8';
+                    } elseif (str_contains($nama_lower, 'macchiato') || str_contains($nama_lower, 'machiatto')) {
+                        $desc = 'Espresso dengan busa susu yang lembut.';
+                        $rating = '4.7';
+                    } elseif (str_contains($nama_lower, 'vanilla')) {
+                        $desc = 'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.';
+                        $rating = '4.8';
+                    } 
+                    // NON-KOPI
+                    elseif (str_contains($nama_lower, 'matcha')) {
+                        $desc = 'Matcha premium Jepang dengan oat milk yang creamy.';
+                        $rating = '4.9';
+                    } elseif (str_contains($nama_lower, 'chocolate avocado')) {
+                        $desc = 'Perpaduan coklat dan alpukat yang creamy.';
+                        $rating = '4.5';
+                    } elseif (str_contains($nama_lower, 'chocolate')) {
+                        $desc = 'Minuman coklat hangat yang nikmat.';
+                        $rating = '4.6';
+                    } elseif (str_contains($nama_lower, 'manggo') || str_contains($nama_lower, 'mango')) {
+                        $desc = 'Smoothie mangga segar dengan potongan buah asli.';
+                        $rating = '4.7';
+                    }
+                    // MAKANAN
+                    elseif (str_contains($nama_lower, 'macaroni')) {
+                        $desc = 'Macaroni panggang dengan keju leleh.';
+                        $rating = '4.6';
+                    } elseif (str_contains($nama_lower, 'katsu')) {
+                        $desc = 'Chicken katsu dengan saus kari Jepang.';
+                        $rating = '4.8';
+                    } elseif (str_contains($nama_lower, 'enoki')) {
+                        $desc = 'Jamur enoki goreng crispy.';
+                        $rating = '4.5';
+                    } elseif (str_contains($nama_lower, 'fries')) {
+                        $desc = 'Kentang goreng crispy dengan saus pilihan.';
+                        $rating = '4.6';
+                    } elseif (str_contains($nama_lower, 'noodle')) {
+                        $desc = 'Mie goreng spesial dengan topping.';
+                        $rating = '4.5';
+                    }
+                @endphp
+
+                <!-- Menggunakan deskripsi buatan dari PHP di atas -->
+                <div class="menu-desc">{{ $desc }}</div>
+                
                 <div class="menu-footer">
-                    <div class="menu-rating">
-                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                        {{ $menu['rating'] }}
-                        <span>({{ $menu['count'] }})</span>
-                    </div>
-                    <button class="btn-add" onclick="addToCart({{ $menu['id'] }}, '{{ addslashes($menu['name']) }}', {{ $menu['price'] }}, '{{ asset($menu['img']) }}', this)">
+                    <!-- Tombol Add (+) (Aksi Kiri) -->
+                    <button class="btn-add" onclick="addToCart({{ $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}', this)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
+                    
+                    <!-- Rating dikembalikan ke format awal dengan angka acak -->
+                    <div class="menu-rating">
+                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        {{ $rating }} <span>({{ $count }})</span>
+                    </div>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
-@endsection
+    @endsection
 
 @push('scripts')
 <script>

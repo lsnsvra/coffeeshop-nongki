@@ -35,6 +35,8 @@
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
   }
+  
+  /* Sesuai request: Tombol Back sudah di kiri */
   .back-btn {
     width: 40px; height: 40px; border-radius: 50%;
     background: var(--bg-card); border: 1px solid var(--border);
@@ -45,7 +47,7 @@
   .back-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
   .page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); }
 
-  /* Filter Tabs */
+  /* Filter Tabs - Tetap di kiri */
   .filter-tabs {
     display: flex; gap: 0.5rem;
     margin-bottom: 1.5rem;
@@ -68,59 +70,87 @@
   .order-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.3rem;
-    margin-bottom: 1rem;
-    transition: border-color 0.2s;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    transition: all 0.3s ease;
     animation: fadeUp 0.4s ease both;
-    cursor: pointer;
   }
-  .order-card:hover { border-color: var(--gold); }
+  .order-card:hover { 
+    border-color: var(--gold); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .order-card:nth-child(1) { animation-delay: 0.04s; }
-  .order-card:nth-child(2) { animation-delay: 0.08s; }
-  .order-card:nth-child(3) { animation-delay: 0.12s; }
-  .order-card:nth-child(4) { animation-delay: 0.16s; }
-  .order-card:nth-child(5) { animation-delay: 0.2s; }
 
   .order-top {
     display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
   }
-  .order-id { font-family: 'Playfair Display', serif; font-size: 1rem; }
+  .order-id { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold-light); }
   .order-date { color: var(--text-muted); font-size: 0.8rem; margin-top: 3px; }
 
+  /* Badge Status - Pindah ke kanan */
   .status-badge {
-    padding: 4px 12px; border-radius: 20px;
-    font-size: 0.75rem; font-weight: 600;
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
-  .status-selesai { background: rgba(39,174,96,0.15); color: var(--green); border: 1px solid rgba(39,174,96,0.3); }
-  .status-proses { background: rgba(230,126,34,0.15); color: var(--orange); border: 1px solid rgba(230,126,34,0.3); }
-  .status-pending { background: rgba(41,128,185,0.15); color: var(--blue); border: 1px solid rgba(41,128,185,0.3); }
-  .status-batal { background: rgba(192,57,43,0.15); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }
+  .status-selesai { background: rgba(39,174,96,0.1); color: var(--green); border: 1px solid rgba(39,174,96,0.2); }
+  .status-proses { background: rgba(230,126,34,0.1); color: var(--orange); border: 1px solid rgba(230,126,34,0.2); }
+  .status-pending { background: rgba(41,128,185,0.1); color: var(--blue); border: 1px solid rgba(41,128,185,0.2); }
+  .status-batal { background: rgba(192,57,43,0.1); color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
 
-  .order-items { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.8rem; }
+  .order-items { 
+    color: var(--text-primary); 
+    font-size: 0.95rem; 
+    margin-bottom: 1.25rem;
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
 
   .order-bottom {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 0.8rem;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding-top: 1rem;
     border-top: 1px solid var(--border);
   }
-  .order-total { color: var(--gold); font-weight: 600; font-size: 1rem; }
+
+  /* REORDER BTN - Pindah ke KIRI */
   .reorder-btn {
-    padding: 6px 16px; border-radius: 8px;
+    padding: 8px 18px; border-radius: 10px;
     border: 1px solid var(--gold);
-    background: transparent;
-    color: var(--gold);
-    font-size: 0.82rem;
+    background: var(--gold);
+    color: #000;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .reorder-btn:hover { background: var(--gold); color: #000; }
+  .reorder-btn:hover { 
+    background: var(--gold-light); 
+    border-color: var(--gold-light);
+    transform: scale(1.05);
+  }
+
+  /* TOTAL - Pindah ke KANAN */
+  .order-total-group {
+    text-align: right;
+  }
+  .total-label { font-size: 0.75rem; color: var(--text-muted); display: block; }
+  .order-total { color: var(--text-primary); font-weight: 700; font-size: 1.1rem; }
 </style>
 @endpush
 
@@ -128,7 +158,7 @@
 <div class="page-container">
   <div class="page-header">
     <a href="{{ url('/') }}" class="back-btn">
-      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
     </a>
     <h1 class="page-title">Riwayat Pesanan</h1>
   </div>
@@ -142,6 +172,7 @@
   </div>
 
   <div id="orderList">
+    <!-- ITEM 1 -->
     <div class="order-card" data-status="selesai">
       <div class="order-top">
         <div>
@@ -152,11 +183,18 @@
       </div>
       <div class="order-items">Latte, Croissant</div>
       <div class="order-bottom">
-        <span class="order-total">Rp 55.000</span>
-        <button class="reorder-btn">Pesan Lagi</button>
+        <button class="reorder-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Pesan Lagi
+        </button>
+        <div class="order-total-group">
+          <span class="total-label">Total Pembayaran</span>
+          <span class="order-total">Rp 55.000</span>
+        </div>
       </div>
     </div>
 
+    <!-- ITEM 2 -->
     <div class="order-card" data-status="proses">
       <div class="order-top">
         <div>
@@ -167,11 +205,18 @@
       </div>
       <div class="order-items">Americano × 2</div>
       <div class="order-bottom">
-        <span class="order-total">Rp 48.000</span>
-        <button class="reorder-btn">Lacak</button>
+        <button class="reorder-btn" style="background: transparent; color: var(--gold);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Lacak Pesanan
+        </button>
+        <div class="order-total-group">
+          <span class="total-label">Total Pembayaran</span>
+          <span class="order-total">Rp 48.000</span>
+        </div>
       </div>
     </div>
 
+    <!-- ITEM 3 -->
     <div class="order-card" data-status="pending">
       <div class="order-top">
         <div>
@@ -182,38 +227,14 @@
       </div>
       <div class="order-items">Matcha, Sandwich</div>
       <div class="order-bottom">
-        <span class="order-total">Rp 72.000</span>
-        <button class="reorder-btn">Detail</button>
-      </div>
-    </div>
-
-    <div class="order-card" data-status="selesai">
-      <div class="order-top">
-        <div>
-          <div class="order-id">#NGK-0238</div>
-          <div class="order-date">2 April 2026 • 16:30</div>
+        <button class="reorder-btn" style="background: transparent; color: var(--gold);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Lihat Detail
+        </button>
+        <div class="order-total-group">
+          <span class="total-label">Total Pembayaran</span>
+          <span class="order-total">Rp 72.000</span>
         </div>
-        <span class="status-badge status-selesai">✓ Selesai</span>
-      </div>
-      <div class="order-items">Cappuccino</div>
-      <div class="order-bottom">
-        <span class="order-total">Rp 32.000</span>
-        <button class="reorder-btn">Pesan Lagi</button>
-      </div>
-    </div>
-
-    <div class="order-card" data-status="batal">
-      <div class="order-top">
-        <div>
-          <div class="order-id">#NGK-0237</div>
-          <div class="order-date">2 April 2026 • 11:05</div>
-        </div>
-        <span class="status-badge status-batal">✕ Dibatalkan</span>
-      </div>
-      <div class="order-items">Cold Brew × 3</div>
-      <div class="order-bottom">
-        <span class="order-total">Rp 90.000</span>
-        <button class="reorder-btn">Pesan Lagi</button>
       </div>
     </div>
   </div>
