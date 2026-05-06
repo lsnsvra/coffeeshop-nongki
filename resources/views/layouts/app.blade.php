@@ -346,7 +346,7 @@
         </a>
 
         {{-- Role badge tampil di samping logo --}}
-        @auth
+       @auth
             @if($userRole === 'admin')
                 <span class="header-role-badge role-badge-admin">
                     <i class="fa-solid fa-shield-halved" style="font-size:0.65rem;"></i> Admin
@@ -355,19 +355,11 @@
                 <span class="header-role-badge role-badge-kasir">
                     <i class="fa-solid fa-cash-register" style="font-size:0.65rem;"></i> Kasir
                 </span>
-            @else
-                <span class="header-role-badge role-badge-user">
-                    <i class="fa-solid fa-user" style="font-size:0.65rem;"></i> Pelanggan
-                </span>
             @endif
         @endauth
 
-        <div class="header-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input type="text" placeholder="Cari menu, pesanan...">
-        </div>
+        <!-- Ganti kode pencarian tadi dengan ini -->
+@yield('search_bar')
 
         <div class="header-actions">
             @auth

@@ -170,7 +170,7 @@ class ProductSeeder extends Seeder
             'IsDeleted' => 0,
             'CreatedDate' => now(),
             'LastUpdatedDate' => now(),
-            'image' => 'chiken_katsu_curry.jpeg'
+            'image' => 'chicken_katsu_curry.jpeg'
         ],
         [
             'NamaKopi' => 'Enoki Crispy',
