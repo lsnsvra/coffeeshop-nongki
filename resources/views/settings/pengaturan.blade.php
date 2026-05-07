@@ -1,4 +1,4 @@
-{{-- resources/views/settings/pengaturan.blade.php (Sesuaikan nama file) --}}
+{{-- resources/views/settings/pengaturan.blade.php (pengaturan acc) --}}
 @extends('layouts.app')
 
 @section('title', 'Pengaturan Akun — NONGKI')
@@ -52,14 +52,17 @@
     .settings-header i { color: var(--gold); background: rgba(201, 168, 76, 0.1); padding: 8px; border-radius: 8px; font-size: 1rem; }
 
     .setting-item {
-        display: flex; justify-content: space-between; align-items: center;
+        display: flex; justify-content: flex-start; align-items: center; gap: 1.5rem;
         padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         transition: background 0.3s ease;
     }
     .setting-item:hover { background: rgba(255, 255, 255, 0.02); }
     .setting-item:last-child { border-bottom: none; }
 
-    .setting-info { flex: 1; padding-right: 2rem; }
+    /* PERBAIKAN: Area diperlebar agar tombol tidak terjepit */
+    .setting-action { flex: 0 0 160px; display: flex; justify-content: flex-start; }
+
+    .setting-info { flex: 1; text-align: left; }
     .setting-label { font-weight: 600; font-size: 1rem; color: #f0ece3; margin-bottom: 4px; }
     .setting-desc { font-size: 0.8rem; color: rgba(240, 236, 227, 0.5); line-height: 1.4; }
 
@@ -84,6 +87,7 @@
     .btn-setting {
         padding: 0.6rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 0.85rem;
         cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+        white-space: nowrap; /* PERBAIKAN: Mencegah teks di dalam tombol turun jadi 2 baris */
     }
     .btn-outline-gold {
         background: transparent; border: 1px solid var(--gold); color: var(--gold);
@@ -126,15 +130,14 @@
     .modal-btn-danger { background: #e05252; color: #fff; }
 
     @media (max-width: 768px) {
-        .setting-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
-        .setting-info { padding-right: 0; }
+        .setting-item { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
+        .setting-action { flex: auto; }
     }
 </style>
 @endpush
 
 @section('content')
 <div class="settings-container">
-    <!-- HEADER MODERN -->
     <div class="page-header">
         <div class="breadcrumb-modern">
             <a href="{{ route('home') }}"><i class="fas fa-home"></i> Beranda</a>
@@ -145,63 +148,68 @@
         <p class="page-subtitle">Kelola akses kredensial dan informasi sistem akun NONGKI Anda.</p>
     </div>
 
-    <!-- SECTION 1: KEAMANAN -->
     <div class="settings-card">
         <div class="settings-header">
             <i class="fas fa-shield-alt"></i> Perlindungan Akun
         </div>
         <div class="settings-body">
             <div class="setting-item">
+                <div class="setting-action">
+                    <button class="btn-setting btn-outline-gold" onclick="showNongkiModal('Fitur Terkunci', 'Fitur pengubahan kata sandi saat ini sedang dalam pemeliharaan sistem. Silakan coba lagi nanti.', 'warning', false)">
+                        <i class="fas fa-key"></i> Ubah Sandi
+                    </button>
+                </div>
                 <div class="setting-info">
                     <div class="setting-label">Ubah Kata Sandi</div>
                     <div class="setting-desc">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun dari akses tidak sah.</div>
                 </div>
-                <button class="btn-setting btn-outline-gold" onclick="showNongkiModal('Fitur Terkunci', 'Fitur pengubahan kata sandi saat ini sedang dalam pemeliharaan sistem. Silakan coba lagi nanti.', 'warning', false)">
-                    <i class="fas fa-key"></i> Ubah Sandi
-                </button>
             </div>
             
             <div class="setting-item">
+                <div class="setting-action">
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
                 <div class="setting-info">
                     <div class="setting-label">Verifikasi Dua Langkah (2FA)</div>
                     <div class="setting-desc">Tambahkan lapisan keamanan ekstra. Kami akan meminta kode verifikasi saat Anda login.</div>
                 </div>
-                <label class="toggle-switch">
-                    <input type="checkbox">
-                    <span class="toggle-slider"></span>
-                </label>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 2: TENTANG APLIKASI -->
     <div class="settings-card">
         <div class="settings-header">
             <i class="fas fa-server"></i> Sistem & Data
         </div>
         <div class="settings-body">
             <div class="setting-item">
+                <div class="setting-action">
+                    <span class="version-badge">v1.2.0-stable</span>
+                </div>
                 <div class="setting-info">
                     <div class="setting-label">Versi Aplikasi</div>
                     <div class="setting-desc">Platform Web NONGKI Coffee Shop System</div>
                 </div>
-                <span class="version-badge">v1.2.0-stable</span>
             </div>
             
             <div class="setting-item" style="border-left: 3px solid #e05252;">
-                <div class="setting-info" style="padding-left: 1rem;">
+                <div class="setting-action">
+                    <button class="btn-setting btn-danger-outline" onclick="showNongkiModal('Hapus Akun Permanen?', 'Apakah Anda benar-benar yakin? Semua data pesanan dan poin akan hilang dan tidak dapat dipulihkan.', 'danger', true)">
+                        <i class="fas fa-trash-alt"></i> Hapus Akun
+                    </button>
+                </div>
+                <div class="setting-info">
                     <div class="setting-label" style="color: #e05252;">Hapus Akun Permanen</div>
                     <div class="setting-desc">Tindakan ini akan menghapus seluruh data Anda, termasuk riwayat pesanan dan poin loyalitas secara permanen.</div>
                 </div>
-                <button class="btn-setting btn-danger-outline" onclick="showNongkiModal('Hapus Akun Permanen?', 'Apakah Anda benar-benar yakin? Semua data pesanan dan poin akan hilang dan tidak dapat dipulihkan.', 'danger', true)">
-                    <i class="fas fa-trash-alt"></i> Hapus Akun
-                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- NONGKI CUSTOM MODAL -->
 <div class="nongki-modal-overlay" id="nongkiModal">
     <div class="nongki-modal-box">
         <div id="modalIcon" class="modal-icon"></div>

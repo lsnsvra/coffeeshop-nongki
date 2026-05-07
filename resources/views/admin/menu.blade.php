@@ -101,24 +101,19 @@
 
 @section('content')
 @php
-    // DATA DUMMY LENGKAP
-    $dummyMenus = [
-        ['id'=>1, 'name'=>'Americano','cat'=>'kopi','price'=>'Rp 28.000','img'=>'americano.jpeg'],
-        ['id'=>2, 'name'=>'Coffee Milk Aren Sugar','cat'=>'kopi','price'=>'Rp 35.000','img'=>'coffe_milk_aren_sugar.jpeg'],
-        ['id'=>3, 'name'=>'Coffee Milk Pandan','cat'=>'kopi','price'=>'Rp 35.000','img'=>'coffe_milk_pandan.jpeg'],
-        ['id'=>4, 'name'=>'Hazelnut Coffee','cat'=>'kopi','price'=>'Rp 40.000','img'=>'halzenutt_coffe.jpeg'],
-        ['id'=>5, 'name'=>'Machiatto','cat'=>'kopi','price'=>'Rp 38.000','img'=>'machiatto.jpeg'],
-        ['id'=>6, 'name'=>'Vanilla Latte','cat'=>'kopi','price'=>'Rp 38.000','img'=>'vanilla_latte.jpeg'],
-        ['id'=>7, 'name'=>'Matcha Latte','cat'=>'non-kopi','price'=>'Rp 45.000','img'=>'matcha_latte.jpeg'],
-        ['id'=>8, 'name'=>'Chocolate Avocado','cat'=>'non-kopi','price'=>'Rp 40.000','img'=>'chocolate_avocado.jpeg'],
-        ['id'=>9, 'name'=>'Chocolate Drink','cat'=>'non-kopi','price'=>'Rp 30.000','img'=>'chocolate.jpeg'],
-        ['id'=>10, 'name'=>'Mango Smoothie','cat'=>'non-kopi','price'=>'Rp 35.000','img'=>'manggo_smoothie.jpeg'],
-        ['id'=>11, 'name'=>'Baked Macaroni','cat'=>'makanan','price'=>'Rp 32.000','img'=>'baked_macaroni.jpeg'],
-        ['id'=>12, 'name'=>'Chicken Katsu Curry','cat'=>'makanan','price'=>'Rp 45.000','img'=>'chicken_katsu_curry.jpeg'],
-        ['id'=>13, 'name'=>'Enoki Crispy','cat'=>'makanan','price'=>'Rp 25.000','img'=>'enoki_crispy.jpeg'],
-        ['id'=>14, 'name'=>'French Fries','cat'=>'makanan','price'=>'Rp 22.000','img'=>'french_fries.jpeg'],
-        ['id'=>15, 'name'=>'Noodles','cat'=>'makanan','price'=>'Rp 28.000','img'=>'noodles.jpeg'],
-    ];
+    // 1. Ambil data langsung dari tabel products
+    $menus = \Illuminate\Support\Facades\DB::table('products')->where('IsDeleted', 0)->get();
+
+    // 2. Helper Kategori (Karna di DB products belum ada kolom kategori)
+    function getCategory($name) {
+        $name = strtolower($name);
+        $kopi = ['americano', 'coffee', 'macchiato', 'latte', 'aren', 'pandan'];
+        $makanan = ['macaroni', 'katsu', 'crispy', 'fries', 'noodles', 'noodle'];
+        
+        foreach($kopi as $k) { if(strpos($name, $k) !== false) return 'kopi'; }
+        foreach($makanan as $m) { if(strpos($name, $m) !== false) return 'makanan'; }
+        return 'non-kopi';
+    }
 @endphp
 
 <div class="menu-management-container fade-in-up">
@@ -133,7 +128,7 @@
             <i class="fa-solid fa-plus-circle"></i> Tambah Produk Baru
         </button>
         <div style="color: var(--text-muted-c); font-size: 0.85rem; border-left: 1px solid var(--border); padding-left: 1.5rem;">
-            Total: <strong>{{ count($dummyMenus) }} Produk</strong>
+            Total: <strong>{{ count($menus) }} Produk</strong>
         </div>
     </div>
 
@@ -151,7 +146,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($dummyMenus as $m)
+                    @foreach($menus as $menu)
                     <tr>
                         {{-- AKSI DI KIRI --}}
                         <td class="action-col">
@@ -161,14 +156,14 @@
                             </div>
                         </td>
                         <td>
-                            <img src="{{ asset('images/products/' . $m['img']) }}" class="menu-img-preview" onerror="this.src='https://placehold.co/100x100?text=Food'">
+                            <img src="{{ asset('images/products/' . $menu->image) }}" class="menu-img-preview" onerror="this.src='https://placehold.co/100x100?text=Menu'">
                         </td>
                         <td>
-                            <div style="font-weight: 700; color: var(--cream); font-size: 1rem;">{{ $m['name'] }}</div>
-                            <div style="font-size: 0.7rem; color: var(--gold);">#PROD-{{ str_pad($m['id'], 3, '0', STR_PAD_LEFT) }}</div>
+                            <div style="font-weight: 700; color: var(--cream); font-size: 1rem;">{{ $menu->NamaKopi }}</div>
+                            <div style="font-size: 0.7rem; color: var(--gold);">#PROD-{{ str_pad($menu->id ?? $loop->iteration, 3, '0', STR_PAD_LEFT) }}</div>
                         </td>
-                        <td><span class="cat-badge badge-kopi">{{ $m['cat'] }}</span></td>
-                        <td style="font-weight: 800; color: var(--gold);">{{ $m['price'] }}</td>
+                        <td><span class="cat-badge badge-kopi">{{ getCategory($menu->NamaKopi) }}</span></td>
+                        <td style="font-weight: 800; color: var(--gold);">Rp {{ number_format($menu->Harga, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
