@@ -48,7 +48,6 @@
     .nongki-table td:first-child { border-left: 1px solid rgba(255,255,255,0.02); border-radius: 12px 0 0 12px; }
     .nongki-table td:last-child { border-right: 1px solid rgba(255,255,255,0.02); border-radius: 0 12px 12px 0; }
 
-    /* AVATAR SYSTEM */
     .avatar-circle {
         width: 40px; height: 40px; border-radius: 50%;
         background: var(--dark-4); border: 1px solid var(--gold);
@@ -56,7 +55,6 @@
         font-weight: 700; color: var(--gold); font-size: 0.85rem;
     }
 
-    /* AKSI DI KIRI */
     .action-col { width: 100px; text-align: center; }
     .btn-edit-user {
         background: rgba(201, 168, 76, 0.1); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.3);
@@ -64,7 +62,6 @@
     }
     .btn-edit-user:hover { background: var(--gold); color: var(--dark); }
 
-    /* BADGE DESIGN */
     .badge-role { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
     .role-admin { background: rgba(201, 168, 76, 0.1); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.2); }
     .role-kasir { background: rgba(76, 175, 80, 0.1); color: #8bc34a; border: 1px solid rgba(76, 175, 80, 0.2); }
@@ -80,17 +77,16 @@
         <p style="color: var(--text-muted-c);">Atur hak akses dan profil tim NONGKI Coffee.</p>
     </div>
 
-    {{-- ACTION BAR (LEFT) --}}
     <div class="user-action-bar">
         <button class="btn-add-user">
             <i class="fa-solid fa-user-plus"></i> Tambah Pengguna Baru
         </button>
         <div style="color: var(--text-muted-c); font-size: 0.85rem; border-left: 1px solid var(--border); padding-left: 1.5rem;">
-            Total Terdaftar: <strong>3 Akun</strong>
+            {{-- Tulisan diperbaiki agar tidak ganda --}}
+            Total Terdaftar: <strong>{{ $totalUsers ?? count($users) }} Akun</strong>
         </div>
     </div>
 
-    {{-- TABLE PANEL --}}
     <div class="user-panel">
         <div style="overflow-x: auto;">
             <table class="nongki-table">
@@ -105,41 +101,74 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- ADMIN --}}
-                    <tr>
+                    @foreach($users ?? [] as $user)
+                    <tr class="fade-in-up">
                         <td class="action-col">
                             <button class="btn-edit-user" title="Edit Profil"><i class="fa-solid fa-user-gear"></i></button>
                         </td>
-                        <td><div class="avatar-circle">AS</div></td>
-                        <td><div style="font-weight: 700; color: var(--cream);">Asep Suhaedi</div><div style="font-size: 0.7rem; color: var(--gold);">UID: #001</div></td>
-                        <td style="color: var(--cream-dim);">asep@nongki.id</td>
-                        <td><span class="badge-role role-admin">Admin</span></td>
-                        <td><span class="status-active">Aktif</span></td>
-                    </tr>
-                    
-                    {{-- KASIR --}}
-                    <tr>
-                        <td class="action-col">
-                            <button class="btn-edit-user" title="Edit Profil"><i class="fa-solid fa-user-gear"></i></button>
+                        <td>
+                            <div class="avatar-circle">
+                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                            </div>
                         </td>
-                        <td><div class="avatar-circle" style="color: #8bc34a; border-color: #8bc34a;">SA</div></td>
-                        <td><div style="font-weight: 700; color: var(--cream);">Siti Aminah</div><div style="font-size: 0.7rem; color: var(--gold);">UID: #002</div></td>
-                        <td style="color: var(--cream-dim);">siti@nongki.id</td>
-                        <td><span class="badge-role role-kasir">Kasir</span></td>
-                        <td><span class="status-active">Aktif</span></td>
-                    </tr>
+                        <td>
+                            <div style="font-weight: 700; color: var(--cream);">{{ $user->Nama }}</div>
 
-                    {{-- PELANGGAN --}}
-                    <tr>
-                        <td class="action-col">
-                            <button class="btn-edit-user" title="Edit Profil"><i class="fa-solid fa-user-gear"></i></button>
+                            {{-- Logika Terakhir Online --}}
+                            <div style="font-size: 0.7rem; color: var(--gold); display: flex; align-items: center; gap: 4px;">
+                                <i class="fa-solid fa-clock" style="font-size: 0.6rem;"></i>
+                                
+                                @if($user->LastUpdatedDate)
+                                    @php
+                                        // Kita bandingkan waktu sekarang dengan data di database
+                                        $lastSeen = \Carbon\Carbon::parse($user->LastUpdatedDate);
+                                        $isOnline = $lastSeen->diffInMinutes(now()) < 5; 
+                                    @endphp
+                                    
+                                    @if($isOnline)
+                                        <span style="color: #8bc34a; font-weight: bold;">Sedang Online</span>
+                                    @else
+                                        {{-- DiffForHumans akan otomatis jadi: "2 minutes ago", "1 hour ago", dsb --}}
+                                        Aktif {{ $lastSeen->diffForHumans() }}
+                                    @endif
+                                @else
+                                    <span style="color: var(--text-muted-c);">Belum pernah aktif</span>
+                                @endif
+                            </div>
                         </td>
-                        <td><div class="avatar-circle" style="color: var(--cream-dim); border-color: var(--border);">BS</div></td>
-                        <td><div style="font-weight: 700; color: var(--cream);">Budi Santoso</div><div style="font-size: 0.7rem; color: var(--gold);">UID: #003</div></td>
-                        <td style="color: var(--cream-dim);">budi@email.com</td>
-                        <td><span class="badge-role" style="background: rgba(255,255,255,0.05); color: var(--cream-dim);">Pelanggan</span></td>
-                        <td><span class="status-active">Aktif</span></td>
+                        <td style="color: var(--cream-dim);">{{ $user->Email }}</td>
+                        <td>
+                            {{-- LOGIKA ROLE DENGAN PROTEKSI CASE SENSITIVE --}}
+                            @php $role = strtolower(trim($user->Role)); @endphp
+
+                            @if($role == 'admin')
+                                <span class="badge-role role-admin">Admin</span>
+                            @elseif($role == 'kasir')
+                                <span class="badge-role role-kasir">Kasir</span>
+                            @else
+                                <span class="badge-role" style="background: rgba(255,255,255,0.05); color: var(--cream-dim);">Pelanggan</span>
+                            @endif
+                        </td>
+                      <td>
+                            @php 
+                            $isAktif = (int) $user->Status === 1; 
+                        @endphp
+
+                        @if($isAktif)
+                            <span class="status-active">Aktif</span>
+                        @else
+                            <span class="status-active" style="color: #ff4d4d;">
+                                <i class="fa-solid fa-circle" style="font-size: 8px; color: #ff4d4d; box-shadow: 0 0 8px #ff4d4d;"></i> 
+                                Non-Aktif
+                            </span>
+                            <style>
+                                /* Menghilangkan dot hijau bawaan CSS Asep kalau statusnya merah */
+                                span.status-active[style*="ff4d4d"]::before { display: none; }
+                            </style>
+                        @endif
+                    </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

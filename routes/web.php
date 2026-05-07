@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\OtpController;
 use Illuminate\Support\Facades\Auth;
@@ -137,15 +138,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         return view('admin.menu');
     })->name('menu');
 
-    Route::get('/pengguna', function () {
-        return view('admin.pengguna');
-    })->name('pengguna');
+    Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('pengguna');
 });
 
 // ============================================================
 // ROUTE KASIR (HANYA ROLE KASIR)
 // ============================================================
-Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->group(function () {
+Route::middleware(['auth', 'role:kasir', 'track'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/pos', function () {
         return view('kasir.pos');
     })->name('pos');
