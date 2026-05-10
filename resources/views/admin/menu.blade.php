@@ -128,6 +128,22 @@
 @endpush
 
 @section('content')
+@php
+    // 1. Ambil data langsung dari tabel products
+    $menus = \Illuminate\Support\Facades\DB::table('products')->where('IsDeleted', 0)->get();
+
+    // 2. Helper Kategori (Karna di DB products belum ada kolom kategori)
+    function getCategory($name) {
+        $name = strtolower($name);
+        $kopi = ['americano', 'coffee', 'macchiato', 'latte', 'aren', 'pandan'];
+        $makanan = ['macaroni', 'katsu', 'crispy', 'fries', 'noodles', 'noodle'];
+        
+        foreach($kopi as $k) { if(strpos($name, $k) !== false) return 'kopi'; }
+        foreach($makanan as $m) { if(strpos($name, $m) !== false) return 'makanan'; }
+        return 'non-kopi';
+    }
+@endphp
+
 <div class="menu-management-container fade-in-up">
     <div class="dashboard-header">
         <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold); margin: 0;">Menu Inventory</h1>
@@ -140,6 +156,7 @@
         </button>
         <div style="color: var(--text-muted-c); font-size: 0.85rem; border-left: 1px solid var(--border); padding-left: 1.5rem;">
             Total: <strong>{{ $products->count() }} Produk</strong>
+            Total: <strong>{{ count($menus) }} Produk</strong>
         </div>
     </div>
 
@@ -157,6 +174,7 @@
                 </thead>
                 <tbody>
                     @forelse($products as $p)
+                    @foreach($menus as $menu)
                     <tr>
                         <td>
                             <div class="action-btns">
@@ -199,6 +217,14 @@
                     @empty
                     <tr>
                         <td colspan="5" style="text-align: center; color: var(--text-muted-c); padding: 3rem;">Belum ada data menu di database.</td>
+                            <img src="{{ asset('images/products/' . $menu->image) }}" class="menu-img-preview" onerror="this.src='https://placehold.co/100x100?text=Menu'">
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: var(--cream); font-size: 1rem;">{{ $menu->NamaKopi }}</div>
+                            <div style="font-size: 0.7rem; color: var(--gold);">#PROD-{{ str_pad($menu->id ?? $loop->iteration, 3, '0', STR_PAD_LEFT) }}</div>
+                        </td>
+                        <td><span class="cat-badge badge-kopi">{{ getCategory($menu->NamaKopi) }}</span></td>
+                        <td style="font-weight: 800; color: var(--gold);">Rp {{ number_format($menu->Harga, 0, ',', '.') }}</td>
                     </tr>
                     @endforelse
                 </tbody>
