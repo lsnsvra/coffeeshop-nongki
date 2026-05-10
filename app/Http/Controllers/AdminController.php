@@ -19,5 +19,23 @@ class AdminController extends Controller
         return view('admin.pengguna', compact('users', 'totalUsers'));
     }
 
-    // Kamu bisa tambah fungsi laporan/stok di bawah sini nanti
+    public function toggleStatus($id) {
+    $user = \App\Models\User::where('UserID', $id)->firstOrFail();
+    $user->Status = (int)$user->Status === 1 ? 0 : 1;
+    $user->save();
+    return back()->with('success', 'Status updated!');
+}
+
+        public function updateRole(Request $request, $id) {
+            $user = \App\Models\User::where('UserID', $id)->firstOrFail();
+            $user->Role = $request->Role;
+            $user->save();
+            return back()->with('success', 'Role updated!');
+        }
+
+        public function destroy($id) {
+            $user = \App\Models\User::where('UserID', $id)->firstOrFail();
+            $user->delete();
+            return back()->with('success', 'User deleted!');
+        }
 }
