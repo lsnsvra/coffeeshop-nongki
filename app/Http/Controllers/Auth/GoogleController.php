@@ -19,13 +19,14 @@ class GoogleController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            // 1. Ambil data dari Google (Gunakan nama $googleUser agar tidak bentrok)
+            $googleUser = Socialite::driver('google')->stateless()->user();
             
-            // Cari user berdasarkan email
+            // 2. Cari user di database berdasarkan email
             $user = User::where('email', $googleUser->getEmail())->first();
             
             if (!$user) {
-                // Buat user baru
+                // 3. Buat user baru jika tidak ditemukan
                 $user = User::create([
                     'Nama' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
@@ -38,21 +39,25 @@ class GoogleController extends Controller
                     'LastUpdatedDate' => Carbon::now(),
                 ]);
             } else {
-                // Update google_id jika belum ada
+                // 4. Update google_id jika user sudah ada tapi belum punya link google
                 if (empty($user->google_id)) {
                     $user->google_id = $googleUser->getId();
                     $user->save();
                 }
             }
             
-            // Login user
+            // 5. Login user
             Auth::login($user);
             
-            // Redirect ke dashboard
+            request()->session()->put('user_id', $user->id);
+            request()->session()->save();
+            
+            // 6. Redirect ke dashboard
             return redirect('/dashboard');
             
         } catch (\Exception $e) {
-            return redirect('/login')->with('error', 'Login Google gagal: ' . $e->getMessage());
+            // Tampilkan error jika terjadi masalah
+            dd("Terjadi kesalahan: " . $e->getMessage()); 
         }
     }
 }

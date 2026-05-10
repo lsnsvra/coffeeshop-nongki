@@ -2,49 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory;
-
-    protected $primaryKey = 'ProductID';
-    public $timestamps = false;
-    protected $table = 'products';
-
+    protected $table = 'products'; // Nama tabel di HeidiSQL kamu
+    protected $primaryKey = 'ProductID'; // Primary key kamu bukan 'id' tapi 'ProductID'
+    
+    // Daftar kolom yang boleh diisi
     protected $fillable = [
-        'NamaKopi',
-        'Ukuran',
-        'Harga',
-        'Stok',
-        'CompanyCode',
-        'Status',
-        'IsDeleted',
-        'CreatedBy',
-        'CreatedDate',
-        'LastUpdatedBy',
-        'LastUpdatedDate',
+        'NamaKopi', 
+        'Harga', 
+        'Category', 
+        'Ukuran', 
+        'Stok', 
+        'Image', 
+        'IsDeleted', 
+        'Status'
     ];
-
-    // Accessors for view-friendly names
-    public function getNameAttribute()
-    {
-        return $this->NamaKopi;
-    }
-
-    public function getDescriptionAttribute()
-    {
-        return $this->Ukuran . ' ml';
-    }
-
-    public function getPriceAttribute()
-    {
-        return $this->Harga;
-    }
-
-    public function getStockAttribute()
-    {
-        return $this->Stok;
-    }
+    
+    public $timestamps = false; // Karena di HeidiSQL kamu pakai CreatedDate manual
 }

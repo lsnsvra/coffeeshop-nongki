@@ -3,8 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\Auth\OtpController;
+use App\Http\Controllers\StokController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -113,7 +116,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('otp.resend');
 });
 
-// ============================================================
+/// ============================================================
 // ROUTE ADMIN (HANYA ROLE ADMIN)
 // ============================================================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -121,31 +124,33 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         return view('admin.dashboard');
     })->name('dashboard');
 
-    Route::get('/laporan', function () {
-        return view('admin.laporan');
-    })->name('laporan');
+   
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    
+    Route::get('/menu', [ProductController::class, 'index'])->name('menu');
 
-    Route::get('/laporan/harian', function () {
-        return redirect()->route('admin.laporan', ['filter' => 'harian']);
-    })->name('laporan.harian');
+    Route::delete('/menu/destroy/{id}', [ProductController::class, 'destroy'])->name('menu.destroy');
 
-    Route::get('/stok', function () {
-        return view('admin.stok');
-    })->name('stok');
+    Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('pengguna');
 
-    Route::get('/menu', function () {
-        return view('admin.menu');
-    })->name('menu');
+    Route::post('/menu/store', [ProductController::class, 'store'])->name('menu.store');
+   
+    Route::get('/stok', [StokController::class, 'index'])->name('stok');
+    Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
+    Route::put('/stok/{id}', [StokController::class, 'update'])->name('stok.update');
+    Route::delete('/stok/{id}', [StokController::class, 'destroy'])->name('stok.destroy');
 
-    Route::get('/pengguna', function () {
-        return view('admin.pengguna');
-    })->name('pengguna');
+    
+   
+    Route::post('/user/toggle-status/{id}', [AdminController::class, 'toggleStatus'])->name('user.toggle-status');
+    Route::post('/user/update-role/{id}', [AdminController::class, 'updateRole'])->name('user.update-role');
+    Route::delete('/user/destroy/{id}', [AdminController::class, 'destroy'])->name('user.destroy');
 });
 
 // ============================================================
 // ROUTE KASIR (HANYA ROLE KASIR)
 // ============================================================
-Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->group(function () {
+Route::middleware(['auth', 'role:kasir', 'track'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/pos', function () {
         return view('kasir.pos');
     })->name('pos');
@@ -167,3 +172,20 @@ Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->grou
 // ROUTE AUTH (LARAVEL BAWAAN - REGISTER, LOGIN, DLL)
 // ============================================================
 require __DIR__.'/auth.php';
+
+// Tambahkan di bagian paling bawah file routes/web.php
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/optimize', function() {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    return "Konfigurasi berhasil diperbarui!";
+});
+
+Route::get('/clear-cache', function() {
+    Artisan::call('config:clear'); // Pakai clear saja
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    return "Cache cleared and Config is fresh!";
+});
