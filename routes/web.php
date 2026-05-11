@@ -17,13 +17,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 })->name('home');
-// ============================================================
-// ROUTE MENU & PRODUCT
-// ============================================================
-Route::get('/menu', [ProductController::class, 'index'])->name('menu.index');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // ============================================================
+// ROUTE MENU & PRODUCT (KHUSUS TAMPILAN PELANGGAN)
+// ============================================================
+Route::get('/menu', function () {
+    // Kita ambil data produk langsung di sini biar nggak nyangkut ke controller admin
+    $products = \App\Models\Product::where('IsDeleted', 0)->get();
+    
+    // Pastikan diarahkan ke folder menu -> index.blade.php
+    return view('menu.index', compact('products'));
+})->name('menu.index');
+
+Route::get('/products', function () {
+    return redirect()->route('menu.index');
+})->name('products.index');
 // ROUTE LOGIN GOOGLE
 // ============================================================
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
