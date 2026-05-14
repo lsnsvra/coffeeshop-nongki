@@ -7,95 +7,115 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\Auth\OtpController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\StokController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 // ============================================================
-// ROUTE LANDING PAGE
+// 1. ROUTE PUBLIC (LANDING PAGE & MENU PELANGGAN)
 // ============================================================
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// ============================================================
-// ROUTE MENU & PRODUCT (KHUSUS TAMPILAN PELANGGAN)
-// ============================================================
 Route::get('/menu', function () {
-    // Kita ambil data produk langsung di sini biar nggak nyangkut ke controller admin
+    // Menampilkan menu untuk pelanggan
     $products = \App\Models\Product::where('IsDeleted', 0)->get();
-    
-    // Pastikan diarahkan ke folder menu -> index.blade.php
     return view('menu.index', compact('products'));
 })->name('menu.index');
 
 Route::get('/products', function () {
     return redirect()->route('menu.index');
 })->name('products.index');
-// ROUTE LOGIN GOOGLE
+
+// ============================================================
+// 2. ROUTE AUTH & GOOGLE LOGIN
 // ============================================================
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-// ============================================================
-// ROUTE DASHBOARD (HANYA AUTH)
-// ============================================================
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth'])->name('dashboard');
-
-Route::get('/manager/dashboard', function () {
-    return redirect()->route('dashboard');
-})->middleware(['auth'])->name('manager.dashboard');
+require __DIR__.'/auth.php'; // Rute default bawaan Laravel (Login, Register, dll)
 
 // ============================================================
-// ROUTE PROFILE
+// 3. ROUTE PELANGGAN / USER (WAJIB LOGIN)
 // ============================================================
 Route::middleware('auth')->group(function () {
+    
+    // REDIRECT DASHBOARD CERDAS
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+        // Cek Role (Sesuaikan jika nama field role-nya berbeda di database)
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'kasir') {
+            return redirect()->route('kasir.pos');
+        }
+        // Jika pelanggan biasa, kembalikan ke menu utama
+        return redirect()->route('menu.index');
+    })->name('dashboard');
+
+    Route::get('/manager/dashboard', function () {
+        return redirect()->route('dashboard');
+    })->name('manager.dashboard');
+
+    // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/manager/profile', function () { return redirect()->route('profile.edit'); })->name('manager.profile');
 
-    Route::get('/manager/profile', function () {
-        return redirect()->route('profile.edit');
-    })->name('manager.profile');
+    // Halaman Fitur User
+    Route::get('/keranjang', function () { return view('cart.keranjang'); })->name('keranjang');
+    Route::get('/riwayat-pesanan', function () { return view('orders.riwayat-pesanan'); })->name('riwayat.pesanan');
+    Route::get('/favorit', function () { return view('favorites.favorit'); })->name('favorit');
+    Route::get('/profil', function () { return view('profile.profil'); })->name('profil');
+    Route::get('/pengaturan', function () { return view('settings.pengaturan'); })->name('pengaturan');
+    
+    // Pembayaran
+    Route::get('/pembayaran', function () { return view('payment.index'); })->name('payment.index');
+    Route::get('/order-success', function () { return view('payment.success'); })->name('order.success');
 });
 
 // ============================================================
-// ROUTE BELANJA & PESANAN (USER)
+// 4. ROUTE ADMIN (HANYA ROLE ADMIN)
 // ============================================================
-Route::get('/keranjang', function () {
-    return view('cart.keranjang');
-})->name('keranjang');
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard Admin (Menggunakan Controller yang merender Data Dinamis)
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    Route::get('/menu', [ProductController::class, 'index'])->name('menu');
+    Route::post('/menu/store', [ProductController::class, 'store'])->name('menu.store');
+    Route::delete('/menu/destroy/{id}', [ProductController::class, 'destroy'])->name('menu.destroy');
+    
+    Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('pengguna');
+    Route::post('/user/toggle-status/{id}', [AdminController::class, 'toggleStatus'])->name('user.toggle-status');
+    Route::post('/user/update-role/{id}', [AdminController::class, 'updateRole'])->name('user.update-role');
+    Route::delete('/user/destroy/{id}', [AdminController::class, 'destroy'])->name('user.destroy');
 
-Route::get('/riwayat-pesanan', function () {
-    return view('orders.riwayat-pesanan');
-})->name('riwayat.pesanan');
-
-Route::get('/favorit', function () {
-    return view('favorites.favorit');
-})->name('favorit');
-
-Route::get('/profil', function () {
-    return view('profile.profil');
-})->name('profil');
-
-Route::get('/pengaturan', function () {
-    return view('settings.pengaturan');
-})->name('pengaturan');
-
-// ============================================================
-// ROUTE PEMBAYARAN & ORDER SUCCESS
-// ============================================================
-Route::get('/pembayaran', function () {
-    return view('payment.index');
-})->name('payment.index');
-
-Route::get('/order-success', function () {
-    return view('payment.success');
-})->name('order.success');
+    Route::get('/stok', [StokController::class, 'index'])->name('stok');
+    Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
+    Route::put('/stok/{id}', [StokController::class, 'update'])->name('stok.update');
+    Route::delete('/stok/{id}', [StokController::class, 'destroy'])->name('stok.destroy');
+});
 
 // ============================================================
-// ROUTE OTP (WHATSAPP & EMAIL 2FA)
+// 5. ROUTE KASIR (HANYA ROLE KASIR)
+// ============================================================
+Route::middleware(['auth', 'role:kasir', 'track'])->prefix('kasir')->name('kasir.')->group(function () {
+    // 👇 TAMBAHKAN RUTE INI UNTUK MENERIMA DATA DARI AJAX 👇
+    Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::get('/pos', function () { return view('kasir.pos'); })->name('pos');
+    Route::get('/menu', function () { return view('kasir.menu'); })->name('menu');
+    Route::get('/transaksi', function () { return view('kasir.transaksi'); })->name('transaksi');
+    Route::get('/pesanan', function () { return view('kasir.pesanan'); })->name('pesanan');
+});
+
+// ============================================================
+// 6. ROUTE OTP (VERIFIKASI & 2FA)
 // ============================================================
 Route::get('/verify-otp', [OtpController::class, 'showVerifyForm'])->name('otp.verify.form');
 Route::get('/verify-email-otp', [OtpController::class, 'showEmailVerifyForm'])->name('otp.email.verify.form');
@@ -107,83 +127,15 @@ Route::middleware('guest')->group(function () {
     Route::post('/login-wa', [OtpController::class, 'sendOtp'])->name('otp.send');
 });
 
-// ============================================================
-// ROUTE OTP (VERIFIKASI 6 DIGIT - HALAMAN AUTH)
-// ============================================================
 Route::middleware(['auth'])->group(function () {
-    Route::get('/otp', function () {
-        return view('auth.otp');
-    })->name('otp.form');
-
-    Route::post('/otp/verify', function () {
-        return redirect()->route('dashboard')->with('success', 'OTP berhasil diverifikasi.');
-    })->name('otp.verify');
-
-    Route::get('/otp/resend', function () {
-        return back()->with('status', 'Kode OTP baru telah dikirim.');
-    })->name('otp.resend');
-});
-
-/// ============================================================
-// ROUTE ADMIN (HANYA ROLE ADMIN)
-// ============================================================
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-   
-    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
-    
-    Route::get('/menu', [ProductController::class, 'index'])->name('menu');
-
-    Route::delete('/menu/destroy/{id}', [ProductController::class, 'destroy'])->name('menu.destroy');
-
-    Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('pengguna');
-
-    Route::post('/menu/store', [ProductController::class, 'store'])->name('menu.store');
-   
-    Route::get('/stok', [StokController::class, 'index'])->name('stok');
-    Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
-    Route::put('/stok/{id}', [StokController::class, 'update'])->name('stok.update');
-    Route::delete('/stok/{id}', [StokController::class, 'destroy'])->name('stok.destroy');
-
-    
-   
-    Route::post('/user/toggle-status/{id}', [AdminController::class, 'toggleStatus'])->name('user.toggle-status');
-    Route::post('/user/update-role/{id}', [AdminController::class, 'updateRole'])->name('user.update-role');
-    Route::delete('/user/destroy/{id}', [AdminController::class, 'destroy'])->name('user.destroy');
+    Route::get('/otp', function () { return view('auth.otp'); })->name('otp.form');
+    Route::post('/otp/verify', function () { return redirect()->route('dashboard')->with('success', 'OTP berhasil diverifikasi.'); })->name('otp.verify');
+    Route::get('/otp/resend', function () { return back()->with('status', 'Kode OTP baru telah dikirim.'); })->name('otp.resend');
 });
 
 // ============================================================
-// ROUTE KASIR (HANYA ROLE KASIR)
+// 7. ROUTE OPTIMASI (CLEAR CACHE)
 // ============================================================
-Route::middleware(['auth', 'role:kasir', 'track'])->prefix('kasir')->name('kasir.')->group(function () {
-    Route::get('/pos', function () {
-        return view('kasir.pos');
-    })->name('pos');
-
-    Route::get('/menu', function () {
-        return view('kasir.menu');
-    })->name('menu');
-
-    Route::get('/transaksi', function () {
-        return view('kasir.transaksi');
-    })->name('transaksi');
-
-    Route::get('/pesanan', function () {
-        return view('kasir.pesanan');
-    })->name('pesanan');
-});
-
-// ============================================================
-// ROUTE AUTH (LARAVEL BAWAAN - REGISTER, LOGIN, DLL)
-// ============================================================
-require __DIR__.'/auth.php';
-
-// Tambahkan di bagian paling bawah file routes/web.php
-use Illuminate\Support\Facades\Artisan;
-
 Route::get('/optimize', function() {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
@@ -191,7 +143,7 @@ Route::get('/optimize', function() {
 });
 
 Route::get('/clear-cache', function() {
-    Artisan::call('config:clear'); // Pakai clear saja
+    Artisan::call('config:clear');
     Artisan::call('cache:clear');
     Artisan::call('view:clear');
     Artisan::call('route:clear');
