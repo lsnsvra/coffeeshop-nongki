@@ -259,9 +259,14 @@
 
     .btn-add svg { width: 14px; height: 14px; }
 
-    .btn-add:hover {
+    .btn-add:hover:not(:disabled) {
         background: var(--gold-light);
         transform: scale(1.05);
+    }
+    
+    .btn-add:disabled {
+        opacity: 0.8;
+        cursor: not-allowed;
     }
 
     @media (max-width: 600px) {
@@ -282,7 +287,6 @@
 @endpush
 
 @section('content')
-    <!-- Hero -->
     <div class="menu-hero">
         <div class="hero-content">
             <h1 class="hero-title">Pilih kopi<br><em>favoritmu.</em></h1>
@@ -299,14 +303,12 @@
 </div>
 @endsection
 
-    <!-- Filter Bar -->
     <div class="filter-bar">
         <button class="filter-pill active" onclick="filterMenu('semua', this)">Semua</button>
         <button class="filter-pill" onclick="filterMenu('kopi', this)">Kopi</button>
         <button class="filter-pill" onclick="filterMenu('non-kopi', this)">Non-Kopi</button>
         <button class="filter-pill" onclick="filterMenu('makanan', this)">Makanan</button>
 
-        <!-- Dropdown Sort (Aksi ditarik ke kiri karena class ms-auto dihapus) -->
         <div>
             <select class="sort-select" id="sortSelect">
                 <option value="default">Terpopuler</option>
@@ -317,8 +319,7 @@
         </div>
     </div>
 
-   <!-- Menu Grid dari Database -->
-    <div class="menu-grid" id="menuGrid">
+   <div class="menu-grid" id="menuGrid">
         @foreach($products as $product)
         @php
             // Trik PHP: Menentukan kategori secara otomatis berdasarkan nama menu
@@ -337,14 +338,12 @@
             }
         @endphp
 
-        <!-- Perhatikan data-cat sekarang menggunakan variabel $kategori dari trik di atas -->
-        <div class="menu-card" data-cat="{{ $kategori }}" data-id="{{ $product->id ?? $loop->iteration }}" data-name="{{ $product->NamaKopi }}" data-price="{{ $product->Harga }}">
+        <div class="menu-card" data-cat="{{ $kategori }}" data-id="{{ $product->ProductID ?? $product->id ?? $loop->iteration }}" data-name="{{ $product->NamaKopi }}" data-price="{{ $product->Harga }}">
             <div class="menu-img-wrap">
                 <img class="menu-img" src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->NamaKopi }}" loading="lazy" 
                      onerror="this.src='https://placehold.co/400x200?text=' + encodeURIComponent('{{ $product->NamaKopi }}')">
 
-                <!-- 1. Tombol Favorit (Aksi Kiri) -->
-                <button class="menu-fav" onclick="handleFavClick(this, {{ $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}')">
+                <button class="menu-fav" onclick="handleFavClick(this, {{ $product->ProductID ?? $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </button>
 
@@ -414,16 +413,13 @@
                     }
                 @endphp
 
-                <!-- Menggunakan deskripsi buatan dari PHP di atas -->
                 <div class="menu-desc">{{ $desc }}</div>
                 
                 <div class="menu-footer">
-                    <!-- Tombol Add (+) (Aksi Kiri) -->
-                    <button class="btn-add" onclick="addToCart({{ $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}', this)">
+                    <button class="btn-add" onclick="addToCart({{ $product->ProductID ?? $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}', this)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
                     
-                    <!-- Rating dikembalikan ke format awal dengan angka acak -->
                     <div class="menu-rating">
                         <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                         {{ $rating }} <span>({{ $count }})</span>
@@ -501,6 +497,10 @@
 
     // ========== ADD TO CART ==========
     function addToCart(id, name, price, img, btn) {
+        // Pelindung biar gak bisa di-spam klik
+        if (btn.disabled) return;
+        btn.disabled = true;
+
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const index = cart.findIndex(item => item.id == id);
         if (index !== -1) {
@@ -524,6 +524,9 @@
             sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
         }
 
+        // Trigger event ke sistem biar tau kalo cart nambah (buat header navbar)
+        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: totalItems }));
+
         // Efek visual
         btn.style.transform = 'scale(0.85)';
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -532,6 +535,7 @@
             btn.style.transform = '';
             btn.style.background = '';
             btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+            btn.disabled = false; // Buka lagi pelindungnya setelah efek selesai
         }, 1200);
     }
 

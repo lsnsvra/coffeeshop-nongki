@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -53,7 +54,7 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('kasir.pos');
         }
         // Jika pelanggan biasa, kembalikan ke menu utama
-        return redirect()->route('menu.index');
+      return view('dashboard.index');
     })->name('dashboard');
 
     Route::get('/manager/dashboard', function () {
@@ -73,10 +74,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', function () { return view('profile.profil'); })->name('profil');
     Route::get('/pengaturan', function () { return view('settings.pengaturan'); })->name('pengaturan');
     
-    // Pembayaran
-    Route::get('/pembayaran', function () { return view('payment.index'); })->name('payment.index');
+Route::get('/pembayaran', function () { return view('payment.index'); })->name('payment.index');
     Route::get('/order-success', function () { return view('payment.success'); })->name('order.success');
+
+    // Payment API
+    Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
+    Route::get('/payment/status/{orderId}', [PaymentController::class, 'checkStatus'])->name('payment.status');
 });
+
+// Webhook - di luar middleware (tidak perlu auth)
+Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
+    ->name('payment.webhook')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 // ============================================================
 // 4. ROUTE ADMIN (HANYA ROLE ADMIN)
