@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>NONGKI - POS Kasir</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -172,8 +173,10 @@
         </div>
     </header>
 
-    <main class="flex-1 flex overflow-hidden no-print relative">
-        <div class="flex-1 flex flex-col h-full bg-nongki-bg">
+    <main class="flex-1 flex overflow-hidden no-print relative min-h-0">
+
+        {{-- Panel Kiri: Grid Menu --}}
+        <div class="flex-1 flex flex-col min-h-0 bg-nongki-bg">
             <div class="p-6 pb-2 shrink-0">
                 <div class="text-xs text-nongki-muted font-semibold tracking-wider mb-3 uppercase">Kategori</div>
                 <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="categoryFilter">
@@ -184,7 +187,7 @@
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-6 pt-2">
+            <div class="flex-1 overflow-y-auto p-6 pt-2 min-h-0">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5" id="productGrid">
                     @foreach($menus as $menu)
                     @php 
@@ -193,7 +196,7 @@
                     <div class="menu-card bg-nongki-card rounded-2xl border border-nongki-border hover:border-nongki-gold/50 transition-all cursor-pointer group flex flex-col h-full relative overflow-hidden" 
                          data-cat="{{ $cat }}" 
                          data-name="{{ strtolower($menu->NamaKopi) }}"
-                         onclick="addToCart({{ $menu->id ?? $loop->iteration }}, '{{ addslashes($menu->NamaKopi) }}', {{ $menu->Harga }})">
+    onclick="addToCart({{ $menu->ProductID }}, '{{ addslashes($menu->NamaKopi) }}', {{ $menu->Harga }})"">
                         
                         <div class="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-nongki-gold group-hover:border-nongki-gold group-hover:scale-110 transition-all z-10 shadow-lg">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
@@ -217,7 +220,9 @@
             </div>
         </div>
 
-        <div class="w-[400px] bg-nongki-card border-l border-nongki-border flex flex-col h-full shrink-0 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.5)] z-20 relative">
+        {{-- Panel Kanan: Order Panel --}}
+        <div class="w-[400px] bg-nongki-card border-l border-nongki-border flex flex-col h-full min-h-0 shrink-0 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.5)] z-20 relative">
+            
             <div class="p-5 border-b border-nongki-border flex items-center justify-between bg-nongki-card shrink-0">
                 <div class="flex items-center gap-3 text-lg font-medium">
                     <svg class="w-5 h-5 text-nongki-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -231,7 +236,7 @@
                 <button id="btnTakeAway" onclick="setOrderType('takeaway')" class="py-2 text-xs font-medium rounded-lg bg-nongki-bg text-nongki-muted border border-nongki-border hover:border-nongki-gold/30 transition-all shadow-sm">Take Away</button>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-4 relative">
+            <div class="flex-1 overflow-y-auto p-4 relative min-h-0">
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-nongki-muted text-sm" id="emptyCartMessage">
                     <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                     Belum ada pesanan.
@@ -276,9 +281,10 @@
             </div>
         </div>
 
+        {{-- Drawer Overlay --}}
         <div id="drawerOverlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleDrawer()"></div>
         
-        <div id="sideDrawer" class="absolute top-0 right-0 h-full w-[400px] bg-nongki-card border-l border-nongki-border z-40 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+        <div id="sideDrawer" class="absolute top-0 right-0 h-full w-[400px] bg-nongki-card border-l border-nongki-border z-40 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col min-h-0">
             <div class="p-6 border-b border-nongki-border flex justify-between items-center bg-nongki-bg/50 shrink-0">
                 <h2 class="text-xl font-bold text-nongki-gold flex items-center gap-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -294,7 +300,7 @@
                 <button id="tabRiwayat" onclick="switchDrawerTab('riwayat')" class="py-2.5 text-sm font-medium rounded-lg bg-nongki-card text-nongki-muted border border-nongki-border hover:border-nongki-gold/50 transition-all">Riwayat Selesai</button>
             </div>
 
-            <div id="contentAktif" class="flex-1 overflow-y-auto p-4 space-y-4 block">
+            <div id="contentAktif" class="flex-1 overflow-y-auto p-4 space-y-4 block min-h-0">
                 <div class="bg-nongki-bg border border-nongki-border rounded-xl p-4">
                     <div class="flex justify-between items-start mb-3">
                         <div>
@@ -311,7 +317,7 @@
                 </div>
             </div>
 
-            <div id="contentRiwayat" class="flex-1 overflow-y-auto p-4 space-y-4 hidden">
+            <div id="contentRiwayat" class="flex-1 overflow-y-auto p-4 space-y-4 hidden min-h-0">
                 <div class="flex items-center gap-4 bg-nongki-bg border border-nongki-border rounded-xl p-3 hover:border-nongki-gold/50 transition-all">
                     <div class="shrink-0 border-r border-nongki-border border-dashed pr-4">
                         <button class="flex flex-col items-center justify-center w-14 h-14 bg-nongki-gold/10 text-nongki-gold border border-nongki-gold/30 rounded-lg hover:bg-nongki-gold hover:text-nongki-bg transition-colors" title="Cetak Struk">
@@ -328,27 +334,11 @@
                         <div class="font-bold text-gray-200 text-sm">Rp 120.000</div>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-4 bg-nongki-bg border border-nongki-border rounded-xl p-3 hover:border-nongki-gold/50 transition-all">
-                    <div class="shrink-0 border-r border-nongki-border border-dashed pr-4">
-                        <button class="flex flex-col items-center justify-center w-14 h-14 bg-nongki-gold/10 text-nongki-gold border border-nongki-gold/30 rounded-lg hover:bg-nongki-gold hover:text-nongki-bg transition-colors" title="Cetak Struk">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                            <span class="text-[9px] font-bold uppercase mt-1">Struk</span>
-                        </button>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-1">
-                            <span class="text-xs font-mono text-nongki-muted">TRX-982102</span>
-                            <span class="px-2 py-0.5 bg-green-500/10 text-green-500 text-[9px] rounded-full uppercase font-bold">Sukses</span>
-                        </div>
-                        <div class="text-[10px] text-nongki-muted mb-1">Hari ini, 08:15 WIB</div>
-                        <div class="font-bold text-gray-200 text-sm">Rp 35.000</div>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
 
+    {{-- Modal: Konfirmasi Logout --}}
     <div id="logoutModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div id="logoutModalContent" class="bg-nongki-card border border-nongki-border w-full max-w-sm rounded-2xl p-6 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 text-center relative">
             <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] relative z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></div>
@@ -361,6 +351,7 @@
         </div>
     </div>
 
+    {{-- Modal: Hapus Pesanan --}}
     <div id="clearCartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div id="clearCartModalContent" class="bg-nongki-card border border-nongki-border w-full max-w-sm rounded-2xl p-6 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 text-center relative">
             <div class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(248,113,113,0.2)]"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></div>
@@ -373,6 +364,7 @@
         </div>
     </div>
 
+    {{-- Modal: Payment Receipt --}}
     <div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden overflow-y-auto no-print">
         <div class="min-h-screen flex items-center justify-center p-4 py-10">
             <div id="modalContent" class="w-full max-w-sm transform transition-all opacity-0 scale-90 m-auto">
@@ -615,6 +607,9 @@
             paymentModal.classList.add('block'); 
             paymentModalContent.classList.remove('opacity-0', 'scale-90');
             paymentModalContent.classList.add('animate-modal');
+
+            // ===== PENAMBAHAN FUNGSI AJAX OTOMATIS =====
+            sendOrderToBackend();
         }
 
         function closePaymentModal() {
@@ -704,6 +699,44 @@
         function openClearCartModal() { if(cart.length===0) return; document.getElementById('clearCartModal').classList.remove('hidden'); document.getElementById('clearCartModal').classList.add('flex'); setTimeout(()=> {document.getElementById('clearCartModal').classList.remove('opacity-0'); document.getElementById('clearCartModalContent').classList.remove('scale-95','opacity-0'); }, 10); }
         function closeClearCartModal() { document.getElementById('clearCartModalContent').classList.add('scale-95','opacity-0'); setTimeout(()=> { document.getElementById('clearCartModal').classList.add('hidden'); document.getElementById('clearCartModal').classList.remove('flex', 'opacity-0'); }, 300); }
         function executeClearCart() { cart=[]; inputUang.value=''; updateCartUI(); closeClearCartModal(); }
+
+        // ==========================================
+        // TUGAS 3: LOGIKA AJAX (SINKRONISASI DASHBOARD)
+        // ==========================================
+        async function sendOrderToBackend() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            try {
+                const response = await fetch("{{ route('kasir.transaksi.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        total: totalVal, // Menggunakan variabel global total yang dihitung di updateCartUI
+                        cart: cart
+                    })
+                });
+
+                const result = await response.json();
+                if(result.success) {
+                    console.log("Transaksi sukses tersimpan di database!");
+                    startAutomatedStatusCheck();
+                } else {
+                    console.error("Error Backend: " + result.message);
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+            }
+        }
+
+        function startAutomatedStatusCheck() {
+            // Simulasi deteksi payment otomatis/notifikasi bahwa data sudah masuk DB (Tugas 3)
+            setTimeout(() => {
+                alert("✅ Sistem Sinkronisasi: Transaksi Berhasil Dicatat ke Dashboard Admin!");
+            }, 1000); 
+        }
     </script>
 </body>
 </html>
