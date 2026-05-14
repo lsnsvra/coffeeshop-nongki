@@ -36,13 +36,13 @@ class OrderSeeder extends Seeder
                 for ($j = 0; $j < $itemCount; $j++) {
                     $product = $products->random();
                     $qty = rand(1, 3);
-                    $subtotal = $product->price * $qty;
+                    $subtotal = $product->Harga * $qty;
                     
                     OrderDetail::create([
 'OrderID' => $order->OrderID,
                         'ProductID' => $product->ProductID,
                         'Qty' => $qty,
-                        'Harga' => $product->price,
+                        'Harga' => $product->Harga,
                         'Subtotal' => $subtotal
                     ]);
 

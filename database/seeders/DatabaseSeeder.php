@@ -17,6 +17,9 @@ $this->call([
         UserSeeder::class,
         OrderSeeder::class,
         PaymentMethodSeeder::class,
+        MaterialSeeder::class,
+        MenuMaterialSeeder::class,
+        
     ]);
 }
 }
