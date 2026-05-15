@@ -7,19 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $table = 'products'; // Nama tabel di HeidiSQL kamu
-    protected $primaryKey = 'ProductID'; // Primary key kamu bukan 'id' tapi 'ProductID'
+    protected $primaryKey = 'ProductID'; // Primary key kamu
     
-    // Daftar kolom yang boleh diisi
+    public $timestamps = false; // Karena kita pakai CreatedDate & LastUpdatedDate manual
+
+    // Daftar kolom yang boleh diisi (Mass Assignment)
     protected $fillable = [
-        'NamaKopi', 
+        'NamaProduk', // Sesuaikan dengan <input name="NamaProduk"> di form
         'Harga', 
-        'Category', 
-        'Ukuran', 
-        'Stok', 
-        'Image', 
-        'IsDeleted', 
-        'Status'
+        'Kategori', // Samakan dengan Controller/Database
+        'Gambar', 
+        'Status',
+        'IsDeleted',
+        
+        // ========== 4 AUDIT TRAIL ==========
+        'CreatedBy',        // Siapa yang buat 
+        'CreatedDate',      // Tanggal buat
+        'LastUpdatedBy',    // Siapa yang terakhir edit
+        'LastUpdatedDate'   // Tanggal terakhir edit
     ];
-    
-    public $timestamps = false; // Karena di HeidiSQL kamu pakai CreatedDate manual
 }
