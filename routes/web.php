@@ -89,6 +89,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     Route::get('/menu', [ProductController::class, 'index'])->name('menu');
     Route::post('/menu/store', [ProductController::class, 'store'])->name('menu.store');
+    Route::put('/menu/update/{id}', [ProductController::class, 'update'])->name('menu.update');
     Route::delete('/menu/destroy/{id}', [ProductController::class, 'destroy'])->name('menu.destroy');
     
     Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('pengguna');
@@ -96,6 +97,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/user/update-role/{id}', [AdminController::class, 'updateRole'])->name('user.update-role');
     Route::delete('/user/destroy/{id}', [AdminController::class, 'destroy'])->name('user.destroy');
 
+    
     Route::get('/stok', [StokController::class, 'index'])->name('stok');
     Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
     Route::put('/stok/{id}', [StokController::class, 'update'])->name('stok.update');

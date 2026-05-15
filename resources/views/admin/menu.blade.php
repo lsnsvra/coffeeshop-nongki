@@ -1,252 +1,204 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Menu — NONGKI')
+@section('title', 'Menu Inventory — NONGKI')
 
 @push('styles')
 <style>
-    :root {
-        --gold: #D4AF37;
-        --dark: #0A0A0A;
-        --dark-2: #141414;
-        --border: rgba(212, 175, 55, 0.2);
-        --cream: #F5F5DC;
-        --text-muted-c: #A0A0A0;
+    /* ========== LUXURY THEME UI ========== */
+    .menu-container { animation: fadeIn 0.6s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .nongki-panel { 
+        background: #0f0f0f; 
+        border: 1px solid rgba(201, 168, 76, 0.2); 
+        border-radius: 15px; 
+        padding: 25px; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
     }
 
-    /* Animasi & Layout */
-    .fade-in-up { animation: fadeInUp 0.5s ease-out; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .table-luxury { width: 100%; border-collapse: collapse; color: #fff; margin-top: 20px; }
+    .table-luxury th { 
+        color: var(--gold); font-size: 0.75rem; text-transform: uppercase; 
+        letter-spacing: 1.5px; padding: 15px; border-bottom: 2px solid #222; text-align: left;
+    }
+    .table-luxury td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
 
-    .menu-management-container { padding: 5px; }
-
-    .menu-action-bar {
-        display: flex; align-items: center; gap: 20px; margin: 25px 0;
-        background: rgba(255, 255, 255, 0.02); padding: 15px 25px;
-        border-radius: 16px; border: 1px solid var(--border);
+    .img-preview { 
+        width: 60px; height: 60px; object-fit: cover; border-radius: 10px; 
+        border: 1px solid var(--gold); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
-    .btn-add-menu {
-        background: var(--gold); color: var(--dark); border: none;
-        padding: 10px 20px; border-radius: 12px; font-weight: 700;
-        cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+    .badge-cat {
+        background: rgba(201, 168, 76, 0.1); color: var(--gold);
+        border: 1px solid rgba(201, 168, 76, 0.3); padding: 5px 12px;
+        border-radius: 6px; font-size: 0.65rem; font-weight: 700;
     }
-    .btn-add-menu:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
 
-    /* Premium Table */
-    .menu-panel {
-        background: var(--dark-2); border-radius: 24px;
-        border: 1px solid var(--border); overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    .btn-nongki {
+        background: var(--gold); color: #000; border: none; padding: 10px 20px;
+        border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s;
     }
-    .nongki-table { width: 100%; border-collapse: collapse; color: var(--cream); }
-    .nongki-table th {
-        background: rgba(212, 175, 55, 0.05); color: var(--gold);
-        text-align: left; padding: 18px 25px; font-size: 0.75rem;
-        text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border);
-    }
-    .nongki-table td { padding: 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
-    .nongki-table tbody tr:hover { background: rgba(212, 175, 55, 0.03); }
+    .btn-nongki:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4); }
 
-    .menu-img-preview { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border); background: #1a1a1a; }
-
-    /* Action Buttons */
-    .action-btns { display: flex; gap: 8px; }
-    .btn-table-action {
-        width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--border);
-        background: rgba(255,255,255,0.03); color: white; cursor: pointer; transition: 0.3s;
+    .btn-icon {
+        background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333;
+        width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        display: inline-flex; align-items: center; justify-content: center;
     }
-    .btn-edit:hover { background: #3b82f6; border-color: #3b82f6; }
-    .btn-delete:hover { background: #ef4444; border-color: #ef4444; }
+    .btn-icon:hover { border-color: var(--gold); color: var(--gold); background: rgba(201, 168, 76, 0.1); }
 
-    /* Badges */
-    .cat-badge { padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-    .badge-KOPI { background: rgba(212, 175, 55, 0.1); color: var(--gold); border: 1px solid var(--border); }
-    .badge-MAKANAN { background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); }
-    .badge-NON-KOPI { background: rgba(96, 165, 250, 0.1); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.2); }
-
-    /* Premium Modal Styles */
-    .nongki-modal-overlay {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-        display: flex; align-items: center; justify-content: center; z-index: 10000;
-        opacity: 0; pointer-events: none; transition: 0.3s ease;
+    .modal-nongki {
+        display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
     }
-    .nongki-modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .nongki-modal-box {
-        background: var(--dark-2); border: 1px solid var(--border); border-radius: 24px;
-        padding: 2.5rem; width: 90%; max-width: 450px;
-        transform: translateY(20px) scale(0.95); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    .modal-content {
+        background: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--gold);
+        width: 450px; border-radius: 20px; color: #fff; position: relative;
     }
-    .nongki-modal-overlay.active .nongki-modal-box { transform: translateY(0) scale(1); }
-
-    .modal-icon-danger { 
-        width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%; 
-        display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-        background: rgba(224,82,82,0.1); color: #e05252; border: 1px solid rgba(224,82,82,0.3);
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--gold); margin-bottom: 8px; }
+    .form-control {
+        width: 100%; background: #000; border: 1px solid #333; padding: 12px;
+        border-radius: 10px; color: #fff; outline: none;
     }
+    .form-control:focus { border-color: var(--gold); }
 </style>
 @endpush
 
 @section('content')
-<div class="menu-management-container fade-in-up">
-    <div class="dashboard-header">
-        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold); margin: 0;">Menu Inventory</h1>
-        <p style="color: var(--text-muted-c);">Atur koleksi produk aktif di NONGKI.</p>
+<div class="menu-container">
+    <div style="margin-bottom: 30px;">
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--gold); margin: 0;">Menu Inventory</h1>
+        <p style="color: #888;">Atur koleksi produk aktif di NONGKI.</p>
     </div>
 
-    <div class="menu-action-bar">
-        <button class="btn-add-menu" id="triggerTambah">
-            <i class="fa-solid fa-plus-circle"></i> Tambah Produk Baru
-        </button>
-        <div style="color: var(--text-muted-c); font-size: 0.85rem; border-left: 1px solid var(--border); padding-left: 1.5rem;">
-            Total: <strong>{{ $products->count() }} Produk</strong>
+    @if(session('success'))
+        <div style="background: rgba(201,168,76,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <i class="fa-solid fa-check-circle"></i> {{ session('success') }}
         </div>
-    </div>
+    @endif
 
-    <div class="menu-panel">
-        <div style="overflow-x: auto;">
-            <table class="nongki-table">
-                <thead>
-                    <tr>
-                        <th style="width: 100px;">Aksi</th>
-                        <th style="width: 80px;">Preview</th>
-                        <th>Informasi Produk</th>
-                        <th>Kategori</th>
-                        <th>Harga</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($products as $p)
-                    <tr>
-                        <td>
-                            <div class="action-btns">
-                                <button class="btn-table-action btn-edit" 
-                                    data-id="{{ $p->ProductID }}"
-                                    data-nama="{{ $p->NamaKopi }}"
-                                    data-harga="{{ $p->Harga }}"
-                                    data-kategori="{{ $p->Category }}">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button type="button" class="btn-table-action btn-delete" 
-                                    onclick="confirmNongkiDelete('{{ $p->ProductID }}', '{{ addslashes($p->NamaKopi) }}')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+    <div class="nongki-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="btn-nongki" onclick="openModal('add')">
+                <i class="fa-solid fa-plus"></i> Tambah Produk Baru
+            </button>
+            <span style="color: #666; font-size: 0.85rem;">Total: {{ $products->count() }} Produk</span>
+        </div>
+
+        <table class="table-luxury">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">Aksi</th>
+                    <th style="width: 100px;">Preview</th>
+                    <th>Informasi Produk</th>
+                    <th>Kategori</th>
+                    <th>Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($products as $p)
+                <tr>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-icon" onclick="editProduct({{ json_encode($p) }})">
+                                <i class="fa-solid fa-pencil"></i>
+                            </button>
+                            <form action="{{ route('admin.menu.destroy', $p->ProductID) }}" method="POST" onsubmit="return confirm('Hapus produk ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn-icon"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                    <td>
+                        @if($p->Gambar)
+                            <img src="{{ asset('storage/'.$p->Gambar) }}" class="img-preview">
+                        @else
+                            <div class="img-preview" style="display: flex; align-items: center; justify-content: center; background: #222;">
+                                <i class="fa-solid fa-image" style="color: #444;"></i>
                             </div>
-                        </td>
-                        <td>
-                            <img src="{{ asset('images/products/' . ($p->image ?? 'default.jpg')) }}" class="menu-img-preview" onerror="this.src='https://placehold.co/100x100?text=Menu'">
-                        </td>
-                        <td>
-                            <div style="font-weight: 700; color: var(--cream);">{{ $p->NamaKopi }}</div>
-                            <div style="font-size: 0.7rem; color: var(--gold);">#PROD-{{ str_pad($p->ProductID, 3, '0', STR_PAD_LEFT) }}</div>
-                        </td>
-                        <td><span class="cat-badge badge-{{ $p->Category ?? 'KOPI' }}">{{ $p->Category ?? 'KOPI' }}</span></td>
-                        <td style="font-weight: 800; color: var(--gold);">Rp {{ number_format($p->Harga, 0, ',', '.') }}</td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="5" style="text-align: center; padding: 3rem;">Belum ada data menu.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                        @endif
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; font-size: 1rem;">{{ $p->NamaProduk }}</div>
+                        <div style="font-size: 0.7rem; color: var(--gold); letter-spacing: 1px;">#PROD-{{ $p->ProductID }}</div>
+                    </td>
+                    <td><span class="badge-cat">{{ $p->Kategori }}</span></td>
+                    <td style="font-weight: 800; color: var(--gold);">Rp {{ number_format($p->Harga, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
-<div id="modalMenu" class="nongki-modal-overlay">
-    <div class="nongki-modal-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
-            <h2 id="modalTitle" style="color:var(--gold); font-family:'Cormorant Garamond', serif; margin:0;">Tambah Menu</h2>
-            <button type="button" id="closeBtn" style="background:none; border:none; color:var(--text-muted-c); font-size:1.5rem; cursor:pointer;">&times;</button>
-        </div>
-        <form id="menuForm" method="POST" enctype="multipart/form-data">
+<!-- ========== MODAL FORM ========== -->
+<div id="productModal" class="modal-nongki">
+    <div class="modal-content">
+        <h2 id="modalTitle" style="color: var(--gold); font-family: 'Cormorant Garamond', serif; margin-top: 0;">Tambah Produk</h2>
+        <form id="productForm" method="POST" enctype="multipart/form-data">
             @csrf
             <div id="methodField"></div>
-            <div style="margin-bottom:1.2rem;">
-                <label style="color:var(--gold); font-size:0.8rem; display:block; margin-bottom:5px;">NAMA MENU</label>
-                <input type="text" name="NamaKopi" id="in_nama" required style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:white; padding:10px; border-radius:10px;">
+            
+            <div class="form-group">
+                <label>Nama Produk</label>
+                <input type="text" name="NamaProduk" id="formNama" class="form-control" required>
             </div>
-            <div style="margin-bottom:1.2rem;">
-                <label style="color:var(--gold); font-size:0.8rem; display:block; margin-bottom:5px;">HARGA (RP)</label>
-                <input type="number" name="Harga" id="in_harga" required style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:white; padding:10px; border-radius:10px;">
-            </div>
-            <div style="margin-bottom:1.2rem;">
-                <label style="color:var(--gold); font-size:0.8rem; display:block; margin-bottom:5px;">KATEGORI</label>
-                <select name="Category" id="in_kategori" style="width:100%; background:var(--dark); border:1px solid var(--border); color:white; padding:10px; border-radius:10px;">
+
+            <div class="form-group">
+                <label>Kategori</label>
+                <select name="Kategori" id="formKategori" class="form-control" required>
                     <option value="KOPI">KOPI</option>
                     <option value="NON-KOPI">NON-KOPI</option>
                     <option value="MAKANAN">MAKANAN</option>
                 </select>
             </div>
-            <div style="margin-bottom:2rem;">
-                <label style="color:var(--gold); font-size:0.8rem; display:block; margin-bottom:5px;">FOTO PRODUK</label>
-                <input type="file" name="Image" style="color:var(--text-muted-c); font-size:0.8rem;">
+
+            <div class="form-group">
+                <label>Harga (Rp)</label>
+                <input type="number" name="Harga" id="formHarga" class="form-control" required>
             </div>
-            <div style="display:flex; gap:10px;">
-                <button type="button" id="cancelBtn" style="flex:1; background:transparent; border:1px solid var(--border); color:var(--text-muted-c); padding:12px; border-radius:12px; cursor:pointer;">Batal</button>
-                <button type="submit" style="flex:2; background:var(--gold); color:var(--dark); border:none; padding:12px; border-radius:12px; font-weight:800; cursor:pointer;">Simpan</button>
+
+            <div class="form-group">
+                <label>Gambar Produk</label>
+                <input type="file" name="Gambar" class="form-control">
+            </div>
+
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button type="submit" class="btn-nongki" style="flex: 1;">Simpan Produk</button>
+                <button type="button" class="btn-icon" style="width: auto; padding: 0 20px;" onclick="closeModal()">Batal</button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="deleteAlertModal" class="nongki-modal-overlay">
-    <div class="nongki-modal-box" style="max-width:380px; text-align:center;">
-        <div class="modal-icon-danger"><i class="fa-solid fa-trash-can"></i></div>
-        <h3 style="color:var(--cream); margin-bottom:10px;">Hapus Menu?</h3>
-        <p style="color:var(--text-muted-c); font-size:0.9rem; margin-bottom:2rem;">Yakin ingin menghapus <strong id="deleteMenuName" style="color:var(--gold);"></strong>?</p>
-        <form id="finalDeleteForm" method="POST">
-            @csrf
-            @method('DELETE')
-            <div style="display:flex; gap:10px;">
-                <button type="button" onclick="closeDeleteModal()" style="flex:1; background:rgba(255,255,255,0.05); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer;">Batal</button>
-                <button type="submit" style="flex:1; background:#e05252; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Ya, Hapus</button>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-
-@push('scripts')
 <script>
-    function confirmNongkiDelete(id, name) {
-        const modal = document.getElementById('deleteAlertModal');
-        document.getElementById('finalDeleteForm').action = `/admin/menu/destroy/${id}`;
-        document.getElementById('deleteMenuName').innerText = name;
-        modal.classList.add('active');
+    const modal = document.getElementById('productModal');
+    const form = document.getElementById('productForm');
+
+    function openModal(type) {
+        form.reset();
+        document.getElementById('methodField').innerHTML = '';
+        document.getElementById('modalTitle').innerText = 'Tambah Produk Baru';
+        form.action = "{{ route('admin.menu.store') }}";
+        modal.style.display = 'block';
     }
-    function closeDeleteModal() { document.getElementById('deleteAlertModal').classList.remove('active'); }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('modalMenu');
-        const form = document.getElementById('menuForm');
+    function editProduct(data) {
+        document.getElementById('modalTitle').innerText = 'Edit Produk';
+        document.getElementById('methodField').innerHTML = '@method("PUT")';
         
-        document.getElementById('triggerTambah').onclick = () => {
-            document.getElementById('modalTitle').innerText = "Tambah Menu Baru";
-            form.action = "{{ route('admin.menu.store') }}";
-            document.getElementById('methodField').innerHTML = "";
-            form.reset();
-            modal.classList.add('active');
-        };
+        // Menggunakan URL dinamis yang lebih aman
+        let updateUrl = "{{ route('admin.menu.update', ':id') }}";
+        form.action = updateUrl.replace(':id', data.ProductID);
+        
+        document.getElementById('formNama').value = data.NamaProduk;
+        document.getElementById('formKategori').value = data.Kategori;
+        document.getElementById('formHarga').value = data.Harga;
+        modal.style.display = 'block';
+    }
 
-        document.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.onclick = function() {
-                const id = this.dataset.id;
-                document.getElementById('modalTitle').innerText = "Edit Menu NONGKI";
-                form.action = `/admin/menu/update/${id}`; 
-                document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
-                document.getElementById('in_nama').value = this.dataset.nama;
-                document.getElementById('in_harga').value = this.dataset.harga;
-                document.getElementById('in_kategori').value = this.dataset.kategori;
-                modal.classList.add('active');
-            };
-        });
-
-        document.getElementById('closeBtn').onclick = () => modal.classList.remove('active');
-        document.getElementById('cancelBtn').onclick = () => modal.classList.remove('active');
-        window.onclick = (e) => { 
-            if (e.target.classList.contains('nongki-modal-overlay')) {
-                e.target.classList.remove('active');
-            }
-        };
-    });
+    function closeModal() { modal.style.display = 'none'; }
+    window.onclick = (event) => { if (event.target == modal) closeModal(); }
 </script>
-@endpush
+@endsection
