@@ -16,7 +16,6 @@
         margin-top: 1rem;
     }
 
-    /* Memastikan teks tabel tetap tegas dan putih */
     .nongki-table { width: 100%; border-collapse: collapse; color: #ffffff; }
     .nongki-table th { 
         text-align: left; padding: 15px; color: var(--gold); 
@@ -24,7 +23,7 @@
     }
     .nongki-table td { padding: 18px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
 
-    /* ========== AUDIT TRAIL STYLE (LENGKAP) ========== */
+    /* ========== AUDIT TRAIL STYLE ========== */
     .info-wrapper { display: flex; flex-direction: column; gap: 4px; }
     .main-name { font-weight: 700; color: #ffffff; font-size: 1rem; }
     .audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
@@ -53,8 +52,7 @@
         margin: 0 auto; display: block; cursor: pointer;
     }
 
-   
-   /* ========== LUXURY ROLE DESIGN (GLOW & GRADIENT) ========== */
+    /* ========== LUXURY ROLE DESIGN ========== */
     .badge-role {
         padding: 8px 16px; 
         border-radius: 12px; 
@@ -69,7 +67,6 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
-    /* ADMIN: Deep Red Gradient with Glow */
     .bg-admin { 
         background: linear-gradient(135deg, #ff4d4d 0%, #b30000 100%) !important;
         color: #ffffff !important;
@@ -77,7 +74,6 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    /* KASIR: Gold/Yellow Gradient with Deep Contrast */
     .bg-kasir { 
         background: linear-gradient(135deg, #ffeb3b 0%, #fbc02d 100%) !important;
         color: #000000 !important;
@@ -85,7 +81,6 @@
         border: 1px solid rgba(0, 0, 0, 0.1);
     }
     
-    /* PELANGGAN: Emerald Green Gradient */
     .bg-pelanggan { 
         background: linear-gradient(135deg, #4caf50 0%, #1b5e20 100%) !important;
         color: #ffffff !important;
@@ -98,21 +93,203 @@
         border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center;
         font-weight: 800; color: var(--gold); font-size: 1rem;
     }
+
+    /* ========== CUSTOM MODAL OVERLAY ========== */
+    .nongki-modal-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+    .nongki-modal-overlay.active {
+        opacity: 1; pointer-events: all;
+    }
+
+    .nongki-modal {
+        background: #111;
+        border: 1px solid var(--gold);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        width: 100%; max-width: 400px;
+        text-align: center;
+        box-shadow: 0 0 60px rgba(201, 168, 76, 0.15);
+        transform: translateY(20px) scale(0.97);
+        transition: transform 0.25s ease;
+        position: relative;
+    }
+    .nongki-modal-overlay.active .nongki-modal {
+        transform: translateY(0) scale(1);
+    }
+
+    .nongki-modal .modal-icon {
+        width: 64px; height: 64px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem; margin: 0 auto 1.2rem;
+    }
+    .modal-icon.icon-danger {
+        background: rgba(255, 77, 77, 0.12);
+        border: 1px solid rgba(255, 77, 77, 0.4);
+        color: #ff4d4d;
+    }
+    .modal-icon.icon-success {
+        background: rgba(139, 195, 74, 0.12);
+        border: 1px solid rgba(139, 195, 74, 0.4);
+        color: #8bc34a;
+    }
+    .modal-icon.icon-warning {
+        background: rgba(201, 168, 76, 0.12);
+        border: 1px solid rgba(201, 168, 76, 0.4);
+        color: var(--gold);
+    }
+
+    .nongki-modal h3 {
+        color: #fff; font-size: 1.2rem; font-weight: 700;
+        margin: 0 0 0.5rem; font-family: 'Cormorant Garamond', serif;
+        letter-spacing: 0.5px;
+    }
+    .nongki-modal p {
+        color: #aaa; font-size: 0.875rem; margin: 0 0 1.8rem; line-height: 1.6;
+    }
+    .nongki-modal p span {
+        color: var(--gold); font-weight: 700;
+    }
+
+    .modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+    .btn-modal {
+        padding: 10px 24px; border-radius: 10px;
+        font-size: 0.85rem; font-weight: 700; cursor: pointer;
+        border: none; transition: all 0.2s ease; letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .btn-modal-cancel {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #aaa;
+    }
+    .btn-modal-cancel:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .btn-modal-danger {
+        background: linear-gradient(135deg, #ff4d4d, #b30000);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(255,77,77,0.3);
+    }
+    .btn-modal-danger:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,77,77,0.4); }
+    .btn-modal-gold {
+        background: linear-gradient(135deg, #c9a84c, #a07830);
+        color: #000;
+        box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+    }
+    .btn-modal-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.4); }
+
+    /* ========== TOAST NOTIFIKASI ========== */
+    .nongki-toast-wrap {
+        position: fixed; top: 1.5rem; right: 1.5rem;
+        z-index: 99999; display: flex; flex-direction: column; gap: 10px;
+        pointer-events: none;
+    }
+    .nongki-toast {
+        display: flex; align-items: center; gap: 12px;
+        padding: 14px 20px; border-radius: 14px;
+        background: #111; border: 1px solid;
+        min-width: 280px; max-width: 380px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        pointer-events: all;
+        animation: toastIn 0.35s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .nongki-toast.hiding {
+        animation: toastOut 0.3s ease forwards;
+    }
+    @keyframes toastIn {
+        from { opacity: 0; transform: translateX(60px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes toastOut {
+        from { opacity: 1; transform: translateX(0); }
+        to   { opacity: 0; transform: translateX(60px); }
+    }
+    .nongki-toast.toast-success { border-color: rgba(139,195,74,0.5); }
+    .nongki-toast.toast-danger  { border-color: rgba(255,77,77,0.5); }
+    .nongki-toast.toast-warning { border-color: rgba(201,168,76,0.5); }
+
+    .toast-icon {
+        width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .toast-success .toast-icon { background: rgba(139,195,74,0.15); color: #8bc34a; }
+    .toast-danger  .toast-icon { background: rgba(255,77,77,0.15);  color: #ff4d4d; }
+    .toast-warning .toast-icon { background: rgba(201,168,76,0.15); color: var(--gold); }
+
+    .toast-body { flex: 1; }
+    .toast-title { color: #fff; font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; }
+    .toast-msg   { color: #999; font-size: 0.78rem; line-height: 1.4; }
+
+    .toast-close {
+        background: none; border: none; color: #666;
+        cursor: pointer; font-size: 1rem; padding: 0; line-height: 1;
+        transition: color 0.2s;
+    }
+    .toast-close:hover { color: #fff; }
+
+    .toast-progress {
+        position: absolute; bottom: 0; left: 0; height: 3px;
+        border-radius: 0 0 14px 14px;
+        animation: toastProgress 4s linear forwards;
+    }
+    .toast-success .toast-progress { background: #8bc34a; }
+    .toast-danger  .toast-progress { background: #ff4d4d; }
+    .toast-warning .toast-progress { background: var(--gold); }
+    @keyframes toastProgress { from { width: 100%; } to { width: 0; } }
+    .nongki-toast { position: relative; overflow: hidden; }
 </style>
 @endpush
 
 @section('content')
+
+{{-- ===== TOAST CONTAINER ===== --}}
+<div class="nongki-toast-wrap" id="toastWrap"></div>
+
+{{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
+<div class="nongki-modal-overlay" id="modalHapus">
+    <div class="nongki-modal">
+        <div class="modal-icon icon-danger">
+            <i class="fa-solid fa-trash-can"></i>
+        </div>
+        <h3>Hapus Akun Pengguna</h3>
+        <p>Anda akan menghapus akun <span id="modalNamaHapus">-</span>. Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="modal-actions">
+            <button class="btn-modal btn-modal-cancel" onclick="tutupModal('modalHapus')">Batal</button>
+            <button class="btn-modal btn-modal-danger" id="btnKonfirmasiHapus">
+                <i class="fa-solid fa-trash-can"></i> Ya, Hapus
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- ===== MODAL KONFIRMASI TOGGLE STATUS ===== --}}
+<div class="nongki-modal-overlay" id="modalToggle">
+    <div class="nongki-modal">
+        <div class="modal-icon icon-warning">
+            <i class="fa-solid fa-power-off"></i>
+        </div>
+        <h3 id="modalToggleJudul">Ubah Status Akun</h3>
+        <p id="modalTogglePesan">Anda akan mengubah status akun <span id="modalNamaToggle">-</span>.</p>
+        <div class="modal-actions">
+            <button class="btn-modal btn-modal-cancel" onclick="tutupModal('modalToggle')">Batal</button>
+            <button class="btn-modal btn-modal-gold" id="btnKonfirmasiToggle">
+                <i class="fa-solid fa-power-off"></i> Konfirmasi
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- ===== KONTEN UTAMA ===== --}}
 <div class="report-container fade-in-up">
     <div class="dashboard-header" style="margin-bottom: 2rem;">
         <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--gold); margin: 0;">User Management</h1>
         <p style="color: var(--text-muted-c); font-size: 1rem;">Otoritas akun dan jejak audit sistem NONGKI.</p>
     </div>
-
-    @if(session('success'))
-        <div style="background: rgba(139, 195, 74, 0.2); border: 1px solid #8bc34a; color: #8bc34a; padding: 12px; border-radius: 10px; margin-bottom: 20px;">
-            <i class="fa-solid fa-check-circle"></i> {{ session('success') }}
-        </div>
-    @endif
 
     <div class="user-panel">
         <table class="nongki-table">
@@ -138,28 +315,38 @@
                             <div style="color: var(--gold); font-size: 0.7rem; padding: 5px 15px; text-transform: uppercase;">Ubah Role</div>
                             <form action="{{ route('admin.user.update-role', $user->UserID) }}" method="POST">
                                 @csrf
-                                <select name="Role" onchange="this.form.submit()" class="role-select-custom">
+                                <select name="Role" onchange="konfirmasiUbahRole(this, '{{ addslashes($user->Nama) }}')" class="role-select-custom">
                                     <option value="ADMIN" {{ strtoupper($user->Role) == 'ADMIN' ? 'selected' : '' }}>Admin</option>
                                     <option value="KASIR" {{ strtoupper($user->Role) == 'KASIR' ? 'selected' : '' }}>Kasir</option>
                                     <option value="PELANGGAN" {{ strtoupper($user->Role) == 'PELANGGAN' ? 'selected' : '' }}>Pelanggan</option>
                                 </select>
                             </form>
                             <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
-                            <form action="{{ route('admin.user.toggle-status', $user->UserID) }}" method="POST">
+
+                            {{-- Form toggle status --}}
+                            <form id="form-toggle-{{ $user->UserID }}" action="{{ route('admin.user.toggle-status', $user->UserID) }}" method="POST">
                                 @csrf
-                                <button type="submit" style="width: 100%; background: none; border: none; color: white; padding: 10px 15px; text-align: left; cursor: pointer; font-size: 0.8rem;">
-                                    <i class="fa-solid fa-power-off"></i> {{ (int)$user->Status === 1 ? 'Non-Aktifkan' : 'Aktifkan' }}
-                                </button>
                             </form>
-                            <form action="{{ route('admin.user.destroy', $user->UserID) }}" method="POST" onsubmit="return confirm('Hapus user ini?')">
+                            <button type="button"
+                                onclick="bukaModalToggle('{{ $user->UserID }}', '{{ addslashes($user->Nama) }}', {{ (int)$user->Status }})"
+                                style="width: 100%; background: none; border: none; color: white; padding: 10px 15px; text-align: left; cursor: pointer; font-size: 0.8rem;">
+                                <i class="fa-solid fa-power-off"></i> {{ (int)$user->Status === 1 ? 'Non-Aktifkan' : 'Aktifkan' }}
+                            </button>
+
+                            {{-- Form hapus --}}
+                            <form id="form-hapus-{{ $user->UserID }}" action="{{ route('admin.user.destroy', $user->UserID) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" style="width: 100%; background: none; border: none; color: #ff4d4d; padding: 10px 15px; text-align: left; cursor: pointer; font-size: 0.8rem;">
-                                    <i class="fa-solid fa-trash"></i> Hapus Akun
-                                </button>
                             </form>
+                            <button type="button"
+                                onclick="bukaModalHapus('{{ $user->UserID }}', '{{ addslashes($user->Nama) }}')"
+                                style="width: 100%; background: none; border: none; color: #ff4d4d; padding: 10px 15px; text-align: left; cursor: pointer; font-size: 0.8rem;">
+                                <i class="fa-solid fa-trash"></i> Hapus Akun
+                            </button>
                         </div>
                     </td>
+
                     <td><div class="avatar-circle">{{ strtoupper(substr($user->Nama, 0, 2)) }}</div></td>
+
                     <td>
                         <div class="info-wrapper">
                             <span class="main-name">{{ $user->Nama }}</span>
@@ -177,25 +364,21 @@
                             </div>
                         </div>
                     </td>
+
                     <td style="color: #ccc;">{{ $user->Email }}</td>
-                  <td>
+
+                    <td>
                         @php
-                            // Ambil role dan jadikan huruf besar semua untuk pengecekan
                             $userRole = strtoupper($user->Role);
-                            
-                            // Tentukan class berdasarkan role
-                            $colorClass = 'role-pelanggan-bg'; // Default hijau
-                            if ($userRole == 'ADMIN') {
-                                $colorClass = 'role-admin-bg';
-                            } elseif ($userRole == 'KASIR') {
-                                $colorClass = 'role-kasir-bg';
-                            }
+                            $colorClass = 'role-pelanggan-bg';
+                            if ($userRole == 'ADMIN') $colorClass = 'role-admin-bg';
+                            elseif ($userRole == 'KASIR') $colorClass = 'role-kasir-bg';
                         @endphp
-                        
                         <span class="badge-role {{ $colorClass }}">
                             {{ $userRole == 'PELANGGAN' ? 'PELANGGAN' : $userRole }}
                         </span>
                     </td>
+
                     <td>
                         <span style="font-weight: 700; color: {{ (int)$user->Status === 1 ? '#8bc34a' : '#ff4d4d' }}">
                             {{ (int)$user->Status === 1 ? 'AKTIF' : 'NON-AKTIF' }}
@@ -208,7 +391,25 @@
     </div>
 </div>
 
+{{-- ===== FLASH SESSION TOAST ===== --}}
+@if(session('success'))
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        tampilkanToast('success', 'Berhasil', '{{ session('success') }}');
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        tampilkanToast('danger', 'Gagal', '{{ session('error') }}');
+    });
+</script>
+@endif
+
+<script>
+/* ===== DROPDOWN ===== */
 function toggleDropdown(event, id) {
     event.stopPropagation();
     document.querySelectorAll('.nongki-dropdown').forEach(el => {
@@ -222,5 +423,113 @@ window.onclick = function(event) {
         document.querySelectorAll('.nongki-dropdown').forEach(el => el.style.display = 'none');
     }
 };
+
+/* ===== MODAL HELPERS ===== */
+function bukaModal(id) {
+    const overlay = document.getElementById(id);
+    overlay.classList.add('active');
+}
+function tutupModal(id) {
+    const overlay = document.getElementById(id);
+    overlay.classList.remove('active');
+}
+
+/* ===== MODAL HAPUS ===== */
+function bukaModalHapus(userId, nama) {
+    document.getElementById('modalNamaHapus').textContent = nama;
+    const btn = document.getElementById('btnKonfirmasiHapus');
+    btn.onclick = function() {
+        tutupModal('modalHapus');
+        document.getElementById('form-hapus-' + userId).submit();
+    };
+    bukaModal('modalHapus');
+}
+
+/* ===== MODAL TOGGLE STATUS ===== */
+function bukaModalToggle(userId, nama, status) {
+    const aktif = parseInt(status) === 1;
+    document.getElementById('modalNamaToggle').textContent = nama;
+    document.getElementById('modalToggleJudul').textContent = aktif ? 'Non-Aktifkan Akun' : 'Aktifkan Akun';
+    document.getElementById('modalTogglePesan').innerHTML = aktif
+        ? 'Akun <span>' + nama + '</span> akan dinonaktifkan dan tidak bisa login.'
+        : 'Akun <span>' + nama + '</span> akan diaktifkan kembali.';
+    const btn = document.getElementById('btnKonfirmasiToggle');
+    btn.innerHTML = aktif
+        ? '<i class="fa-solid fa-ban"></i> Non-Aktifkan'
+        : '<i class="fa-solid fa-check"></i> Aktifkan';
+    btn.onclick = function() {
+        tutupModal('modalToggle');
+        document.getElementById('form-toggle-' + userId).submit();
+    };
+    bukaModal('modalToggle');
+}
+
+/* ===== KONFIRMASI UBAH ROLE ===== */
+function konfirmasiUbahRole(selectEl, nama) {
+    const roleLabel = selectEl.options[selectEl.selectedIndex].text;
+    const form = selectEl.closest('form');
+    const prevIndex = [...selectEl.options].findIndex(o => o.defaultSelected);
+
+    // simpan index sebelumnya untuk rollback jika batal
+    const originalIndex = prevIndex >= 0 ? prevIndex : 0;
+
+    // buat modal dinamis inline
+    const overlay = document.getElementById('modalToggle');
+    document.getElementById('modalNamaToggle').textContent = nama;
+    document.getElementById('modalToggleJudul').textContent = 'Ubah Hak Akses';
+    document.getElementById('modalTogglePesan').innerHTML =
+        'Role akun <span>' + nama + '</span> akan diubah menjadi <span>' + roleLabel + '</span>.';
+    const btn = document.getElementById('btnKonfirmasiToggle');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan';
+    btn.onclick = function() {
+        tutupModal('modalToggle');
+        form.submit();
+    };
+
+    // Jika batal, kembalikan pilihan semula
+    document.querySelector('#modalToggle .btn-modal-cancel').onclick = function() {
+        selectEl.selectedIndex = originalIndex;
+        tutupModal('modalToggle');
+    };
+
+    bukaModal('modalToggle');
+}
+
+/* ===== TOAST ===== */
+function tampilkanToast(tipe, judul, pesan) {
+    const wrap = document.getElementById('toastWrap');
+    const icons = { success: 'fa-circle-check', danger: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
+    const labels = { success: 'Berhasil', danger: 'Gagal', warning: 'Perhatian' };
+
+    const toast = document.createElement('div');
+    toast.className = 'nongki-toast toast-' + tipe;
+    toast.innerHTML = `
+        <div class="toast-icon"><i class="fa-solid ${icons[tipe] || 'fa-bell'}"></i></div>
+        <div class="toast-body">
+            <div class="toast-title">${judul || labels[tipe]}</div>
+            <div class="toast-msg">${pesan}</div>
+        </div>
+        <button class="toast-close" onclick="tutupToast(this.closest('.nongki-toast'))">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="toast-progress"></div>
+    `;
+    wrap.appendChild(toast);
+
+    setTimeout(() => tutupToast(toast), 4000);
+}
+
+function tutupToast(el) {
+    if (!el) return;
+    el.classList.add('hiding');
+    setTimeout(() => el.remove(), 300);
+}
+
+/* ===== TUTUP MODAL KLIK LUAR ===== */
+document.querySelectorAll('.nongki-modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+        if (e.target === this) tutupModal(this.id);
+    });
+});
 </script>
 @endsection

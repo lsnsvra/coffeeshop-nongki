@@ -17,7 +17,6 @@ class AdminController extends Controller
     public function updateRole(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $oldRole = $user->Role;
         
         $user->update([
             'Role' => $request->Role,
@@ -25,7 +24,8 @@ class AdminController extends Controller
             'LastUpdatedDate' => now(),
         ]);
 
-        return back()->with('success', "Role {$user->Nama} berhasil diubah dari {$oldRole} menjadi {$request->Role}!");
+        // Setelah ubah role
+        return redirect()->back()->with('success', 'Hak akses berhasil diperbarui.');
     }
 
     public function toggleStatus($id)
@@ -39,16 +39,16 @@ class AdminController extends Controller
             'LastUpdatedDate' => now(),
         ]);
 
-        return back()->with('success', "Status {$user->Nama} berhasil diperbarui!");
+        // Setelah toggle status
+        return redirect()->back()->with('success', 'Status akun berhasil diubah.');
     }
 
-    // INI FUNGSI YANG TADI ERROR (MENGHAPUS USER)
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $namaUser = $user->Nama;
         $user->delete();
 
-        return back()->with('success', "Akun {$namaUser} berhasil dihapus dari sistem NONGKI.");
+        // Setelah hapus user
+        return redirect()->back()->with('success', 'Akun berhasil dihapus.');
     }
 }
