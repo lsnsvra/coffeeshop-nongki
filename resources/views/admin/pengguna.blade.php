@@ -16,6 +16,8 @@
         margin-top: 1rem;
     }
 
+
+
     .nongki-table { width: 100%; border-collapse: collapse; color: #ffffff; }
     .nongki-table th { 
         text-align: left; padding: 15px; color: var(--gold); 
@@ -23,7 +25,9 @@
     }
     .nongki-table td { padding: 18px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
 
+
     /* ========== AUDIT TRAIL STYLE ========== */
+
     .info-wrapper { display: flex; flex-direction: column; gap: 4px; }
     .main-name { font-weight: 700; color: #ffffff; font-size: 1rem; }
     .audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
@@ -52,6 +56,7 @@
         margin: 0 auto; display: block; cursor: pointer;
     }
 
+
     /* ========== LUXURY ROLE DESIGN ========== */
     .badge-role {
         padding: 8px 16px; 
@@ -66,7 +71,6 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    
     .bg-admin { 
         background: linear-gradient(135deg, #ff4d4d 0%, #b30000 100%) !important;
         color: #ffffff !important;
@@ -74,6 +78,7 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
+
     .bg-kasir { 
         background: linear-gradient(135deg, #ffeb3b 0%, #fbc02d 100%) !important;
         color: #000000 !important;
@@ -81,11 +86,13 @@
         border: 1px solid rgba(0, 0, 0, 0.1);
     }
     
+
     .bg-pelanggan { 
         background: linear-gradient(135deg, #4caf50 0%, #1b5e20 100%) !important;
         color: #ffffff !important;
         box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.2);
+
     }
 
     .avatar-circle {
@@ -247,6 +254,7 @@
 
 @section('content')
 
+
 {{-- ===== TOAST CONTAINER ===== --}}
 <div class="nongki-toast-wrap" id="toastWrap"></div>
 
@@ -264,8 +272,10 @@
                 <i class="fa-solid fa-trash-can"></i> Ya, Hapus
             </button>
         </div>
+
     </div>
 </div>
+
 
 {{-- ===== MODAL KONFIRMASI TOGGLE STATUS ===== --}}
 <div class="nongki-modal-overlay" id="modalToggle">
@@ -291,6 +301,7 @@
         <p style="color: var(--text-muted-c); font-size: 1rem;">Otoritas akun dan jejak audit sistem NONGKI.</p>
     </div>
 
+
     <div class="user-panel">
         <table class="nongki-table">
             <thead>
@@ -315,13 +326,16 @@
                             <div style="color: var(--gold); font-size: 0.7rem; padding: 5px 15px; text-transform: uppercase;">Ubah Role</div>
                             <form action="{{ route('admin.user.update-role', $user->UserID) }}" method="POST">
                                 @csrf
+
                                 <select name="Role" onchange="konfirmasiUbahRole(this, '{{ addslashes($user->Nama) }}')" class="role-select-custom">
+
                                     <option value="ADMIN" {{ strtoupper($user->Role) == 'ADMIN' ? 'selected' : '' }}>Admin</option>
                                     <option value="KASIR" {{ strtoupper($user->Role) == 'KASIR' ? 'selected' : '' }}>Kasir</option>
                                     <option value="PELANGGAN" {{ strtoupper($user->Role) == 'PELANGGAN' ? 'selected' : '' }}>Pelanggan</option>
                                 </select>
                             </form>
                             <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
+
 
                             {{-- Form toggle status --}}
                             <form id="form-toggle-{{ $user->UserID }}" action="{{ route('admin.user.toggle-status', $user->UserID) }}" method="POST">
@@ -336,6 +350,7 @@
                             {{-- Form hapus --}}
                             <form id="form-hapus-{{ $user->UserID }}" action="{{ route('admin.user.destroy', $user->UserID) }}" method="POST">
                                 @csrf @method('DELETE')
+
                             </form>
                             <button type="button"
                                 onclick="bukaModalHapus('{{ $user->UserID }}', '{{ addslashes($user->Nama) }}')"
@@ -365,6 +380,7 @@
                         </div>
                     </td>
 
+
                     <td style="color: #ccc;">{{ $user->Email }}</td>
 
                     <td>
@@ -374,6 +390,7 @@
                             if ($userRole == 'ADMIN') $colorClass = 'role-admin-bg';
                             elseif ($userRole == 'KASIR') $colorClass = 'role-kasir-bg';
                         @endphp
+
                         <span class="badge-role {{ $colorClass }}">
                             {{ $userRole == 'PELANGGAN' ? 'PELANGGAN' : $userRole }}
                         </span>
@@ -423,6 +440,7 @@ window.onclick = function(event) {
         document.querySelectorAll('.nongki-dropdown').forEach(el => el.style.display = 'none');
     }
 };
+
 
 /* ===== MODAL HELPERS ===== */
 function bukaModal(id) {
@@ -531,5 +549,6 @@ document.querySelectorAll('.nongki-modal-overlay').forEach(overlay => {
         if (e.target === this) tutupModal(this.id);
     });
 });
+
 </script>
 @endsection

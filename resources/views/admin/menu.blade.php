@@ -4,6 +4,7 @@
 
 @push('styles')
 <style>
+
     /* ========== LUXURY THEME UI - NONGKI OFFICIAL ========== */
     :root {
         --gold: #d4af37;
@@ -71,12 +72,15 @@
     .form-control {
         width: 100%; background: #000; border: 1px solid var(--border-color); padding: 14px;
         border-radius: 12px; color: #fff; outline: none; margin-top: 5px;
+
     }
+    .form-control:focus { border-color: var(--gold); }
 </style>
 @endpush
 
 @section('content')
 <div class="menu-container">
+
     <div style="margin-bottom: 40px;">
         <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; color: var(--gold); margin: 0; font-weight: 700;">Menu Inventory</h1>
         <p style="color: var(--text-muted); font-size: 1.1rem;">Manajemen koleksi produk kopi, non-kopi, dan makanan.</p>
@@ -159,10 +163,12 @@
 <div id="productModal" class="modal-nongki">
     <div class="modal-content">
         <h2 id="modalTitle" style="color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin-top: 0; margin-bottom: 30px;">Tambah Produk</h2>
+
         <form id="productForm" method="POST" enctype="multipart/form-data">
             @csrf
             <div id="methodField"></div>
             
+
             <div style="margin-bottom: 20px;">
                 <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Nama Kopi / Menu</label>
                 <input type="text" name="NamaKopi" id="formNama" class="form-control" required>
@@ -171,11 +177,13 @@
             <div style="margin-bottom: 20px;">
                 <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Kategori</label>
                 <select name="Category" id="formKategori" class="form-control" required>
+
                     <option value="KOPI">KOPI</option>
                     <option value="NON-KOPI">NON-KOPI</option>
                     <option value="MAKANAN">MAKANAN</option>
                 </select>
             </div>
+
 
             <div style="margin-bottom: 20px;">
                 <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Harga (Rp)</label>
@@ -190,15 +198,19 @@
             <div style="margin-top: 35px; display: flex; gap: 15px;">
                 <button type="button" class="btn-icon" style="width: auto; padding: 0 25px; color: #fff;" onclick="closeModal()">Batal</button>
                 <button type="submit" class="btn-nongki" style="flex: 1; justify-content: center;">Simpan Data</button>
+
             </div>
         </form>
     </div>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const modal = document.getElementById('productModal');
     const form = document.getElementById('productForm');
+
 
     function openModal() {
         form.reset();
