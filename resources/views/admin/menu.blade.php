@@ -4,62 +4,75 @@
 
 @push('styles')
 <style>
-    /* ========== LUXURY THEME UI ========== */
-    .menu-container { animation: fadeIn 0.6s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ========== LUXURY THEME UI - NONGKI OFFICIAL ========== */
+    :root {
+        --gold: #d4af37;
+        --gold-dim: rgba(212, 175, 55, 0.15);
+        --bg-panel: #0f0f0f;
+        --text-main: #f8f9fa;
+        --text-muted: #a0a0a0;
+        --border-color: #2a2a2a;
+    }
+
+    .menu-container { animation: fadeIn 0.6s ease-out; color: var(--text-main); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
     .nongki-panel { 
-        background: #0f0f0f; 
-        border: 1px solid rgba(201, 168, 76, 0.2); 
-        border-radius: 15px; 
-        padding: 25px; 
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        background: var(--bg-panel); 
+        border: 1px solid var(--gold-dim); 
+        border-radius: 20px; 
+        padding: 30px; 
+        box-shadow: 0 25px 50px rgba(0,0,0,0.7);
     }
 
-    .table-luxury { width: 100%; border-collapse: collapse; color: #fff; margin-top: 20px; }
+    .table-luxury { width: 100%; border-collapse: collapse; margin-top: 20px; color: var(--text-main) !important; }
     .table-luxury th { 
-        color: var(--gold); font-size: 0.75rem; text-transform: uppercase; 
-        letter-spacing: 1.5px; padding: 15px; border-bottom: 2px solid #222; text-align: left;
+        color: var(--gold) !important; font-size: 0.8rem; text-transform: uppercase; 
+        letter-spacing: 1.5px; padding: 18px 15px; border-bottom: 2px solid var(--border-color); text-align: left;
     }
-    .table-luxury td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+    .table-luxury td { padding: 18px 15px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
 
     .img-preview { 
-        width: 60px; height: 60px; object-fit: cover; border-radius: 10px; 
-        border: 1px solid var(--gold); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        width: 70px; height: 70px; object-fit: cover; border-radius: 14px; 
+        border: 1px solid var(--gold); box-shadow: 0 5px 15px rgba(0,0,0,0.5); background: #222;
     }
 
+    /* Styling Badge Kategori */
     .badge-cat {
-        background: rgba(201, 168, 76, 0.1); color: var(--gold);
-        border: 1px solid rgba(201, 168, 76, 0.3); padding: 5px 12px;
-        border-radius: 6px; font-size: 0.65rem; font-weight: 700;
+        background: var(--gold-dim); color: var(--gold);
+        border: 1px solid rgba(212, 175, 55, 0.3); padding: 6px 14px;
+        border-radius: 10px; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px;
+        text-transform: uppercase;
     }
 
     .btn-nongki {
-        background: var(--gold); color: #000; border: none; padding: 10px 20px;
-        border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        background: var(--gold); color: #000; border: none; padding: 12px 24px;
+        border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-nongki:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4); }
+    .btn-nongki:hover { transform: translateY(-3px); background: #f1c40f; }
 
     .btn-icon {
-        background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333;
-        width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.3s;
-        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.03); color: var(--text-muted); border: 1px solid var(--border-color);
+        width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
     }
-    .btn-icon:hover { border-color: var(--gold); color: var(--gold); background: rgba(201, 168, 76, 0.1); }
+    .btn-icon:hover { border-color: var(--gold); color: var(--gold); }
 
+    .timestamp-box { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; }
+    
     .modal-nongki {
         display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+        background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
     }
     .modal-content {
-        background: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--gold);
-        width: 450px; border-radius: 20px; color: #fff; position: relative;
+        background: #151515; margin: 5% auto; padding: 40px; border: 1px solid var(--gold);
+        width: 100%; max-width: 480px; border-radius: 25px; color: var(--text-main);
     }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 0.8rem; color: var(--gold); margin-bottom: 8px; }
     .form-control {
-        width: 100%; background: #000; border: 1px solid #333; padding: 12px;
-        border-radius: 10px; color: #fff; outline: none;
+        width: 100%; background: #000; border: 1px solid var(--border-color); padding: 14px;
+        border-radius: 12px; color: #fff; outline: none; margin-top: 5px;
+
     }
     .form-control:focus { border-color: var(--gold); }
 </style>
@@ -67,119 +80,142 @@
 
 @section('content')
 <div class="menu-container">
-    <div style="margin-bottom: 30px;">
-        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--gold); margin: 0;">Menu Inventory</h1>
-        <p style="color: #888;">Atur koleksi produk aktif di NONGKI.</p>
+
+    <div style="margin-bottom: 40px;">
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; color: var(--gold); margin: 0; font-weight: 700;">Menu Inventory</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">Manajemen koleksi produk kopi, non-kopi, dan makanan.</p>
     </div>
 
-    @if(session('success'))
-        <div style="background: rgba(201,168,76,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-            <i class="fa-solid fa-check-circle"></i> {{ session('success') }}
-        </div>
-    @endif
-
     <div class="nongki-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="btn-nongki" onclick="openModal('add')">
-                <i class="fa-solid fa-plus"></i> Tambah Produk Baru
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <button class="btn-nongki" onclick="openModal()">
+                <i class="fa-solid fa-plus"></i> Tambah Menu Baru
             </button>
-            <span style="color: #666; font-size: 0.85rem;">Total: {{ $products->count() }} Produk</span>
+            <span style="color: var(--text-muted);">
+                Total: <strong style="color: var(--gold);">{{ $products->count() }}</strong> Items
+            </span>
         </div>
 
-        <table class="table-luxury">
-            <thead>
-                <tr>
-                    <th style="width: 100px;">Aksi</th>
-                    <th style="width: 100px;">Preview</th>
-                    <th>Informasi Produk</th>
-                    <th>Kategori</th>
-                    <th>Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($products as $p)
-                <tr>
-                    <td>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn-icon" onclick="editProduct({{ json_encode($p) }})">
-                                <i class="fa-solid fa-pencil"></i>
-                            </button>
-                            <form action="{{ route('admin.menu.destroy', $p->ProductID) }}" method="POST" onsubmit="return confirm('Hapus produk ini?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn-icon"><i class="fa-solid fa-trash"></i></button>
-                            </form>
-                        </div>
-                    </td>
-                    <td>
-                        @if($p->Gambar)
-                            <img src="{{ asset('storage/'.$p->Gambar) }}" class="img-preview">
-                        @else
-                            <div class="img-preview" style="display: flex; align-items: center; justify-content: center; background: #222;">
-                                <i class="fa-solid fa-image" style="color: #444;"></i>
+        <div style="overflow-x: auto;">
+            <table class="table-luxury">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Aksi</th>
+                        <th style="width: 100px;">Preview</th>
+                        <th>Info Produk</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th>Riwayat Log</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($products as $p)
+                    <tr>
+                        <td>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-icon" onclick="editProduct({{ json_encode($p) }})" title="Edit">
+                                    <i class="fa-solid fa-pencil"></i>
+                                </button>
+                                <button class="btn-icon delete" style="color:#ff4757" onclick="confirmDelete('{{ $p->ProductID }}', '{{ addslashes($p->NamaKopi) }}')" title="Hapus">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                <form id="delete-form-{{ $p->ProductID }}" action="{{ route('admin.menu.destroy', $p->ProductID) }}" method="POST" style="display: none;">
+                                    @csrf @method('DELETE')
+                                </form>
                             </div>
-                        @endif
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; font-size: 1rem;">{{ $p->NamaProduk }}</div>
-                        <div style="font-size: 0.7rem; color: var(--gold); letter-spacing: 1px;">#PROD-{{ $p->ProductID }}</div>
-                    </td>
-                    <td><span class="badge-cat">{{ $p->Kategori }}</span></td>
-                    <td style="font-weight: 800; color: var(--gold);">Rp {{ number_format($p->Harga, 0, ',', '.') }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                        </td>
+                        <td>
+                            @if($p->image)
+                                <img src="{{ asset('images/products/' . $p->image) }}" class="img-preview" onerror="this.src='{{ asset('storage/'.$p->image) }}'">
+                            @else
+                                <div class="img-preview" style="display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-image" style="color:#444"></i></div>
+                            @endif
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; font-size: 1.1rem;">{{ $p->NamaKopi }}</div>
+                            <div style="font-size: 0.75rem; color: var(--gold);">#ID-{{ $p->ProductID }}</div>
+                        </td>
+                        <td>
+                            {{-- BERHASIL: Menampilkan Kategori sesuai Database --}}
+                            <span class="badge-cat">{{ $p->Category ?? 'LAINNYA' }}</span>
+                        </td>
+                        <td style="font-weight: 900; color: var(--text-main); font-size: 1.1rem;">
+                            Rp {{ number_format($p->Harga, 0, ',', '.') }}
+                        </td>
+                        <td>
+                            <div class="timestamp-box">
+                                <div><span style="color:var(--gold)">Created:</span> {{ $p->CreatedDate ? \Carbon\Carbon::parse($p->CreatedDate)->format('d/m/y H:i') : '-' }}</div>
+                                <div><span style="color:var(--gold)">Updated:</span> {{ $p->LastUpdatedDate ? \Carbon\Carbon::parse($p->LastUpdatedDate)->format('d/m/y H:i') : '-' }}</div>
+                                <div style="color: #fff; font-weight: bold; margin-top: 4px; border-top: 1px solid #333; padding-top: 4px;">
+                                    <i class="fa-solid fa-user-pen" style="font-size: 0.65rem; color: var(--gold);"></i> 
+                                    {{ $p->LastUpdatedBy ?? 'System' }}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- ========== MODAL FORM ========== -->
 <div id="productModal" class="modal-nongki">
     <div class="modal-content">
-        <h2 id="modalTitle" style="color: var(--gold); font-family: 'Cormorant Garamond', serif; margin-top: 0;">Tambah Produk</h2>
+        <h2 id="modalTitle" style="color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; margin-top: 0; margin-bottom: 30px;">Tambah Produk</h2>
+
         <form id="productForm" method="POST" enctype="multipart/form-data">
             @csrf
             <div id="methodField"></div>
             
-            <div class="form-group">
-                <label>Nama Produk</label>
-                <input type="text" name="NamaProduk" id="formNama" class="form-control" required>
+
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Nama Kopi / Menu</label>
+                <input type="text" name="NamaKopi" id="formNama" class="form-control" required>
             </div>
 
-            <div class="form-group">
-                <label>Kategori</label>
-                <select name="Kategori" id="formKategori" class="form-control" required>
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Kategori</label>
+                <select name="Category" id="formKategori" class="form-control" required>
+
                     <option value="KOPI">KOPI</option>
                     <option value="NON-KOPI">NON-KOPI</option>
                     <option value="MAKANAN">MAKANAN</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>Harga (Rp)</label>
+
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Harga (Rp)</label>
                 <input type="number" name="Harga" id="formHarga" class="form-control" required>
             </div>
 
-            <div class="form-group">
-                <label>Gambar Produk</label>
-                <input type="file" name="Gambar" class="form-control">
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">Upload Gambar</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
             </div>
 
-            <div style="margin-top: 25px; display: flex; gap: 10px;">
-                <button type="submit" class="btn-nongki" style="flex: 1;">Simpan Produk</button>
-                <button type="button" class="btn-icon" style="width: auto; padding: 0 20px;" onclick="closeModal()">Batal</button>
+            <div style="margin-top: 35px; display: flex; gap: 15px;">
+                <button type="button" class="btn-icon" style="width: auto; padding: 0 25px; color: #fff;" onclick="closeModal()">Batal</button>
+                <button type="submit" class="btn-nongki" style="flex: 1; justify-content: center;">Simpan Data</button>
+
             </div>
         </form>
     </div>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const modal = document.getElementById('productModal');
     const form = document.getElementById('productForm');
 
-    function openModal(type) {
+
+    function openModal() {
         form.reset();
         document.getElementById('methodField').innerHTML = '';
-        document.getElementById('modalTitle').innerText = 'Tambah Produk Baru';
+        document.getElementById('modalTitle').innerText = 'Tambah Produk';
         form.action = "{{ route('admin.menu.store') }}";
         modal.style.display = 'block';
     }
@@ -187,18 +223,34 @@
     function editProduct(data) {
         document.getElementById('modalTitle').innerText = 'Edit Produk';
         document.getElementById('methodField').innerHTML = '@method("PUT")';
-        
-        // Menggunakan URL dinamis yang lebih aman
-        let updateUrl = "{{ route('admin.menu.update', ':id') }}";
-        form.action = updateUrl.replace(':id', data.ProductID);
-        
-        document.getElementById('formNama').value = data.NamaProduk;
-        document.getElementById('formKategori').value = data.Kategori;
+        let url = "{{ route('admin.menu.update', ':id') }}";
+        form.action = url.replace(':id', data.ProductID);
+        document.getElementById('formNama').value = data.NamaKopi;
+        document.getElementById('formKategori').value = data.Category;
         document.getElementById('formHarga').value = data.Harga;
         modal.style.display = 'block';
     }
 
     function closeModal() { modal.style.display = 'none'; }
-    window.onclick = (event) => { if (event.target == modal) closeModal(); }
+    window.onclick = (e) => { if(e.target == modal) closeModal(); }
+
+    function confirmDelete(id, name) {
+        Swal.fire({
+            title: 'Hapus Menu?',
+            html: `Yakin ingin menghapus <b>${name}</b>?`,
+            icon: 'warning',
+            showCancelButton: true,
+            background: '#151515', color: '#fff',
+            confirmButtonColor: '#ff4757', cancelButtonColor: '#2a2a2a',
+            confirmButtonText: 'Ya, Hapus!', cancelButtonText: 'Batal'
+        }).then((res) => { if (res.isConfirmed) document.getElementById('delete-form-' + id).submit(); });
+    }
+
+    @if(session('success'))
+        Swal.fire({
+            title: 'Berhasil!', text: "{{ session('success') }}", icon: 'success',
+            background: '#151515', color: '#fff', confirmButtonColor: '#d4af37'
+        });
+    @endif
 </script>
 @endsection
