@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+
     protected $table = 'products';
     protected $primaryKey = 'ProductID'; // Sesuai DB lu
     public $timestamps = false; // Karena kita pake CreatedDate & LastUpdatedDate manual
@@ -24,6 +25,7 @@ class Product extends Model
         'CreatedDate', 
         'LastUpdatedBy', 
         'LastUpdatedDate'
+
     ];
 
     public function materials()
