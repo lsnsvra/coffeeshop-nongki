@@ -21,7 +21,8 @@ class ProductController extends Controller
             $request->image->move(public_path('images/products'), $imageName);
         }
 
-        Product::create([
+        // TAMPUNG HASIL CREATE KE VARIABEL $newProduct
+        $newProduct = Product::create([
             'NamaKopi' => $request->NamaKopi,
             'Category' => $request->Category, // Pakai Category
             'Harga' => $request->Harga,
@@ -37,7 +38,9 @@ class ProductController extends Controller
             'image' => $imageName
         ]);
 
-        return back()->with('success', 'Menu NONGKI berhasil ditambah!');
+        // UBAH RETURN NYA BIAR LANGSUNG REDIRECT KE HALAMAN ATUR RESEP
+        return redirect()->route('admin.resep.index', $newProduct->ProductID)
+                         ->with('success', 'Menu NONGKI berhasil ditambah! Silakan atur bahan bakunya sekarang.');
     }
 
     public function update(Request $request, $id) {
