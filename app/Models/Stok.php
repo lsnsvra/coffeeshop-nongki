@@ -10,7 +10,7 @@ class Stok extends Model
     use HasFactory;
 
     // Paksa Laravel untuk menggunakan nama tabel 'Stok' (Case Sensitive)
-    protected $table = 'Stok'; 
+    protected $table = 'stok'; 
 
     // Daftarkan kolom agar bisa diisi lewat form (Mass Assignment)
     protected $fillable = [
