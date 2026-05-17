@@ -17,8 +17,6 @@ class AdminController extends Controller
     public function updateRole(Request $request, $id)
     {
         $user = User::findOrFail($id);
-
-
         
         $user->update([
             'Role' => $request->Role,
@@ -26,9 +24,7 @@ class AdminController extends Controller
             'LastUpdatedDate' => now(),
         ]);
 
-        // Setelah ubah role
         return redirect()->back()->with('success', 'Hak akses berhasil diperbarui.');
-
     }
 
     public function toggleStatus($id)
@@ -42,8 +38,6 @@ class AdminController extends Controller
             'LastUpdatedDate' => now(),
         ]);
 
-
-        // Setelah toggle status
         return redirect()->back()->with('success', 'Status akun berhasil diubah.');
     }
 
@@ -52,7 +46,6 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        // Setelah hapus user
         return redirect()->back()->with('success', 'Akun berhasil dihapus.');
     }
 }
