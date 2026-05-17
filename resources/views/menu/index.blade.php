@@ -98,7 +98,7 @@
         cursor: pointer;
     }
 
-    /* Menu Grid - Ukuran lebih kecil */
+    /* Menu Grid */
     .menu-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -145,11 +145,10 @@
         pointer-events: none;
     }
 
-    /* Badge ditaruh di kanan agar tidak tumpang tindih dengan favorit */
     .menu-badge {
         position: absolute;
         top: 8px;
-        right: 8px; 
+        right: 8px;
         z-index: 2;
         padding: 2px 8px;
         border-radius: 20px;
@@ -161,11 +160,10 @@
     .badge-new { background: var(--gold); color: var(--dark); }
     .badge-fav { background: rgba(82,183,136,0.9); color: white; }
 
-    /* Favorit ditaruh di kiri (Aksi Kiri) */
     .menu-fav {
         position: absolute;
         top: 8px;
-        left: 8px; 
+        left: 8px;
         z-index: 2;
         width: 28px;
         height: 28px;
@@ -193,7 +191,6 @@
         bottom: 8px;
         left: 8px;
         z-index: 2;
-        font-family: inherit;
         font-size: 0.85rem;
         font-weight: 700;
         color: var(--gold);
@@ -263,7 +260,7 @@
         background: var(--gold-light);
         transform: scale(1.05);
     }
-    
+
     .btn-add:disabled {
         opacity: 0.8;
         cursor: not-allowed;
@@ -295,20 +292,19 @@
     </div>
 
     @section('search_bar')
-<div class="header-search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-    <input type="text" placeholder="Cari menu, pesanan...">
-</div>
-@endsection
+    <div class="header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" placeholder="Cari menu, pesanan...">
+    </div>
+    @endsection
 
     <div class="filter-bar">
         <button class="filter-pill active" onclick="filterMenu('semua', this)">Semua</button>
         <button class="filter-pill" onclick="filterMenu('kopi', this)">Kopi</button>
         <button class="filter-pill" onclick="filterMenu('non-kopi', this)">Non-Kopi</button>
         <button class="filter-pill" onclick="filterMenu('makanan', this)">Makanan</button>
-
         <div>
             <select class="sort-select" id="sortSelect">
                 <option value="default">Terpopuler</option>
@@ -319,18 +315,13 @@
         </div>
     </div>
 
-   <div class="menu-grid" id="menuGrid">
+    <div class="menu-grid" id="menuGrid">
         @foreach($products as $product)
         @php
-            // Trik PHP: Menentukan kategori secara otomatis berdasarkan nama menu
-            $kategori = 'kopi'; // Defaultnya kita anggap kopi
-            
-            // Daftar menu yang masuk non-kopi
-            $nonKopi = ['Matcha Latte', 'Chocolate Drink', 'Chocolate Avocado', 'Manggo Smoothie'];
-            // Daftar menu yang masuk makanan
-            $makanan = ['French Fries', 'Baked Macaroni', 'Chicken Katsu Curry', 'Enoki Crispy', 'Noodles'];
+            $kategori = 'kopi';
+            $nonKopi  = ['Matcha Latte', 'Chocolate Drink', 'Chocolate Avocado', 'Manggo Smoothie'];
+            $makanan  = ['French Fries', 'Baked Macaroni', 'Chicken Katsu Curry', 'Enoki Crispy', 'Noodles'];
 
-            // Cek apakah nama menu ada di dalam daftar di atas
             if (in_array($product->NamaKopi, $nonKopi)) {
                 $kategori = 'non-kopi';
             } elseif (in_array($product->NamaKopi, $makanan)) {
@@ -338,13 +329,24 @@
             }
         @endphp
 
-        <div class="menu-card" data-cat="{{ $kategori }}" data-id="{{ $product->ProductID ?? $product->id ?? $loop->iteration }}" data-name="{{ $product->NamaKopi }}" data-price="{{ $product->Harga }}">
+        <div class="menu-card"
+             data-cat="{{ $kategori }}"
+             data-id="{{ $product->ProductID ?? $product->id ?? $loop->iteration }}"
+             data-name="{{ $product->NamaKopi }}"
+             data-price="{{ $product->Harga }}">
+
             <div class="menu-img-wrap">
-                <img class="menu-img" src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->NamaKopi }}" loading="lazy" 
+                <img class="menu-img"
+                     src="{{ asset('images/products/' . $product->image) }}"
+                     alt="{{ $product->NamaKopi }}"
+                     loading="lazy"
                      onerror="this.src='https://placehold.co/400x200?text=' + encodeURIComponent('{{ $product->NamaKopi }}')">
 
-                <button class="menu-fav" onclick="handleFavClick(this, {{ $product->ProductID ?? $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <button class="menu-fav"
+                        onclick="handleFavClick(this, {{ $product->ProductID ?? $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
                 </button>
 
                 <span class="menu-price-overlay">Rp {{ number_format($product->Harga, 0, ',', '.') }}</span>
@@ -352,74 +354,46 @@
 
             <div class="menu-body">
                 <div class="menu-name">{{ $product->NamaKopi }}</div>
-             @php
-                    // Default deskripsi diubah jadi "Menu" biar aman kalau ada makanan baru
-                    $desc = 'Menu spesial dari NONGKI yang disajikan segar setiap hari.';
+
+                @php
+                    $desc  = 'Menu spesial dari NONGKI yang disajikan segar setiap hari.';
                     $rating = '4.6';
-                    $count = rand(80, 250); // Angka ulasan acak biar terlihat natural
-                    
+                    $count  = rand(80, 250);
                     $nama_lower = strtolower($product->NamaKopi);
 
-                    // KOPI
-                    if (str_contains($nama_lower, 'americano')) {
-                        $desc = 'Double shot espresso dengan hot water. Simple, kuat, sempurna.';
-                        $rating = '4.6';
-                    } elseif (str_contains($nama_lower, 'aren')) {
-                        $desc = 'Kopi susu dengan gula aren, manis dan creamy.';
-                        $rating = '4.7';
-                    } elseif (str_contains($nama_lower, 'pandan')) {
-                        $desc = 'Kopi susu dengan aroma pandan yang harum.';
-                        $rating = '4.6';
-                    } elseif (str_contains($nama_lower, 'hazelnut') || str_contains($nama_lower, 'halzenut')) {
-                        $desc = 'Kopi dengan sentuhan rasa hazelnut yang khas.';
-                        $rating = '4.8';
-                    } elseif (str_contains($nama_lower, 'macchiato') || str_contains($nama_lower, 'machiatto')) {
-                        $desc = 'Espresso dengan busa susu yang lembut.';
-                        $rating = '4.7';
-                    } elseif (str_contains($nama_lower, 'vanilla')) {
-                        $desc = 'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.';
-                        $rating = '4.8';
-                    } 
-                    // NON-KOPI
-                    elseif (str_contains($nama_lower, 'matcha')) {
-                        $desc = 'Matcha premium Jepang dengan oat milk yang creamy.';
-                        $rating = '4.9';
-                    } elseif (str_contains($nama_lower, 'chocolate avocado')) {
-                        $desc = 'Perpaduan coklat dan alpukat yang creamy.';
-                        $rating = '4.5';
-                    } elseif (str_contains($nama_lower, 'chocolate')) {
-                        $desc = 'Minuman coklat hangat yang nikmat.';
-                        $rating = '4.6';
-                    } elseif (str_contains($nama_lower, 'manggo') || str_contains($nama_lower, 'mango')) {
-                        $desc = 'Smoothie mangga segar dengan potongan buah asli.';
-                        $rating = '4.7';
-                    }
-                    // MAKANAN
-                    elseif (str_contains($nama_lower, 'macaroni')) {
-                        $desc = 'Macaroni panggang dengan keju leleh.';
-                        $rating = '4.6';
-                    } elseif (str_contains($nama_lower, 'katsu')) {
-                        $desc = 'Chicken katsu dengan saus kari Jepang.';
-                        $rating = '4.8';
-                    } elseif (str_contains($nama_lower, 'enoki')) {
-                        $desc = 'Jamur enoki goreng crispy.';
-                        $rating = '4.5';
-                    } elseif (str_contains($nama_lower, 'fries')) {
-                        $desc = 'Kentang goreng crispy dengan saus pilihan.';
-                        $rating = '4.6';
-                    } elseif (str_contains($nama_lower, 'noodle')) {
-                        $desc = 'Mie goreng spesial dengan topping.';
-                        $rating = '4.5';
-                    }
+                    if (str_contains($nama_lower, 'americano'))                          { $desc = 'Double shot espresso dengan hot water. Simple, kuat, sempurna.'; $rating = '4.6'; }
+                    elseif (str_contains($nama_lower, 'aren'))                           { $desc = 'Kopi susu dengan gula aren, manis dan creamy.'; $rating = '4.7'; }
+                    elseif (str_contains($nama_lower, 'pandan'))                         { $desc = 'Kopi susu dengan aroma pandan yang harum.'; $rating = '4.6'; }
+                    elseif (str_contains($nama_lower, 'hazelnut') || str_contains($nama_lower, 'halzenut')) { $desc = 'Kopi dengan sentuhan rasa hazelnut yang khas.'; $rating = '4.8'; }
+                    elseif (str_contains($nama_lower, 'macchiato') || str_contains($nama_lower, 'machiatto')) { $desc = 'Espresso dengan busa susu yang lembut.'; $rating = '4.7'; }
+                    elseif (str_contains($nama_lower, 'vanilla'))                        { $desc = 'Cappuccino klasik dengan sentuhan vanilla dan foam tebal.'; $rating = '4.8'; }
+                    elseif (str_contains($nama_lower, 'matcha'))                         { $desc = 'Matcha premium Jepang dengan oat milk yang creamy.'; $rating = '4.9'; }
+                    elseif (str_contains($nama_lower, 'chocolate avocado'))              { $desc = 'Perpaduan coklat dan alpukat yang creamy.'; $rating = '4.5'; }
+                    elseif (str_contains($nama_lower, 'chocolate'))                      { $desc = 'Minuman coklat hangat yang nikmat.'; $rating = '4.6'; }
+                    elseif (str_contains($nama_lower, 'manggo') || str_contains($nama_lower, 'mango')) { $desc = 'Smoothie mangga segar dengan potongan buah asli.'; $rating = '4.7'; }
+                    elseif (str_contains($nama_lower, 'macaroni'))                       { $desc = 'Macaroni panggang dengan keju leleh.'; $rating = '4.6'; }
+                    elseif (str_contains($nama_lower, 'katsu'))                          { $desc = 'Chicken katsu dengan saus kari Jepang.'; $rating = '4.8'; }
+                    elseif (str_contains($nama_lower, 'enoki'))                          { $desc = 'Jamur enoki goreng crispy.'; $rating = '4.5'; }
+                    elseif (str_contains($nama_lower, 'fries'))                          { $desc = 'Kentang goreng crispy dengan saus pilihan.'; $rating = '4.6'; }
+                    elseif (str_contains($nama_lower, 'noodle'))                         { $desc = 'Mie goreng spesial dengan topping.'; $rating = '4.5'; }
                 @endphp
 
                 <div class="menu-desc">{{ $desc }}</div>
-                
+
                 <div class="menu-footer">
-                    <button class="btn-add" onclick="addToCart({{ $product->ProductID ?? $product->id ?? $loop->iteration }}, '{{ addslashes($product->NamaKopi) }}', {{ $product->Harga }}, '{{ asset('images/products/' . $product->image) }}', this)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <button class="btn-add"
+                            onclick="addToCart(
+                                {{ $product->ProductID ?? $product->id ?? $loop->iteration }},
+                                '{{ addslashes($product->NamaKopi) }}',
+                                {{ $product->Harga }},
+                                '{{ asset('images/products/' . $product->image) }}',
+                                this
+                            )">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
                     </button>
-                    
+
                     <div class="menu-rating">
                         <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                         {{ $rating }} <span>({{ $count }})</span>
@@ -429,11 +403,62 @@
         </div>
         @endforeach
     </div>
-    @endsection
+@endsection
 
 @push('scripts')
 <script>
-    // ========== FUNGSI FAVORIT ==========
+    // =====================================================================
+    // CART KEY — pakai window.CART_ITEMS_KEY & CART_STORAGE_KEY
+    // yang sudah di-inject oleh layouts/app.blade.php per user
+    // =====================================================================
+    const MENU_CART_KEY       = window.CART_ITEMS_KEY   || 'cart_items_u0';
+    const MENU_CART_COUNT_KEY = window.CART_STORAGE_KEY || 'cart_count_u0';
+
+    // ========== ADD TO CART (FIXED) ==========
+    function addToCart(id, name, price, img, btn) {
+        if (btn.disabled) return;
+        btn.disabled = true;
+
+        // Baca cart dari key yang benar (per user)
+        let cart = JSON.parse(localStorage.getItem(MENU_CART_KEY)) || [];
+
+        const index = cart.findIndex(item => item.id == id);
+        if (index !== -1) {
+            cart[index].quantity += 1;
+        } else {
+            cart.push({ id, name, price, img, quantity: 1 });
+        }
+
+        // Simpan ke key per user
+        localStorage.setItem(MENU_CART_KEY, JSON.stringify(cart));
+
+        // Hitung total & simpan count ke key per user
+        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        localStorage.setItem(MENU_CART_COUNT_KEY, totalItems);
+
+        // Update badge via fungsi global dari layouts/app.blade.php
+        if (typeof updateBadges === 'function') {
+            updateBadges(totalItems);
+        } else {
+            const hb = document.getElementById('cartBadgeHeader');
+            const sb = document.getElementById('cartBadgeSidebar');
+            if (hb) { hb.textContent = totalItems; hb.style.display = totalItems > 0 ? 'flex' : 'none'; }
+            if (sb) { sb.textContent = totalItems; sb.style.display = totalItems > 0 ? 'inline-block' : 'none'; }
+        }
+
+        // Efek visual tombol
+        btn.style.transform = 'scale(0.85)';
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+        btn.style.background = '#52b788';
+        setTimeout(() => {
+            btn.style.transform  = '';
+            btn.style.background = '';
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+            btn.disabled = false;
+        }, 1200);
+    }
+
+    // ========== FAVORIT ==========
     function getFavorites() {
         let favs = localStorage.getItem('favorites');
         return favs ? JSON.parse(favs) : [];
@@ -444,8 +469,7 @@
     }
 
     function isFavorite(id) {
-        let favs = getFavorites();
-        return favs.some(item => item.id == id);
+        return getFavorites().some(item => item.id == id);
     }
 
     function toggleFavorite(id, name, price, img) {
@@ -457,7 +481,6 @@
             favs.splice(index, 1);
         }
         saveFavorites(favs);
-        return favs.length;
     }
 
     function handleFavClick(btn, id, name, price, img) {
@@ -472,100 +495,47 @@
         document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.menu-card').forEach(card => {
-            if (cat === 'semua' || card.dataset.cat === cat) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
+            card.style.display = (cat === 'semua' || card.dataset.cat === cat) ? '' : 'none';
         });
     }
 
     // ========== SORTING ==========
-    document.getElementById('sortSelect')?.addEventListener('change', function() {
+    document.getElementById('sortSelect')?.addEventListener('change', function () {
         const sortValue = this.value;
-        const grid = document.getElementById('menuGrid');
+        const grid  = document.getElementById('menuGrid');
         const cards = Array.from(document.querySelectorAll('.menu-card'));
         if (sortValue === 'default') return;
         cards.sort((a, b) => {
-            if (sortValue === 'name_asc') return a.dataset.name.localeCompare(b.dataset.name);
-            if (sortValue === 'price_asc') return parseInt(a.dataset.price) - parseInt(b.dataset.price);
-            if (sortValue === 'price_desc') return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+            if (sortValue === 'name_asc')    return a.dataset.name.localeCompare(b.dataset.name);
+            if (sortValue === 'price_asc')   return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+            if (sortValue === 'price_desc')  return parseInt(b.dataset.price) - parseInt(a.dataset.price);
             return 0;
         });
         cards.forEach(card => grid.appendChild(card));
     });
 
-    // ========== ADD TO CART ==========
-    function addToCart(id, name, price, img, btn) {
-        // Pelindung biar gak bisa di-spam klik
-        if (btn.disabled) return;
-        btn.disabled = true;
-
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const index = cart.findIndex(item => item.id == id);
-        if (index !== -1) {
-            cart[index].quantity += 1;
+    // ========== INIT BADGE & FAVORIT ICON ==========
+    document.addEventListener('DOMContentLoaded', function () {
+        // Baca count dari key per user (bukan key lama)
+        let totalItems = parseInt(localStorage.getItem(MENU_CART_COUNT_KEY)) || 0;
+        if (typeof updateBadges === 'function') {
+            updateBadges(totalItems);
         } else {
-            cart.push({ id, name, price, img, quantity: 1 });
-        }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        localStorage.setItem('cartCount', totalItems);
-
-        // Update badge
-        const headerBadge = document.getElementById('cartBadgeHeader');
-        const sidebarBadge = document.getElementById('cartBadgeSidebar');
-        if (headerBadge) {
-            headerBadge.textContent = totalItems;
-            headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-        }
-        if (sidebarBadge) {
-            sidebarBadge.textContent = totalItems;
-            sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            const hb = document.getElementById('cartBadgeHeader');
+            const sb = document.getElementById('cartBadgeSidebar');
+            if (hb) { hb.textContent = totalItems; hb.style.display = totalItems > 0 ? 'flex' : 'none'; }
+            if (sb) { sb.textContent = totalItems; sb.style.display = totalItems > 0 ? 'inline-block' : 'none'; }
         }
 
-        // Trigger event ke sistem biar tau kalo cart nambah (buat header navbar)
-        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: totalItems }));
-
-        // Efek visual
-        btn.style.transform = 'scale(0.85)';
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-        btn.style.background = '#52b788';
-        setTimeout(() => {
-            btn.style.transform = '';
-            btn.style.background = '';
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-            btn.disabled = false; // Buka lagi pelindungnya setelah efek selesai
-        }, 1200);
-    }
-
-    // ========== INISIALISASI IKON FAVORIT ==========
-    function initFavoriteIcons() {
+        // Init ikon favorit
         document.querySelectorAll('.menu-card').forEach(card => {
-            const id = card.dataset.id;
             const favBtn = card.querySelector('.menu-fav');
-            if (favBtn && isFavorite(id)) {
+            if (favBtn && isFavorite(card.dataset.id)) {
                 favBtn.classList.add('liked');
                 const svg = favBtn.querySelector('svg');
                 if (svg) svg.style.fill = 'currentColor';
             }
         });
-    }
-
-    // ========== INISIALISASI BADGE KERANJANG ==========
-    document.addEventListener('DOMContentLoaded', function() {
-        let totalItems = parseInt(localStorage.getItem('cartCount')) || 0;
-        const headerBadge = document.getElementById('cartBadgeHeader');
-        const sidebarBadge = document.getElementById('cartBadgeSidebar');
-        if (headerBadge) {
-            headerBadge.textContent = totalItems;
-            headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-        }
-        if (sidebarBadge) {
-            sidebarBadge.textContent = totalItems;
-            sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-        }
-        initFavoriteIcons();
     });
 </script>
 @endpush
