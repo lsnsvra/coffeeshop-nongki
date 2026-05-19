@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use App\Models\Product;
 
-// PASTIKAN EXTENDS CONTROLLER ADA
-class ProductController extends Controller 
+class ProductController extends Controller
 {
-
     public function index() {
         $products = Product::where('IsDeleted', 0)->get();
         return view('admin.menu', compact('products'));
@@ -23,9 +21,10 @@ class ProductController extends Controller
             $request->image->move(public_path('images/products'), $imageName);
         }
 
-        Product::create([
+        // TAMPUNG HASIL CREATE KE VARIABEL $newProduct
+        $newProduct = Product::create([
             'NamaKopi' => $request->NamaKopi,
-            'Category' => $request->Category, // Pakai Category
+            'Category' => $request->Category,
             'Harga' => $request->Harga,
             'Ukuran' => $request->Ukuran ?? 300,
             'Stok' => $request->Stok ?? 50,
@@ -39,7 +38,9 @@ class ProductController extends Controller
             'image' => $imageName
         ]);
 
-        return back()->with('success', 'Menu NONGKI berhasil ditambah!');
+        // LANGSUNG REDIRECT KE HALAMAN ATUR RESEP
+        return redirect()->route('admin.resep.index', $newProduct->ProductID)
+                         ->with('success', 'Menu NONGKI berhasil ditambah! Silakan atur bahan bakunya sekarang.');
     }
 
     public function update(Request $request, $id) {
@@ -68,6 +69,4 @@ class ProductController extends Controller
         Product::where('ProductID', $id)->update(['IsDeleted' => 1]);
         return back()->with('success', 'Menu berhasil dihapus!');
     }
-    
-
 }
