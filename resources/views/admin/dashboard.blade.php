@@ -23,7 +23,7 @@
     .dashboard-subtitle { color: rgba(245, 237, 216, 0.6); font-size: 0.95rem; }  
     .dashboard-subtitle strong { color: var(--cream); font-weight: 500; }
 
-    /* ========== STAT CARDS (CLEAN & MINIMALIST) ========== */  
+    /* ========== STAT CARDS ========== */  
     .stat-grid {  
         display: grid;  
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));  
@@ -43,7 +43,7 @@
         border-color: rgba(201, 168, 76, 0.5);  
         box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 0 15px rgba(201, 168, 76, 0.08);  
     }  
-     
+      
     .stat-header {  
         display: flex; align-items: flex-start; justify-content: space-between;  
         margin-bottom: 1rem;  
@@ -59,12 +59,12 @@
         text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;  
         margin-top: 5px;  
     }  
-     
+      
     .stat-value {  
         font-size: 1.6rem; font-weight: 700; color: var(--cream);  
         margin-bottom: 0.5rem;  
     }  
-     
+      
     .stat-trend {  
         display: inline-flex; align-items: center; gap: 6px;  
         font-size: 0.75rem; font-weight: 600;  
@@ -74,7 +74,7 @@
     .trend-neutral { color: var(--gold-light); }  
     .trend-neutral i { background: rgba(201, 168, 76, 0.15); padding: 4px; border-radius: 50%; }
 
-    /* ========== TABEL (SLEEK MODERN) ========== */  
+    /* ========== TABEL ========== */  
     .table-wrapper {  
         background: var(--dark-2);  
         border: 1px solid rgba(255, 255, 255, 0.05);  
@@ -82,7 +82,7 @@
         padding: 1.5rem;  
     }  
     .table-header { margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between; }  
-     
+      
     .table-title { font-size: 1.1rem; color: var(--cream); font-weight: 600; margin: 0; }
 
     .nongki-table { width: 100%; border-collapse: separate; border-spacing: 0; }  
@@ -99,38 +99,37 @@
     .nongki-table tbody tr:hover td { background: rgba(255, 255, 255, 0.02); }  
     .nongki-table tbody tr:last-child td { border-bottom: none; }
 
-    /* Aksen Warna Text Tabel */  
     .text-gold { color: var(--gold); font-weight: 600; }  
     .text-bold { color: var(--cream); font-weight: 500; }
 
-    /* Status Badge Ringan */  
+    /* Status Badge */  
     .status-badge {  
         display: inline-flex; align-items: center; justify-content: center;  
         padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;  
     }  
-    .status-done { background: rgba(201, 168, 76, 0.1); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.2); }  
-    .status-process { background: rgba(93, 202, 165, 0.1); color: #5DCAA5; border: 1px solid rgba(93, 202, 165, 0.2); }  
+    .status-done { background: rgba(93, 202, 165, 0.1); color: #5DCAA5; border: 1px solid rgba(93, 202, 165, 0.2); }  
+    .status-process { background: rgba(201, 168, 76, 0.1); color: var(--gold); border: 1px solid rgba(201, 168, 76, 0.2); }  
 </style>  
 @endpush
 
 @section('content')  
 <div class="dashboard-header fade-in-up">  
     <h1 class="dashboard-title">Overview Dashboard</h1>  
-    <p class="dashboard-subtitle">Selamat datang, <strong>{{ Auth::user()->Nama ?? Auth::user()->name ?? 'Administrator' }}</strong>. Ini adalah ringkasan performa bisnis NONGKI hari ini.</p>  
+    <p class="dashboard-subtitle">Selamat datang, <strong>{{ Auth::user()->Nama ?? Auth::user()->name ?? 'Administrator' }}</strong>. Menampilkan data transaksi per tanggal: <strong>{{ \Carbon\Carbon::parse($hariIni)->format('d F Y') }}</strong></p>  
 </div>
 
 <div class="stat-grid">  
     <div class="stat-card-premium fade-in-up delay-1">  
         <div class="stat-header">  
             <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>  
-            <div class="stat-label">Penjualan Hari Ini</div>  
+            <div class="stat-label">Penjualan Terdeteksi</div>  
         </div>  
         <div class="stat-value">Rp {{ number_format($revenueToday, 0, ',', '.') }}</div>  
         <div class="stat-trend trend-up">  
             <i class="fa-solid fa-arrow-up"></i> Terkini  
         </div>  
     </div>  
-     
+      
     <div class="stat-card-premium fade-in-up delay-1">  
         <div class="stat-header">  
             <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>  
@@ -141,7 +140,7 @@
             <i class="fa-solid fa-arrow-up"></i> Order Masuk  
         </div>  
     </div>  
-     
+      
     <div class="stat-card-premium fade-in-up delay-2">  
         <div class="stat-header">  
             <div class="stat-icon"><i class="fa-solid fa-mug-hot"></i></div>  
@@ -152,7 +151,7 @@
             <i class="fa-solid fa-star"></i> Tersedia  
         </div>  
     </div>  
-     
+      
     <div class="stat-card-premium fade-in-up delay-2">  
         <div class="stat-header">  
             <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>  
@@ -169,7 +168,7 @@
     <div class="table-header">  
         <h3 class="table-title">Riwayat Pesanan Terbaru</h3>  
     </div>  
-     
+      
     <div style="overflow-x: auto;">  
         <table class="nongki-table">  
             <thead>  
@@ -184,24 +183,36 @@
             <tbody>  
                 @forelse($recentOrders as $order)
                 <tr>  
-                    <td class="text-gold">#NGK-{{ str_pad($order->OrderID ?? $order->id, 4, '0', STR_PAD_LEFT) }}</td>  
-                    <td class="text-bold">{{ $order->user->Nama ?? $order->user->name ?? 'Guest/Kasir' }}</td>  
-                    <td>Rp {{ number_format($order->payment->Jumlah ?? $order->TotalHarga ?? 0, 0, ',', '.') }}</td>  
+                    <td class="text-gold">#{{ str_pad($order->OrderID, 5, '0', STR_PAD_LEFT) }}</td> 
+                    
+                    <td class="text-bold">{{ $order->nama_user ?? 'Guest/Kasir' }}</td>  
+                    
+                    <td>Rp {{ number_format($order->TotalHarga ?? 0, 0, ',', '.') }}</td>  
+                    
                     <td>
-                        @if(strtolower($order->Status ?? '') == 'selesai' || strtolower($order->Status ?? '') == 'completed')
-                            <span class="status-badge status-done">Selesai</span>
+                        @if(strtolower($order->StatusOrder ?? '') == 'paid')
+                            <span class="status-badge status-done">Lunas</span>
                         @else
-                            <span class="status-badge status-process">{{ ucfirst($order->Status ?? 'Diproses') }}</span>
+                            <span class="status-badge status-process">Pending</span>
                         @endif
                     </td>  
-                    <td>{{ \Carbon\Carbon::parse($order->created_at ?? $order->CreatedDate)->format('H:i WIB') }}</td>  
+                    
+                    <td>
+                        @if(!empty($order->created_at))
+                            {{ \Carbon\Carbon::parse($order->created_at)->format('d M Y — H:i') }} WIB
+                        @elseif(!empty($order->CreatedDate))
+                            {{ \Carbon\Carbon::parse($order->CreatedDate)->format('d M Y — H:i') }} WIB
+                        @else
+                            -- Mei 2026 --
+                        @endif
+                    </td> 
                 </tr>  
                 @empty
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--text-muted-c); padding: 2rem;">Belum ada riwayat pesanan.</td>
+                    <td colspan="5" style="text-align: center; color: rgba(245, 237, 216, 0.4); padding: 2rem;">Belum ada riwayat pesanan.</td>
                 </tr>
                 @endforelse
-            </tbody>  
+            </tbody>
         </table>  
     </div>  
 </div>  

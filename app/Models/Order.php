@@ -7,28 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $primaryKey = 'OrderID';
-    public $timestamps = false;
     use HasFactory;
 
+    protected $table = 'orders';
+    protected $primaryKey = 'OrderID'; 
+    public $timestamps = false; // Karena kamu tidak pakai created_at/updated_at bawaan
+
     protected $fillable = [
-        'UserID',
-        'order_code',
-        'TotalHarga',
-        'StatusOrder',
-        'CompanyCode',
+        'pelanggan', 'UserID', 'PaymentMethodID', 'order_code',
+        'TotalHarga', 'StatusOrder', 'TanggalOrder', 'CompanyCode',
+        'Status', 'IsDeleted', 'CreatedBy', 'CreatedDate',
+        'LastUpdatedBy', 'LastUpdatedDate',
     ];
 
     protected $casts = [
-        'TotalHarga' => 'decimal:2',
+        'UserID' => 'integer',
+        'PaymentMethodID' => 'integer',
+        'TotalHarga' => 'integer',
+        'Status' => 'integer',
+        'IsDeleted' => 'integer',
     ];
+
 
     public function user()
     {
         return $this->belongsTo(User::class, 'UserID');
     }
-
-
 
     public function orderDetails()
     {
@@ -40,15 +44,13 @@ class Order extends Model
         return $this->hasOne(Payment::class, 'OrderID');
     }
 
-    // Scope for today's orders
     public function scopeToday($query)
     {
-        return $query->whereDate('created_at', today());
+        return $query->whereDate('TanggalOrder', today());
     }
 
-    // Scope for pending
     public function scopePending($query)
     {
-        return $query->where('status', 'pending');
+        return $query->where('StatusOrder', 'Pending');
     }
 }

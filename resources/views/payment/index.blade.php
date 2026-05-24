@@ -410,6 +410,7 @@
 
 <script>
     // ============================================================
+    // ============================================================
     // STATE
     // ============================================================
     let cart = [];
@@ -425,10 +426,51 @@
     // KERANJANG
     // ============================================================
     function loadCart() {
-        cart = JSON.parse(localStorage.getItem('cart')) || [];
+        // PERBAIKAN: Mengubah key 'cart' menjadi 'cart_items_u16' sesuai isi Local Storage lu
+        cart = JSON.parse(localStorage.getItem('cart_items_u16')) || [];
         renderCart();
         updateTotal();
     }
+
+    function renderCart() {
+        const container = document.getElementById('cartItemsList');
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 2rem 0; color: #A0A0A0;">
+                    <i class="fas fa-shopping-basket" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem; display:block;"></i>
+                    <p>Keranjang belanja Anda masih kosong.</p>
+                </div>`;
+            return;
+        }
+        let html = '';
+        cart.forEach(item => {
+            html += `
+                <div class="order-item">
+                    <img class="order-item-img" src="${item.img}" alt="${item.name}"
+                         onerror="this.src='https://placehold.co/100x100?text=Kopi'">
+                    <div style="flex:1">
+                        <div style="font-weight:700; color:#f0ece3; font-size:1.05rem;">${item.name}</div>
+                        <div style="font-size:0.85rem; color:var(--gold); margin-top:4px;">Rp ${item.price.toLocaleString()}</div>
+                        <div style="font-size:0.8rem; color:#A0A0A0; margin-top:2px;">Jumlah: ${item.quantity}x</div>
+                    </div>
+                    <div style="font-weight:800; color:#f0ece3; display:flex; align-items:center;">
+                        Rp ${(item.price * item.quantity).toLocaleString()}
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function updateTotal() {
+        let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        document.getElementById('totalAmount').innerHTML = `Rp ${total.toLocaleString()}`;
+        return total;
+    }
+
+    // Jalankan fungsi load saat halaman pertama kali dibuka
+    document.addEventListener("DOMContentLoaded", function() {
+        loadCart();
+    });
 
     function renderCart() {
         const container = document.getElementById('cartItemsList');
@@ -504,7 +546,10 @@
         this.disabled = true;
         this.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i> Memproses...';
         showModal('loading');
-
+        const totalData = updateTotal(); // Panggil fungsi penghitung totalmu
+        console.log("=== DEBUG CHECKOUT ===");
+        console.log("Total Akhir (Termasuk Pajak):", totalData);
+        console.log("Isi Keranjang:", cart);
         try {
             const response = await fetch("{{ route('payment.create') }}", {
                 method: 'POST',
