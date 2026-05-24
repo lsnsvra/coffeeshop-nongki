@@ -382,86 +382,113 @@
         data-client-key="{{ config('midtrans.client_key') }}"></script>
 
 <script>
-// ============================================================
-// AMBIL CART KEY PER USER — dari layouts/app.blade.php
-// window.CART_ITEMS_KEY   = 'cart_items_u{id}'
-// window.CART_STORAGE_KEY = 'cart_count_u{id}'
-// ============================================================
-const PAY_CART_KEY       = window.CART_ITEMS_KEY   || 'cart_items_u0';
-const PAY_CART_COUNT_KEY = window.CART_STORAGE_KEY || 'cart_count_u0';
+    // ============================================================
+    // ============================================================
+    // STATE
+    // ============================================================
+    let cart = [];
+    let selectedMethod = '';
+    let pollingInterval = null;
+    let timerInterval = null;
+    let currentOrderId = null;
+    let pollingAttempts = 0;
+    const MAX_POLLING_ATTEMPTS = 200; // ~10 menit (3 detik x 200)
+    const MANUAL_FALLBACK_AFTER = 100; // ~5 menit, tampilkan tombol manual
 
-// ============================================================
-// STATE
-// ============================================================
-let cart             = [];
-let selectedMethod   = '';
-let pollingInterval  = null;
-let timerInterval    = null;
-let currentOrderId   = null;
-let pollingAttempts  = 0;
-
-const MAX_POLLING_ATTEMPTS  = 200; // ~10 menit (3 detik × 200)
-const MANUAL_FALLBACK_AFTER = 100; // ~5 menit
-
-// ============================================================
-// LOAD & RENDER CART — baca dari key per user
-// ============================================================
-function loadCart() {
-    let raw = localStorage.getItem(PAY_CART_KEY);
-    let parsed = [];
-    try { parsed = raw ? JSON.parse(raw) : []; } catch(e) { parsed = []; }
-
-    // Normalisasi: id → string, price & quantity → number
-    cart = parsed
-        .map(item => ({
-            ...item,
-            id:       String(item.id),
-            price:    Number(item.price),
-            quantity: Number(item.quantity)
-        }))
-        .filter(item => item.id && item.name && item.price > 0 && item.quantity > 0);
-
-    renderCart();
-    updateTotal();
-}
-
-function renderCart() {
-    const container = document.getElementById('cartItemsList');
-
-    if (cart.length === 0) {
-        container.innerHTML = `
-            <div style="text-align:center;padding:2rem 0;color:#A0A0A0;">
-                <i class="fas fa-shopping-basket" style="font-size:3rem;opacity:0.2;margin-bottom:1rem;display:block;"></i>
-                <p style="margin:0;">Keranjang belanja Anda masih kosong.</p>
-            </div>`;
-        return;
+    // ============================================================
+    // KERANJANG
+    // ============================================================
+    function loadCart() {
+        // PERBAIKAN: Mengubah key 'cart' menjadi 'cart_items_u16' sesuai isi Local Storage lu
+        cart = JSON.parse(localStorage.getItem('cart_items_u16')) || [];
+        renderCart();
+        updateTotal();
     }
 
-    let html = '';
-    cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        html += `
-            <div class="order-item">
-                ${item.img
-                    ? `<img class="order-item-img" src="${escapeHtml(item.img)}" alt="${escapeHtml(item.name)}"
-                           onerror="this.src='https://placehold.co/100x100?text=Kopi'">`
-                    : `<div class="order-item-img" style="display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:var(--dark-3);">☕</div>`
-                }
-                <div style="flex:1;min-width:0;">
-                    <div style="font-weight:700;color:#f0ece3;font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                        ${escapeHtml(item.name)}
+    function renderCart() {
+        const container = document.getElementById('cartItemsList');
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 2rem 0; color: #A0A0A0;">
+                    <i class="fas fa-shopping-basket" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem; display:block;"></i>
+                    <p>Keranjang belanja Anda masih kosong.</p>
+                </div>`;
+            return;
+        }
+        let html = '';
+        cart.forEach(item => {
+            html += `
+                <div class="order-item">
+                    <img class="order-item-img" src="${item.img}" alt="${item.name}"
+                         onerror="this.src='https://placehold.co/100x100?text=Kopi'">
+                    <div style="flex:1">
+                        <div style="font-weight:700; color:#f0ece3; font-size:1.05rem;">${item.name}</div>
+                        <div style="font-size:0.85rem; color:var(--gold); margin-top:4px;">Rp ${item.price.toLocaleString()}</div>
+                        <div style="font-size:0.8rem; color:#A0A0A0; margin-top:2px;">Jumlah: ${item.quantity}x</div>
                     </div>
                     <div style="font-size:0.85rem;color:var(--gold);margin-top:4px;">
                         Rp ${item.price.toLocaleString('id-ID')}
                     </div>
-                    <div style="font-size:0.8rem;color:#A0A0A0;margin-top:2px;">
-                        Jumlah: ${item.quantity}×
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function updateTotal() {
+        let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        document.getElementById('totalAmount').innerHTML = `Rp ${total.toLocaleString()}`;
+        return total;
+    }
+
+    // Jalankan fungsi load saat halaman pertama kali dibuka
+    document.addEventListener("DOMContentLoaded", function() {
+        loadCart();
+    });
+
+    function renderCart() {
+        const container = document.getElementById('cartItemsList');
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 2rem 0; color: #A0A0A0;">
+                    <i class="fas fa-shopping-basket" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem; display:block;"></i>
+                    <p>Keranjang belanja Anda masih kosong.</p>
+                </div>`;
+            return;
+        }
+        let html = '';
+        cart.forEach(item => {
+            html += `
+                <div class="order-item">
+                    <img class="order-item-img" src="${item.img}" alt="${item.name}"
+                         onerror="this.src='https://placehold.co/100x100?text=Kopi'">
+                    <div style="flex:1">
+                        <div style="font-weight:700; color:#f0ece3; font-size:1.05rem;">${item.name}</div>
+                        <div style="font-size:0.85rem; color:var(--gold); margin-top:4px;">Rp ${item.price.toLocaleString()}</div>
+                        <div style="font-size:0.8rem; color:#A0A0A0; margin-top:2px;">Jumlah: ${item.quantity}x</div>
                     </div>
-                </div>
-                <div style="font-weight:800;color:#f0ece3;white-space:nowrap;flex-shrink:0;">
-                    Rp ${itemTotal.toLocaleString('id-ID')}
-                </div>
-            </div>`;
+                    <div style="font-weight:800; color:#f0ece3; display:flex; align-items:center;">
+                        Rp ${(item.price * item.quantity).toLocaleString()}
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function updateTotal() {
+        let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        document.getElementById('totalAmount').innerHTML = `Rp ${total.toLocaleString()}`;
+        return total;
+    }
+
+    // ============================================================
+    // PILIH METODE
+    // ============================================================
+    document.querySelectorAll('.method-item').forEach(m => {
+        m.addEventListener('click', function() {
+            document.querySelectorAll('.method-item').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            selectedMethod = this.getAttribute('data-method');
+        });
     });
     container.innerHTML = html;
 }
@@ -534,18 +561,33 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
         const data = await response.json();
         if (!data.success) throw new Error(data.message || 'Gagal membuat transaksi.');
 
-        currentOrderId = data.order_id;
+    // ============================================================
+    // CHECKOUT — KIRIM KE BACKEND → MIDTRANS
+    // ============================================================
+    document.getElementById('checkoutBtn').addEventListener('click', async function() {
+        if (cart.length === 0) {
+            showNongkiAlert('Keranjang belanja Anda masih kosong. Silakan pilih menu terlebih dahulu.');
+            return;
+        }
+        if (!selectedMethod) {
+            showNongkiAlert('Silakan pilih salah satu metode pembayaran terlebih dahulu.');
+            return;
+        }
 
-        // Midtrans Snap
-        if (data.snap_token) {
-            document.getElementById('paymentModal').classList.remove('active');
-            snap.pay(data.snap_token, {
-                onSuccess: result  => handlePaymentSuccess(result),
-                onPending: result  => {
-                    currentOrderId = result.order_id;
-                    showModal('polling');
-                    startPolling(result.order_id);
-                    startTimer(15 * 60);
+        // Disable tombol + tampilkan loading
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i> Memproses...';
+        showModal('loading');
+        const totalData = updateTotal(); // Panggil fungsi penghitung totalmu
+        console.log("=== DEBUG CHECKOUT ===");
+        console.log("Total Akhir (Termasuk Pajak):", totalData);
+        console.log("Isi Keranjang:", cart);
+        try {
+            const response = await fetch("{{ route('payment.create') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 onError:   result  => handlePaymentError('Pembayaran gagal: ' + (result.status_message || 'Silakan coba lagi.')),
                 onClose:   ()      => resetCheckoutButton()

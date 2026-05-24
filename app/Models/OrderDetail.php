@@ -7,21 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderDetail extends Model
 {
-    public $timestamps = false;
     use HasFactory;
+
+    protected $table = 'order_details';
+    protected $primaryKey = 'DetailID'; // Sudah benar sesuai HeidiSQL
+    public $timestamps = false;
 
     protected $fillable = [
         'OrderID',
         'ProductID',
         'Qty',
-        'Harga',
-        'Subtotal',
+        'Harga',      // Tipe INT di database
+        'Subtotal',   // Tipe INT di database
         'CompanyCode',
+        'Status',
+        'IsDeleted',
+        'CreatedBy',
+        'CreatedDate',
+        'LastUpdatedBy',
+        'LastUpdatedDate',
     ];
 
     protected $casts = [
-        'Harga' => 'decimal:2',
-        'Subtotal' => 'decimal:2',
+        'Qty' => 'integer',
+        'Harga' => 'integer',    // 🔥 Ubah dari decimal ke integer
+        'Subtotal' => 'integer', // 🔥 Ubah dari decimal ke integer
+        'Status' => 'integer',
+        'IsDeleted' => 'integer',
     ];
 
     public function order()

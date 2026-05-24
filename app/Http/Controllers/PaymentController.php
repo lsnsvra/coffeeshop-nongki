@@ -4,101 +4,80 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use Midtrans\Config;
-use Midtrans\Snap;
-use Midtrans\Notification;
+use App\Models\OrderDetail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    public function __construct()
+    public function index() {
+        return view('checkout.index');
+    }
+    
+  public function create(Request $request)
     {
-        // Pastikan config ini mengarah ke file config/midtrans.php lo
-        Config::$serverKey    = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized  = true;
-        Config::$is3ds        = true;
+        // --- PASANG DETEKTIF DI SINI ---
+    \Log::info('DEBUG PAYMENT:', [
+        'request_total' => $request->total,
+        'semua_data' => $request->all()
+    ]);
+        Log::info('Data Checkout diterima:', $request->all());
+
+        return DB::transaction(function () use ($request) {
+                $order = Order::create([
+            'pelanggan'       => auth()->user()->name ?? 'Guest',
+            'UserID'          => auth()->id(),
+            'TotalHarga'      => (int) $request->total,
+            'StatusOrder'     => 'Pending',
+            'order_code'      => 'INV-' . time(),
+            'CompanyCode'     => 'CMP001',
+            'Status'          => 1,
+            'IsDeleted'       => 0,
+            // Pastikan kolom-kolom ini ada jika di database NOT NULL:
+            'TanggalOrder'    => now(),
+            'CreatedDate'     => now(),
+            'CreatedBy'       => auth()->user()->name ?? 'Guest',
+        ]);
+
+            foreach ($request->items as $item) {
+                OrderDetail::create([
+                    'OrderID'   => $order->OrderID,
+                    'ProductID' => (int) $item['id'],
+                    'Qty'       => (int) $item['quantity'],
+                    'Harga'     => (int) $item['price'],
+                    'Subtotal'  => (int) ($item['price'] * $item['quantity'])
+                ]);
+            }
+
+            return response()->json(['success' => true, 'order_id' => $order->OrderID]);
+        });
     }
 
-    public function create(Request $request)
+    public function checkStatus($orderId)
     {
         try {
-            // DIAGNOSA 1: Cek apakah user login
-            if (!auth()->check()) {
-                return response()->json(['success' => false, 'message' => 'Error: Anda belum login!'], 401);
+            $order = Order::where('OrderID', $orderId)->first();
+            if (!$order) return response()->json(['success' => false], 404);
+
+            if (strtoupper($order->StatusOrder) === 'SUCCESS' && !session()->has('stok_reduced_' . $orderId)) {
+                DB::transaction(function () use ($orderId) {
+                    $details = OrderDetail::where('OrderID', $orderId)->get();
+                    foreach ($details as $detail) {
+                        $recipes = DB::table('menu_material')->where('ProductID', $detail->ProductID)->get();
+                        foreach ($recipes as $recipe) {
+                            // 🔥 PERBAIKAN: Gunakan 'MaterialID' sesuai dengan nama di database kamu
+                            DB::table('materials')
+                                ->where('MaterialID', $recipe->MaterialID) 
+                                ->decrement('Stock', ($recipe->QuantityNeeded * $detail->Qty)); // 🔥 Sesuaikan juga 'QuantityNeeded'
+                        }
+                    }
+                    session()->put('stok_reduced_' . $orderId, true);
+                });
             }
-
-            // DIAGNOSA 2: Cek apakah data items ada
-            if (!$request->has('items') || empty($request->items)) {
-                return response()->json(['success' => false, 'message' => 'Error: Keranjang kosong di server!'], 400);
-            }
-
-            $items  = $request->items;
-            $total  = $request->total;
-            $method = $request->payment_method;
-            $orderCode = 'NGK-' . time() . '-' . auth()->id();
-
-            // DIAGNOSA 3: Tes Simpan ke Database
-            // Kita bungkus biar tahu apakah tabel Order-nya bermasalah
-            $order = Order::create([
-                'UserID'      => auth()->id(),
-                'order_code'  => $orderCode,
-                'TotalHarga'  => $total,
-                'StatusOrder' => 'pending',
-                'CompanyCode' => 'NONGKI-01',
-            ]);
-
-            // DIAGNOSA 4: Siapkan Payload Midtrans
-            $params = [
-                'transaction_details' => [
-                    'order_id'     => $orderCode,
-                    'gross_amount' => (int)$total,
-                ],
-                'customer_details' => [
-                    'first_name' => auth()->user()->name,
-                    'email'      => auth()->user()->email,
-                ],
-                'item_details' => array_map(function($i) {
-                    return [
-                        'id'       => $i['id'] ?? 'ITEM',
-                        'price'    => (int)$i['price'],
-                        'quantity' => (int)$i['quantity'],
-                        'name'     => substr($i['name'], 0, 50),
-                    ];
-                }, $items),
-                'enabled_payments' => $this->mapPaymentMethod($method),
-            ];
-
-            // DIAGNOSA 5: Tembak ke Midtrans
-            $snapToken = Snap::getSnapToken($params);
-
-            return response()->json([
-                'success'    => true,
-                'snap_token' => $snapToken,
-                'order_id'   => $orderCode,
-            ]);
-
+            return response()->json(['success' => true, 'status_order' => strtoupper($order->StatusOrder)]);
         } catch (\Exception $e) {
-            // KODE INI BAKAL NGASIH TAU ERROR ASLINYA
-            return response()->json([
-                'success' => false, 
-                'message' => 'BOM MELEDAK DI: ' . $e->getMessage(),
-                'line'    => $e->getLine(),
-                'file'    => $e->getFile()
-            ], 500);
+            Log::error("Error status: " . $e->getMessage());
+            return response()->json(['success' => false], 500);
         }
-    }
-
-    public function checkStatus($orderCode) { /* sama seperti sebelumnya */ }
-    public function webhook(Request $request) { /* sama seperti sebelumnya */ }
-
-    private function mapPaymentMethod(string $method): array
-    {
-        return match($method) {
-            'qris'          => ['qris', 'gopay', 'shopeepay'],
-            'bank_transfer' => ['bca_va', 'bni_va', 'bri_va'],
-            'bca_klikpay'   => ['bca_klikpay'],
-            default         => ['qris', 'gopay', 'bank_transfer'],
-        };
     }
 }

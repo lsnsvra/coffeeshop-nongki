@@ -10,38 +10,44 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $hariIni = Carbon::now('Asia/Jakarta')->toDateString();
+        // AMBIL TANGGAL TRANSAKSI TERAKHIR DARI DATABASE
+        // Biar kalau data database-nya data dump lama, dashboard-nya tetap mau nampil angkanya!
+        $lastOrder = DB::table('orders')->orderBy('created_at', 'desc')->first();
+        
+        // Jika ada data di DB, pakai tanggal dari data terbaru itu. Kalau kosong baru pakai hari ini.
+        $hariIni = $lastOrder ? Carbon::parse($lastOrder->created_at)->toDateString() : Carbon::now('Asia/Jakarta')->toDateString();
 
-        // 1. Penjualan hari ini — gunakan TanggalOrder & StatusOrder
+        // 1. Penjualan hari ini — SINKRON: Menggunakan tanggal dinamis & status 'paid'
         $revenueToday = DB::table('orders')
-            ->whereDate('TanggalOrder', $hariIni)
-            ->where('StatusOrder', 'Selesai')
-            ->where('IsDeleted', 0)
+            ->whereDate('created_at', $hariIni)
+            ->where('StatusOrder', 'paid')
+            ->where('Status', 1)
             ->sum('TotalHarga');
 
-        // 2. Total transaksi hari ini
+        // 2. Total transaksi lunas hari ini
         $ordersToday = DB::table('orders')
-            ->whereDate('TanggalOrder', $hariIni)
-            ->where('StatusOrder', 'Selesai')
-            ->where('IsDeleted', 0)
+            ->whereDate('created_at', $hariIni)
+            ->where('StatusOrder', 'paid')
+            ->where('Status', 1)
             ->count();
 
         // 3. Menu aktif
         $activeProducts = DB::table('products')
-            ->where('Stok', '>', 0)
-            ->where('IsDeleted', 0)
+            ->where('Status', 1)
             ->count();
 
-        // 4. Pesanan pending
+        // 4. Pesanan pending (huruf kecil 'pending' sesuai isi HeidiSQL)
         $pendingOrders = DB::table('orders')
-            ->where('StatusOrder', 'Pending')
-            ->where('IsDeleted', 0)
+            ->where('StatusOrder', 'pending')
+            ->where('Status', 1)
             ->count();
 
         // 5. Riwayat pesanan terbaru
         $recentOrders = DB::table('orders')
-            ->where('IsDeleted', 0)
-            ->orderBy('TanggalOrder', 'desc')
+            ->leftJoin('users', 'orders.UserID', '=', 'users.UserID') // H
+            ->where('orders.Status', 1)
+            ->select('orders.*', 'users.Nama as nama_user') //
+            ->orderBy('orders.created_at', 'desc')
             ->limit(10)
             ->get();
 
@@ -49,9 +55,9 @@ class DashboardController extends Controller
         $topProducts = DB::table('order_details')
             ->join('products', 'order_details.ProductID', '=', 'products.ProductID')
             ->join('orders', 'order_details.OrderID', '=', 'orders.OrderID')
-            ->whereDate('orders.TanggalOrder', $hariIni)
-            ->where('orders.StatusOrder', 'Selesai')
-            ->where('order_details.IsDeleted', 0)
+            ->whereDate('orders.created_at', $hariIni)
+            ->where('orders.StatusOrder', 'paid')
+            ->where('order_details.Status', 1)
             ->select('products.NamaKopi', DB::raw('SUM(order_details.Qty) as total_terjual'))
             ->groupBy('products.ProductID', 'products.NamaKopi')
             ->orderByDesc('total_terjual')
@@ -64,7 +70,22 @@ class DashboardController extends Controller
             'activeProducts',
             'pendingOrders',
             'recentOrders',
-            'topProducts'
+            'topProducts',
+            'hariIni' // Kita oper juga ke view buat jaga-jaga kalau mau nampilin teks info tanggalnya
         ));
     }
+
+    public function redirectBasedOnRole() 
+{
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->role === 'kasir') {
+        return redirect()->route('kasir.pos');
+    }
+
+    // Jika bukan admin/kasir, arahkan ke UserController index
+    return (new \App\Http\Controllers\UserController())->index();
+}
 }
