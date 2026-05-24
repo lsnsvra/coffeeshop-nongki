@@ -86,6 +86,6 @@ class DashboardController extends Controller
     }
 
     // Jika bukan admin/kasir, arahkan ke UserController index
-    return app(\App\Http\Controllers\UserController::class)->index();
+    return (new \App\Http\Controllers\UserController())->index();
 }
 }
