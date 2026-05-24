@@ -24,7 +24,6 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/menu', function () {
-    // Menampilkan menu untuk pelanggan
     $products = \App\Models\Product::where('IsDeleted', 0)->get();
     return view('menu.index', compact('products'));
 })->name('menu.index');
@@ -40,7 +39,7 @@ Route::get('/products', function () {
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-require __DIR__.'/auth.php'; // Rute default bawaan Laravel (Login, Register, dll)
+require __DIR__.'/auth.php';
 
 
 // ============================================================
@@ -48,23 +47,11 @@ require __DIR__.'/auth.php'; // Rute default bawaan Laravel (Login, Register, dl
 // ============================================================
 Route::middleware('auth')->group(function () {
     
-    // ---- FITUR CHECKOUT & SINKRONISASI STOK ----
     Route::post('/checkout/instan/{id}', [TransaksiController::class, 'checkoutInstan'])->name('checkout.instan');
     Route::post('/proses-pembayaran', [TransaksiController::class, 'simpanTransaksi'])->name('transaksi.simpan');
 
-    // REDIRECT DASHBOARD CERDAS
-Route::get('/dashboard', function () {
-    $user = Auth::user();
-    
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.dashboard');
-    } elseif ($user->role === 'kasir') {
-        return redirect()->route('kasir.pos');
-    }
-    
-    // Gunakan Controller dengan syntax yang benar
-    return app()->make(App\Http\Controllers\UserController::class)->index();
-})->name('dashboard');
+    // REDIRECT DASHBOARD CERDAS (DIPERBAIKI: Panggil method di DashboardController)
+    Route::get('/dashboard', [DashboardController::class, 'redirectBasedOnRole'])->name('dashboard');
 
     Route::get('/manager/dashboard', function () {
         return redirect()->route('dashboard');
@@ -77,7 +64,6 @@ Route::get('/dashboard', function () {
     Route::get('/manager/profile', function () { return redirect()->route('profile.edit'); })->name('manager.profile');
 
     // Halaman Fitur User
-    // 🔄 SINKRONISASI: Tombol 'Jelajahi Semua Menu' diarahkan ke fungsi semuaMenu() di UserController
     Route::get('/menu-kopi', [UserController::class, 'semuaMenu'])->name('customer.menu');
 
     Route::get('/keranjang', function () { return view('cart.keranjang'); })->name('keranjang');
@@ -100,7 +86,6 @@ Route::get('/dashboard', function () {
 // ============================================================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     
-    // Dashboard Admin (Menggunakan Controller yang merender Data Dinamis)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     
@@ -110,7 +95,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/menu/update/{id}', [ProductController::class, 'update'])->name('menu.update');
     Route::delete('/menu/destroy/{id}', [ProductController::class, 'destroy'])->name('menu.destroy');
 
-    // 👇 TAMBAHAN ROUTE UNTUK FITUR RESEP (BOM) 👇
     Route::get('/menu/{id}/resep', [RecipeController::class, 'index'])->name('resep.index');
     Route::post('/menu/{id}/resep', [RecipeController::class, 'store'])->name('resep.store');
     Route::delete('/menu/{product_id}/resep/{material_id}', [RecipeController::class, 'destroy'])->name('resep.destroy');
@@ -133,7 +117,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // 5. ROUTE KASIR (HANYA ROLE KASIR)
 // ============================================================
 Route::middleware(['auth', 'role:kasir', 'track'])->prefix('kasir')->name('kasir.')->group(function () {
-    // 👇 TAMBAHKAN RUTE INI UNTUK MENERIMA DATA DARI AJAX 👇
     Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
     Route::get('/pos', function () { return view('kasir.pos'); })->name('pos');
     Route::get('/menu', function () { return view('kasir.menu'); })->name('menu');
@@ -165,12 +148,6 @@ Route::middleware(['auth'])->group(function () {
 // ============================================================
 // 7. ROUTE OPTIMASI (CLEAR CACHE)
 // ============================================================
-Route::get('/optimize', function() {
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    return "Konfigurasi berhasil diperbarui!";
-});
-
 Route::get('/clear-cache', function() {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
