@@ -58,15 +58,14 @@
         margin-bottom: 1.5rem; font-weight: 700; box-shadow: var(--gold-glow);
     }
     
-    /* DIKEMBALIKAN KE FONT ORIGINAL YANG ELEGAN */
     .hero-title {
-        font-family: 'Cormorant Garamond', serif; /* Font dikembalikan */
+        font-family: 'Cormorant Garamond', serif;
         font-size: clamp(3.5rem, 7vw, 5.5rem); 
         line-height: 1.1; 
         color: #f0ece3;
         margin-bottom: 1rem; 
         text-shadow: 0 10px 30px rgba(0,0,0,0.8); 
-        font-weight: 400; /* Dibuat lebih tipis elegan seperti desain awal */
+        font-weight: 400;
     }
     .hero-title em {
         font-style: italic; color: var(--gold); position: relative;
@@ -199,7 +198,6 @@
 @endpush
 
 @section('content')
-    <!-- 1. HERO SECTION (ULTRA PREMIUM) -->
     <section class="hero-premium">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
@@ -207,7 +205,6 @@
             <div class="hero-badge reveal">
                 <i class="fas fa-gem"></i> NONGKI EXCLUSIVE
             </div>
-            <!-- TEKS DAN FONT DIKEMBALIKAN KE BENTUK ORIGINAL -->
             <h1 class="hero-title reveal delay-1">
                 Kopi terbaik<br>untuk <em>harimu</em>
             </h1>
@@ -220,7 +217,6 @@
         </div>
     </section>
 
-    <!-- 2. FEATURES (WHY US) -->
     <section class="features-section">
         <div class="section-header reveal">
             <span class="section-subtitle">Nilai Tambah Kami</span>
@@ -246,7 +242,6 @@
         </div>
     </section>
 
-    <!-- 3. MENU POPULER (COMPACT SIZE) -->
     <section class="menu-section">
         <div class="section-header reveal">
             <span class="section-subtitle">Top Terlaris</span>
@@ -254,60 +249,30 @@
         </div>
 
         <div class="menu-grid">
-            <!-- Menu 1 -->
-            <div class="menu-card reveal delay-1">
+            @foreach($products as $product)
+            <div class="menu-card reveal delay-{{ $loop->iteration }}">
                 <div class="menu-img-wrap">
-                    <img src="{{ asset('images/products/americano.jpeg') }}" class="menu-img" alt="Americano">
+                    <img src="{{ asset('images/products/' . ($product->Image ?? 'default.jpeg')) }}" class="menu-img" alt="{{ $product->NamaKopi }}">
                     <div class="menu-img-overlay"></div>
                 </div>
                 <div class="menu-info">
-                    <h3 class="menu-name">Classic Americano</h3>
-                    <div class="menu-price">Rp 28.000</div>
-                    <button class="btn-buy" onclick="window.location.href='{{ route('menu.index') }}'">
+                    <h3 class="menu-name">{{ $product->NamaKopi }}</h3>
+                    <div class="menu-price">Rp {{ number_format($product->Harga, 0, ',', '.') }}</div>
+                    <button class="btn-buy" onclick="window.location.href='{{ route('customer.menu') }}'">
                         <i class="fas fa-shopping-bag"></i> Pesan Sekarang
                     </button>
                 </div>
             </div>
-
-            <!-- Menu 2 -->
-            <div class="menu-card reveal delay-2">
-                <div class="menu-img-wrap">
-                    <img src="{{ asset('images/products/coffe_milk_aren_sugar.jpeg') }}" class="menu-img" alt="Kopi Susu Aren">
-                    <div class="menu-img-overlay"></div>
-                </div>
-                <div class="menu-info">
-                    <h3 class="menu-name">Kopi Susu Gula Aren</h3>
-                    <div class="menu-price">Rp 35.000</div>
-                    <button class="btn-buy" onclick="window.location.href='{{ route('menu.index') }}'">
-                        <i class="fas fa-shopping-bag"></i> Pesan Sekarang
-                    </button>
-                </div>
-            </div>
-
-            <!-- Menu 3 -->
-            <div class="menu-card reveal delay-3">
-                <div class="menu-img-wrap">
-                    <img src="{{ asset('images/products/halzenutt_coffe.jpeg') }}" class="menu-img" alt="Hazelnut Coffee">
-                    <div class="menu-img-overlay"></div>
-                </div>
-                <div class="menu-info">
-                    <h3 class="menu-name">Premium Hazelnut</h3>
-                    <div class="menu-price">Rp 40.000</div>
-                    <button class="btn-buy" onclick="window.location.href='{{ route('menu.index') }}'">
-                        <i class="fas fa-shopping-bag"></i> Pesan Sekarang
-                    </button>
-                </div>
-            </div>
+            @endforeach
         </div>
 
         <div class="view-all-wrap reveal delay-4">
-            <a href="{{ route('menu.index') }}" class="btn-view-all">
+            <a href="{{ route('customer.menu') }}" class="btn-view-all">
                 Jelajahi Semua Menu <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
 
-    <!-- 4. STATS PANEL (DASHBOARD WIDGET STYLE) -->
     <section class="stats-section reveal">
         <div class="stats-panel">
             <div class="stat-item">

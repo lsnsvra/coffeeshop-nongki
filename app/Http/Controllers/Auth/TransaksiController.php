@@ -4,79 +4,76 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
-    public function store(Request $request)
+    public function simpanTransaksi(Request $request)
     {
-        $request->validate([
-            'total'        => 'required|numeric|min:0',
-            'cart'         => 'required|array|min:1',
-            'cart.*.id'    => 'required|integer',
-            'cart.*.qty'   => 'required|integer|min:1',
-            'cart.*.price' => 'required|numeric|min:0',
-        ]);
+        // 1. Ambil data produk secara dinamis (Default ke ProductID 2 / Hazelnut jika kosong)
+        $productId = $request->input('product_id', 2); 
+        $product = DB::table('products')->where('ProductID', $productId)->first();
 
+        if (!$product) {
+            return redirect()->back()->with('error', 'Produk tidak ditemukan!');
+        }
+
+        // Mulai Database Transaction agar aman jika ada salah satu proses gagal
         DB::beginTransaction();
         try {
-            $waktuSekarang = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
-
-            // Generate order_code unik (wajib karena UNIQUE constraint)
-            $orderCode = 'NGK-' . strtoupper(uniqid());
-
-            // 1. Simpan ke tabel 'orders' — sesuai kolom DB asli
+            // 2. Simpan ke tabel 'orders' sesuai struktur persis di HeidiSQL
             $orderId = DB::table('orders')->insertGetId([
-                'pelanggan'       => 'Pelanggan POS',
-                'UserID'          => auth()->id() ?? 1,
-                'PaymentMethodID' => 1,           // ID metode pembayaran Tunai
-                'order_code'      => $orderCode,
-                'TotalHarga'      => $request->total,
-                'StatusOrder'     => 'Selesai',
-                'TanggalOrder'    => $waktuSekarang,
-                'CreatedDate'     => $waktuSekarang,
-                'Status'          => 1,
-                'IsDeleted'       => 0,
-                'created_at'      => $waktuSekarang,
-                'updated_at'      => $waktuSekarang,
+                'pelanggan'     => Auth::user()->name ?? 'Gilang Ramadhan',
+                'UserID'        => Auth::id() ?? 1,
+                'PaymentMethod' => (int) $request->input('payment_method_id', 1), // Pastikan bertipe INT murni
+                'order_code'    => 'NGK-' . strtoupper(uniqid()),
+                'TotalHarga'    => $product->Harga,
+                'StatusOrder'   => 'Pending',
+                'TanggalOrder'  => now(),
+                'CompanyCode'   => 'NGK', // 🌟 WAJIB: Sesuai data di HeidiSQL kamu
+                'Status'        => 1,
+                'IsDeleted'     => 0,
+                'CreatedBy'     => Auth::user()->name ?? 'Pelanggan',
+                'created_at'    => now()
             ]);
 
-            // 2. Simpan ke tabel 'order_details'
-            foreach ($request->cart as $item) {
-                $subtotal = $item['price'] * $item['qty'];
+            // 3. Simpan rincian ke tabel 'order_details' sesuai kolom di HeidiSQL
+            DB::table('order_details')->insert([
+                'OrderID'     => $orderId,
+                'ProductID'   => $product->ProductID,
+                'Qty'         => 1,
+                'Harga'       => $product->Harga,
+                'Subtotal'    => $product->Harga,
+                'CompanyCode' => 'NGK', // 🌟 WAJIB: Sesuai data di HeidiSQL kamu
+                'Status'      => 1,
+                'IsDeleted'   => 0,
+                'CreatedBy'   => Auth::user()->name ?? 'Pelanggan',
+                'CreatedDate' => now(), // 🌟 WAJIB: Mengisi kolom DATETIME di tabel detail
+                'created_at'  => now()
+            ]);
 
-                DB::table('order_details')->insert([
-                    'OrderID'     => $orderId,
-                    'ProductID'   => $item['id'],
-                    'Qty'         => $item['qty'],
-                    'Harga'       => $item['price'],
-                    'Subtotal'    => $subtotal,
-                    'Status'      => 1,
-                    'IsDeleted'   => 0,
-                    'CreatedDate' => $waktuSekarang,
-                ]);
-
-                // 3. Kurangi stok produk
-                DB::table('products')
-                    ->where('ProductID', $item['id'])
-                    ->decrement('Stok', $item['qty']);
+            // 4. OTOMATIS KURANGI STOK BAHAN BAKU DI TABEL 'stok'
+            // Jika kategori produk adalah 'KOPI', potong stok biji kopi (ID: 1)
+            if (strtoupper($product->Category) == 'KOPI') {
+                DB::table('stok')
+                    ->where('id', 1) // ID 1 merujuk ke baris bahan baku utama kopi di tabel stok kamu
+                    ->decrement('stok_sekarang', 1);
+            } else {
+                // Jika NON-KOPI, potong stok rasa/susu (ID: 2)
+                DB::table('stok')
+                    ->where('id', 2)
+                    ->decrement('stok_sekarang', 1);
             }
 
             DB::commit();
-
-            return response()->json([
-                'success'    => true,
-                'message'    => 'Transaksi sukses dicatat!',
-                'order_id'   => $orderId,
-                'order_code' => $orderCode,
-            ]);
+            
+            // Alihkan langsung ke route sukses bawaan aplikasi kamu
+            return redirect()->route('order.success')->with('success', 'Pesanan berhasil dibuat!');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+            // Jika masih ada kendala, dia akan melempar pesan error aslinya agar mudah dilacak
+            return redirect()->back()->with('error', 'Gagal memproses pesanan: ' . $e->getMessage());
         }
     }
 }
