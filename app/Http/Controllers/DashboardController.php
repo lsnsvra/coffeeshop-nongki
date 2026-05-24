@@ -74,4 +74,18 @@ class DashboardController extends Controller
             'hariIni' // Kita oper juga ke view buat jaga-jaga kalau mau nampilin teks info tanggalnya
         ));
     }
+
+    public function redirectBasedOnRole() 
+{
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->role === 'kasir') {
+        return redirect()->route('kasir.pos');
+    }
+
+    // Jika bukan admin/kasir, arahkan ke UserController index
+    return app(\App\Http\Controllers\UserController::class)->index();
+}
 }
