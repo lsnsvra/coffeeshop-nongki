@@ -414,12 +414,18 @@
     const MENU_CART_KEY       = window.CART_ITEMS_KEY   || 'cart_items_u0';
     const MENU_CART_COUNT_KEY = window.CART_STORAGE_KEY || 'cart_count_u0';
 
-    // ========== ADD TO CART (FIXED) ==========
+    // =====================================================================
+    // FAVORIT KEY — per user, ikuti pola cart dari layouts/app.blade.php
+    // window.CART_USER_ID sudah di-inject per user yang login
+    // =====================================================================
+    const MENU_FAV_USER_ID = window.CART_USER_ID || 0;
+    const MENU_FAV_KEY     = 'favorites_u' + MENU_FAV_USER_ID;
+
+    // ========== ADD TO CART ==========
     function addToCart(id, name, price, img, btn) {
         if (btn.disabled) return;
         btn.disabled = true;
 
-        // Baca cart dari key yang benar (per user)
         let cart = JSON.parse(localStorage.getItem(MENU_CART_KEY)) || [];
 
         const index = cart.findIndex(item => item.id == id);
@@ -429,14 +435,11 @@
             cart.push({ id, name, price, img, quantity: 1 });
         }
 
-        // Simpan ke key per user
         localStorage.setItem(MENU_CART_KEY, JSON.stringify(cart));
 
-        // Hitung total & simpan count ke key per user
         let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         localStorage.setItem(MENU_CART_COUNT_KEY, totalItems);
 
-        // Update badge via fungsi global dari layouts/app.blade.php
         if (typeof updateBadges === 'function') {
             updateBadges(totalItems);
         } else {
@@ -446,7 +449,6 @@
             if (sb) { sb.textContent = totalItems; sb.style.display = totalItems > 0 ? 'inline-block' : 'none'; }
         }
 
-        // Efek visual tombol
         btn.style.transform = 'scale(0.85)';
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         btn.style.background = '#52b788';
@@ -458,14 +460,14 @@
         }, 1200);
     }
 
-    // ========== FAVORIT ==========
+    // ========== FAVORIT (per user) ==========
     function getFavorites() {
-        let favs = localStorage.getItem('favorites');
-        return favs ? JSON.parse(favs) : [];
+        try { return JSON.parse(localStorage.getItem(MENU_FAV_KEY) || '[]'); }
+        catch(e) { return []; }
     }
 
     function saveFavorites(favs) {
-        localStorage.setItem('favorites', JSON.stringify(favs));
+        localStorage.setItem(MENU_FAV_KEY, JSON.stringify(favs));
     }
 
     function isFavorite(id) {
@@ -514,9 +516,8 @@
         cards.forEach(card => grid.appendChild(card));
     });
 
-    // ========== INIT BADGE & FAVORIT ICON ==========
+    // ========== INIT ==========
     document.addEventListener('DOMContentLoaded', function () {
-        // Baca count dari key per user (bukan key lama)
         let totalItems = parseInt(localStorage.getItem(MENU_CART_COUNT_KEY)) || 0;
         if (typeof updateBadges === 'function') {
             updateBadges(totalItems);
@@ -527,7 +528,7 @@
             if (sb) { sb.textContent = totalItems; sb.style.display = totalItems > 0 ? 'inline-block' : 'none'; }
         }
 
-        // Init ikon favorit
+        // Init ikon favorit berdasarkan key per user
         document.querySelectorAll('.menu-card').forEach(card => {
             const favBtn = card.querySelector('.menu-fav');
             if (favBtn && isFavorite(card.dataset.id)) {
