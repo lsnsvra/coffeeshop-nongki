@@ -53,18 +53,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/proses-pembayaran', [TransaksiController::class, 'simpanTransaksi'])->name('transaksi.simpan');
 
     // REDIRECT DASHBOARD CERDAS
-    Route::get('/dashboard', function () {
-        $user = Auth::user();
-        
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'kasir') {
-            return redirect()->route('kasir.pos');
-        }
-        
-        // 🔄 SINKRONISASI: Jika pelanggan biasa, arahkan ke UserController index biar narik database riil!
-        return app(App\Http\Controllers\UserController::class)->index();
-    })->name('dashboard');
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+    
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->role === 'kasir') {
+        return redirect()->route('kasir.pos');
+    }
+    
+    // Gunakan Controller dengan syntax yang benar
+    return app()->make(App\Http\Controllers\UserController::class)->index();
+})->name('dashboard');
 
     Route::get('/manager/dashboard', function () {
         return redirect()->route('dashboard');
