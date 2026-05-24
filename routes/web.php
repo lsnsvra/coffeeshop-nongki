@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\RecipeController; // TAMBAHAN: Controller buat fitur Resep
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -53,7 +55,7 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('kasir.pos');
         }
         // Jika pelanggan biasa, kembalikan ke menu utama
-        return redirect()->route('menu.index');
+      return view('dashboard.index');
     })->name('dashboard');
 
     Route::get('/manager/dashboard', function () {
@@ -73,10 +75,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', function () { return view('profile.profil'); })->name('profil');
     Route::get('/pengaturan', function () { return view('settings.pengaturan'); })->name('pengaturan');
     
-    // Pembayaran
-    Route::get('/pembayaran', function () { return view('payment.index'); })->name('payment.index');
+Route::get('/pembayaran', function () { return view('payment.index'); })->name('payment.index');
     Route::get('/order-success', function () { return view('payment.success'); })->name('order.success');
+
+    // Payment API
+    Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
+    Route::get('/payment/status/{orderId}', [PaymentController::class, 'checkStatus'])->name('payment.status');
 });
+
+// Webhook - di luar middleware (tidak perlu auth)
+Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
+    ->name('payment.webhook')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 // ============================================================
 // 4. ROUTE ADMIN (HANYA ROLE ADMIN)
@@ -87,9 +97,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    
+    // ---- MANAJEMEN MENU ----
     Route::get('/menu', [ProductController::class, 'index'])->name('menu');
     Route::post('/menu/store', [ProductController::class, 'store'])->name('menu.store');
+    Route::put('/menu/update/{id}', [ProductController::class, 'update'])->name('menu.update');
     Route::delete('/menu/destroy/{id}', [ProductController::class, 'destroy'])->name('menu.destroy');
+
+    // 👇 TAMBAHAN ROUTE UNTUK FITUR RESEP (BOM) 👇
+    Route::get('/menu/{id}/resep', [RecipeController::class, 'index'])->name('resep.index');
+    Route::post('/menu/{id}/resep', [RecipeController::class, 'store'])->name('resep.store');
+    Route::delete('/menu/{product_id}/resep/{material_id}', [RecipeController::class, 'destroy'])->name('resep.destroy');
+    // 👆 END TAMBAHAN ROUTE RESEP 👆
     
     Route::get('/pengguna', [AdminController::class, 'pengguna'])->name('pengguna');
     Route::post('/user/toggle-status/{id}', [AdminController::class, 'toggleStatus'])->name('user.toggle-status');

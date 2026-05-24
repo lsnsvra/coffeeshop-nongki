@@ -106,80 +106,187 @@
         text-transform: uppercase; letter-spacing: 1px;
     }
     .btn-checkout:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212,175,55,0.3); }
+    .btn-checkout:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    /* ========== NONGKI PREMIUM MODAL (PEMBAYARAN & ALERT) ========== */
+    /* ========== MODAL OVERLAY ========== */
     .nongki-modal-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
         display: flex; align-items: center; justify-content: center; z-index: 10000;
         opacity: 0; pointer-events: none; transition: 0.4s ease;
-        padding: 1rem; /* Biar ngga nabrak pinggir layar di HP */
+        padding: 1rem;
     }
     .nongki-modal-overlay.active { opacity: 1; pointer-events: auto; }
-    
+
     .nongki-modal-box {
-        background: linear-gradient(145deg, var(--dark-2) 0%, #0a0a0a 100%); 
-        border: 1px solid rgba(212,175,55,0.25); 
+        background: linear-gradient(145deg, var(--dark-2) 0%, #0a0a0a 100%);
+        border: 1px solid rgba(212,175,55,0.25);
         border-radius: 28px;
-        padding: 2.5rem 2rem; 
-        width: 100%; max-width: 420px; 
+        padding: 2.5rem 2rem;
+        width: 100%; max-width: 420px;
         text-align: center;
-        
-        /* Solusi Anti-Potong */
-        max-height: 85vh; 
-        overflow-y: auto; 
-        
-        transform: translateY(30px) scale(0.95); 
+        max-height: 85vh;
+        overflow-y: auto;
+        transform: translateY(30px) scale(0.95);
         transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
     }
     .nongki-modal-overlay.active .nongki-modal-box { transform: translateY(0) scale(1); }
 
-    /* Custom Scrollbar khusus Modal */
     .nongki-modal-box::-webkit-scrollbar { width: 6px; }
     .nongki-modal-box::-webkit-scrollbar-track { background: transparent; }
     .nongki-modal-box::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 10px; }
-    
-    /* Style Khusus Modal Pembayaran */
-    .qr-code { 
-        background: #ffffff; 
-        padding: 1.2rem; 
-        border-radius: 20px; 
-        display: inline-block; 
-        margin: 1.2rem 0; 
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+
+    /* ========== PAYMENT DETAIL STYLES ========== */
+    .qr-code {
+        background: #ffffff;
+        padding: 1.2rem;
+        border-radius: 20px;
+        display: inline-block;
+        margin: 1.2rem 0;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
     }
     .qr-code img { border-radius: 8px; display: block; }
-    
-    .bank-detail { 
-        background: rgba(0,0,0,0.2); 
-        border: 1px solid rgba(255,255,255,0.05); 
-        padding: 1.5rem; 
-        border-radius: 20px; 
-        text-align: left; 
-        margin: 1.5rem 0; 
+
+    .bank-detail {
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.05);
+        padding: 1.5rem;
+        border-radius: 20px;
+        text-align: left;
+        margin: 1.5rem 0;
     }
-    
-    .btn-gold-modal { 
-        width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #e6c147 100%); 
-        color: #000; font-weight: 800; padding: 1.2rem; border: none; 
-        border-radius: 14px; cursor: pointer; transition: 0.3s; margin-top: 1.5rem; 
-        font-size: 1rem; letter-spacing: 0.5px;
+
+    /* ========== STATUS PEMBAYARAN OTOMATIS ========== */
+    .payment-status-bar {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
-    .btn-gold-modal:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212,175,55,0.3); }
-    
-    .btn-cancel-modal { 
-        margin-top: 1rem; background: transparent; border: 1px solid rgba(255,255,255,0.1); 
-        color: #A0A0A0; padding: 1rem; border-radius: 14px; width: 100%; 
-        cursor: pointer; transition: 0.3s; font-weight: 600; 
+    .status-dot {
+        width: 12px; height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: #ffc107;
+        box-shadow: 0 0 0 0 rgba(255,193,7,0.4);
+        animation: pulse-waiting 1.5s infinite;
+    }
+    .status-dot.checking {
+        background: #4fc3f7;
+        box-shadow: 0 0 0 0 rgba(79,195,247,0.4);
+        animation: pulse-checking 1s infinite;
+    }
+    .status-dot.paid {
+        background: #4caf50;
+        box-shadow: 0 0 0 0 rgba(76,175,80,0.4);
+        animation: pulse-paid 0.5s ease forwards;
+    }
+    .status-dot.failed {
+        background: #f44336;
+        animation: none;
+    }
+    @keyframes pulse-waiting {
+        0% { box-shadow: 0 0 0 0 rgba(255,193,7,0.6); }
+        70% { box-shadow: 0 0 0 10px rgba(255,193,7,0); }
+        100% { box-shadow: 0 0 0 0 rgba(255,193,7,0); }
+    }
+    @keyframes pulse-checking {
+        0% { box-shadow: 0 0 0 0 rgba(79,195,247,0.6); }
+        70% { box-shadow: 0 0 0 10px rgba(79,195,247,0); }
+        100% { box-shadow: 0 0 0 0 rgba(79,195,247,0); }
+    }
+    @keyframes pulse-paid {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.5); }
+        100% { transform: scale(1); }
+    }
+    .status-text-wrap { text-align: left; }
+    .status-label { font-size: 0.75rem; color: #A0A0A0; text-transform: uppercase; letter-spacing: 1px; }
+    .status-value { font-size: 0.95rem; font-weight: 700; color: #f0ece3; margin-top: 2px; }
+
+    /* Countdown Timer */
+    .payment-timer {
+        font-size: 0.8rem;
+        color: #A0A0A0;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+    .timer-value { color: #ffc107; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    /* Success State */
+    .success-animation {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0;
+    }
+    .success-check {
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        background: rgba(76,175,80,0.15);
+        border: 2px solid #4caf50;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.2rem; color: #4caf50;
+        margin-bottom: 1.2rem;
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+        from { transform: scale(0); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Fallback manual button (tersembunyi, muncul jika timeout) */
+    .btn-manual-fallback {
+        width: 100%; background: transparent;
+        border: 1px solid rgba(212,175,55,0.4);
+        color: var(--gold); font-weight: 700; padding: 1rem;
+        border-radius: 14px; cursor: pointer; transition: 0.3s;
+        font-size: 0.9rem; margin-top: 1rem; display: none;
+    }
+    .btn-manual-fallback:hover { background: rgba(212,175,55,0.1); }
+    .btn-cancel-modal {
+        margin-top: 1rem; background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #A0A0A0; padding: 1rem; border-radius: 14px;
+        width: 100%; cursor: pointer; transition: 0.3s; font-weight: 600;
     }
     .btn-cancel-modal:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-    /* Style Khusus Alert Warning */
-    .alert-icon-warning { 
-        width: 75px; height: 75px; margin: 0 auto 1.5rem; border-radius: 50%; 
-        display: flex; align-items: center; justify-content: center; font-size: 2.2rem; 
-        background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); 
+    /* Alert Warning */
+    .alert-icon-warning {
+        width: 75px; height: 75px; margin: 0 auto 1.5rem; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
+        background: rgba(255, 193, 7, 0.1); color: #ffc107;
+        border: 1px solid rgba(255, 193, 7, 0.3);
     }
+    .btn-gold-modal {
+        width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #e6c147 100%);
+        color: #000; font-weight: 800; padding: 1.2rem; border: none;
+        border-radius: 14px; cursor: pointer; transition: 0.3s; margin-top: 1.5rem;
+        font-size: 1rem; letter-spacing: 0.5px;
+    }
+    .btn-gold-modal:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212,175,55,0.3); }
+
+    /* Loading spinner saat buat order */
+    .spinner-wrap {
+        display: flex; flex-direction: column; align-items: center;
+        gap: 1rem; padding: 2rem 0;
+    }
+    .spinner {
+        width: 48px; height: 48px;
+        border: 4px solid rgba(212,175,55,0.15);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 768px) {
         .checkout-container { grid-template-columns: 1fr; }
@@ -195,17 +302,21 @@
         <div class="checkout-section">
             <div class="section-title"><i class="fas fa-wallet"></i> Pilih Metode Pembayaran</div>
             <div class="payment-methods-grid" id="paymentMethods">
-                <div class="method-item" data-method="transfer">
+                <div class="method-item" data-method="qris">
+                    <div class="method-icon"><i class="fas fa-qrcode"></i></div>
+                    <span>QRIS / GoPay</span>
+                </div>
+                <div class="method-item" data-method="bank_transfer">
                     <div class="method-icon"><i class="fas fa-university"></i></div>
                     <span>Transfer Bank</span>
                 </div>
-                <div class="method-item" data-method="qris">
-                    <div class="method-icon"><i class="fas fa-qrcode"></i></div>
-                    <span>QRIS Scan</span>
+                <div class="method-item" data-method="bca_klikpay">
+                    <div class="method-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" height="22" alt="BCA" style="filter:brightness(10)"></div>
+                    <span>BCA KlikPay</span>
                 </div>
-                <div class="method-item" data-method="ewallet">
-                    <div class="method-icon"><i class="fas fa-mobile-alt"></i></div>
-                    <span>E-Wallet</span>
+                <div class="method-item" data-method="shopeepay">
+                    <div class="method-icon"><i class="fas fa-shopping-bag"></i></div>
+                    <span>ShopeePay</span>
                 </div>
             </div>
         </div>
@@ -219,23 +330,69 @@
                 <span>Total Pembayaran</span>
                 <span id="totalAmount">Rp 0</span>
             </div>
-            <button class="btn-checkout" id="checkoutBtn">Buat Pesanan Sekarang</button>
+            <button class="btn-checkout" id="checkoutBtn">
+                <i class="fas fa-lock" style="margin-right:8px;font-size:0.85rem;"></i>
+                Buat Pesanan Sekarang
+            </button>
         </div>
     </div>
 </div>
 
+{{-- ====== MODAL PEMBAYARAN OTOMATIS ====== --}}
 <div class="nongki-modal-overlay" id="paymentModal">
     <div class="nongki-modal-box">
-        <h3 id="modalTitle" style="color: var(--gold); margin-top: 0; font-size: 1.5rem; font-family: 'Cormorant Garamond', serif;">Konfirmasi Pembayaran</h3>
-        <p style="color: #A0A0A0; font-size: 0.9rem; margin-bottom: 0;">Selesaikan pembayaran Anda untuk memproses pesanan.</p>
-        
-        <div id="modalBody"></div>
-        
-        <button id="confirmPaymentBtn" class="btn-gold-modal">SAYA SUDAH BAYAR</button>
-        <button id="closeModalBtn" class="btn-cancel-modal">Ubah Metode Pembayaran</button>
+        <h3 id="modalTitle" style="color: var(--gold); margin-top: 0; font-size: 1.4rem; font-family: 'Cormorant Garamond', serif;">
+            Konfirmasi Pembayaran
+        </h3>
+        <p style="color: #A0A0A0; font-size: 0.9rem; margin-bottom: 0;">
+            Selesaikan pembayaran Anda untuk memproses pesanan.
+        </p>
+
+        {{-- Loading saat generate order --}}
+        <div id="loadingState" class="spinner-wrap">
+            <div class="spinner"></div>
+            <p style="color:#A0A0A0; font-size:0.9rem;">Menyiapkan transaksi...</p>
+        </div>
+
+        {{-- Konten pembayaran (QR / VA / dll) --}}
+        <div id="modalBody" style="display:none;"></div>
+
+        {{-- Status bar polling --}}
+        <div class="payment-status-bar" id="statusBar" style="display:none;">
+            <div class="status-dot" id="statusDot"></div>
+            <div class="status-text-wrap">
+                <div class="status-label">Status Transaksi</div>
+                <div class="status-value" id="statusValue">Menunggu pembayaran...</div>
+            </div>
+        </div>
+
+        {{-- Timer countdown --}}
+        <div class="payment-timer" id="paymentTimer" style="display:none;">
+            <i class="fas fa-clock"></i>
+            Berlaku selama <span class="timer-value" id="timerDisplay">15:00</span>
+        </div>
+
+        {{-- Success state (muncul saat lunas) --}}
+        <div class="success-animation" id="successState">
+            <div class="success-check"><i class="fas fa-check"></i></div>
+            <h3 style="color:#4caf50; margin:0 0 0.5rem;">Pembayaran Berhasil!</h3>
+            <p style="color:#A0A0A0; font-size:0.9rem; margin:0;">Mengalihkan ke halaman konfirmasi...</p>
+        </div>
+
+        {{-- Tombol fallback manual (muncul setelah 10 menit jika polling gagal) --}}
+        <button id="manualConfirmBtn" class="btn-manual-fallback" onclick="handleManualConfirm()">
+            <i class="fas fa-check-circle" style="margin-right:6px;"></i>
+            Saya Sudah Bayar (Konfirmasi Manual)
+        </button>
+
+        <button id="closeModalBtn" class="btn-cancel-modal">
+            <i class="fas fa-arrow-left" style="margin-right:6px;"></i>
+            Ubah Metode Pembayaran
+        </button>
     </div>
 </div>
 
+{{-- ====== MODAL ALERT ====== --}}
 <div class="nongki-modal-overlay" id="nongkiAlertModal">
     <div class="nongki-modal-box" style="max-width: 380px;">
         <div class="alert-icon-warning"><i class="fas fa-exclamation-triangle"></i></div>
@@ -247,11 +404,26 @@
 @endsection
 
 @push('scripts')
+{{-- Midtrans Snap JS (gunakan sandbox untuk development) --}}
+<script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
+
 <script>
+    // ============================================================
+    // STATE
+    // ============================================================
     let cart = [];
     let selectedMethod = '';
+    let pollingInterval = null;
+    let timerInterval = null;
+    let currentOrderId = null;
+    let pollingAttempts = 0;
+    const MAX_POLLING_ATTEMPTS = 200; // ~10 menit (3 detik x 200)
+    const MANUAL_FALLBACK_AFTER = 100; // ~5 menit, tampilkan tombol manual
 
-    // Inisialisasi Keranjang
+    // ============================================================
+    // KERANJANG
+    // ============================================================
     function loadCart() {
         cart = JSON.parse(localStorage.getItem('cart')) || [];
         renderCart();
@@ -263,7 +435,7 @@
         if (cart.length === 0) {
             container.innerHTML = `
                 <div style="text-align:center; padding: 2rem 0; color: #A0A0A0;">
-                    <i class="fas fa-shopping-basket" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+                    <i class="fas fa-shopping-basket" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem; display:block;"></i>
                     <p>Keranjang belanja Anda masih kosong.</p>
                 </div>`;
             return;
@@ -272,17 +444,17 @@
         cart.forEach(item => {
             html += `
                 <div class="order-item">
-                    <img class="order-item-img" src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/100x100?text=Kopi'">
+                    <img class="order-item-img" src="${item.img}" alt="${item.name}"
+                         onerror="this.src='https://placehold.co/100x100?text=Kopi'">
                     <div style="flex:1">
-                        <div style="font-weight: 700; color: #f0ece3; font-size: 1.05rem;">${item.name}</div>
+                        <div style="font-weight:700; color:#f0ece3; font-size:1.05rem;">${item.name}</div>
                         <div style="font-size:0.85rem; color:var(--gold); margin-top:4px;">Rp ${item.price.toLocaleString()}</div>
                         <div style="font-size:0.8rem; color:#A0A0A0; margin-top:2px;">Jumlah: ${item.quantity}x</div>
                     </div>
-                    <div style="font-weight: 800; color: #f0ece3; display:flex; align-items:center;">
+                    <div style="font-weight:800; color:#f0ece3; display:flex; align-items:center;">
                         Rp ${(item.price * item.quantity).toLocaleString()}
                     </div>
-                </div>
-            `;
+                </div>`;
         });
         container.innerHTML = html;
     }
@@ -293,7 +465,9 @@
         return total;
     }
 
-    // Pilihan Metode Pembayaran
+    // ============================================================
+    // PILIH METODE
+    // ============================================================
     document.querySelectorAll('.method-item').forEach(m => {
         m.addEventListener('click', function() {
             document.querySelectorAll('.method-item').forEach(x => x.classList.remove('active'));
@@ -302,114 +476,427 @@
         });
     });
 
-    // SISTEM ALERT NONGKI
+    // ============================================================
+    // ALERT SYSTEM
+    // ============================================================
     function showNongkiAlert(message) {
         document.getElementById('nongkiAlertMessage').innerText = message;
         document.getElementById('nongkiAlertModal').classList.add('active');
     }
-
     function closeNongkiAlert() {
         document.getElementById('nongkiAlertModal').classList.remove('active');
     }
 
-    // Proses Checkout
-    document.getElementById('checkoutBtn').addEventListener('click', function() {
+    // ============================================================
+    // CHECKOUT — KIRIM KE BACKEND → MIDTRANS
+    // ============================================================
+    document.getElementById('checkoutBtn').addEventListener('click', async function() {
         if (cart.length === 0) {
-            showNongkiAlert('Keranjang belanja Anda masih kosong. Silakan pilih menu terlebih dahulu sebelum melakukan checkout.');
+            showNongkiAlert('Keranjang belanja Anda masih kosong. Silakan pilih menu terlebih dahulu.');
             return;
         }
         if (!selectedMethod) {
-            showNongkiAlert('Silakan pilih salah satu metode pembayaran terlebih dahulu untuk melanjutkan pesanan.');
+            showNongkiAlert('Silakan pilih salah satu metode pembayaran terlebih dahulu.');
             return;
         }
-        
-        const total = updateTotal();
-        const orderId = 'NGK-' + Date.now();
-        const orderData = { orderId, items: cart, total, method: selectedMethod, date: new Date().toISOString() };
-        localStorage.setItem('pendingOrder', JSON.stringify(orderData));
-        
-        showPaymentModal(selectedMethod, total, orderId);
+
+        // Disable tombol + tampilkan loading
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i> Memproses...';
+        showModal('loading');
+
+        try {
+            const response = await fetch("{{ route('payment.create') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    items: cart,
+                    payment_method: selectedMethod,
+                    total: updateTotal()
+                })
+            });
+
+            if (!response.ok) throw new Error('Server error ' + response.status);
+            const data = await response.json();
+
+            if (!data.success) throw new Error(data.message || 'Gagal membuat transaksi.');
+
+            currentOrderId = data.order_id;
+
+            // ---- MIDTRANS SNAP (untuk metode yang support Snap) ----
+            if (data.snap_token) {
+                document.getElementById('paymentModal').classList.remove('active');
+                snap.pay(data.snap_token, {
+                    onSuccess: function(result) {
+                        handlePaymentSuccess(result);
+                    },
+                    onPending: function(result) {
+                        // User selesai pilih metode di Snap, sekarang polling
+                        currentOrderId = result.order_id;
+                        showModal('polling');
+                        startPolling(result.order_id);
+                        startTimer(15 * 60); // 15 menit
+                    },
+                    onError: function(result) {
+                        handlePaymentError('Pembayaran gagal: ' + (result.status_message || 'Silakan coba lagi.'));
+                    },
+                    onClose: function() {
+                        resetCheckoutButton();
+                        // Biarkan modal payment tetap tertutup
+                    }
+                });
+                return;
+            }
+
+            // ---- NON-SNAP (QR / VA manual dari backend) ----
+            renderPaymentDetail(data, selectedMethod);
+            showModal('payment');
+            startPolling(data.order_id);
+            startTimer(15 * 60);
+
+        } catch (err) {
+            document.getElementById('paymentModal').classList.remove('active');
+            showNongkiAlert('Terjadi kesalahan: ' + err.message);
+            resetCheckoutButton();
+        }
     });
 
-    // Modal Instruksi Pembayaran
-    function showPaymentModal(method, total, orderId) {
-        const modal = document.getElementById('paymentModal');
-        const modalTitle = document.getElementById('modalTitle');
+    // ============================================================
+    // RENDER DETAIL PEMBAYARAN (NON-SNAP)
+    // ============================================================
+    function renderPaymentDetail(data, method) {
         const modalBody = document.getElementById('modalBody');
+        const total = data.total || updateTotal();
 
         if (method === 'qris') {
-            modalTitle.innerText = 'Scan QRIS NONGKI';
-            // Ukuran QR sedikit dikecilkan biar nggak menuh-menuhin layar
-            const qrData = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=NONGKI|${orderId}|${total}`;
+            const qrUrl = data.qr_code_url ||
+                `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.order_id)}`;
             modalBody.innerHTML = `
-                <div class="qr-code"><img src="${qrData}" width="180" height="180" alt="QR Code NONGKI"></div>
-                <h2 style="color: var(--gold); margin: 5px 0 10px 0; font-size: 2.2rem; font-weight: 800;">Rp ${total.toLocaleString()}</h2>
-                <p style="font-size:0.9rem; color:#A0A0A0; line-height: 1.5; margin-bottom: 0;">Buka aplikasi M-Banking atau E-Wallet (BCA, Mandiri, GoPay, OVO, dll), lalu scan QR Code di atas.</p>
-            `;
-        } else if (method === 'transfer') {
-            modalTitle.innerText = 'Transfer Bank';
+                <div class="qr-code">
+                    <img src="${qrUrl}" width="200" height="200" alt="QR Code NONGKI">
+                </div>
+                <h2 style="color:var(--gold); margin:5px 0 10px; font-size:2rem; font-weight:800;">
+                    Rp ${total.toLocaleString()}
+                </h2>
+                <p style="font-size:0.9rem; color:#A0A0A0; line-height:1.5; margin:0;">
+                    Scan QR Code di atas menggunakan M-Banking atau E-Wallet (GoPay, OVO, DANA, dll).
+                </p>`;
+
+        } else if (method === 'bank_transfer') {
+            const va = data.va_numbers?.[0] || {};
             modalBody.innerHTML = `
                 <div class="bank-detail">
-                    <p style="color:#A0A0A0; font-size:0.85rem; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Bank BCA</p>
-                    <p style="font-size:1.3rem; font-weight:800; color:#f0ece3; margin:0; letter-spacing: 2px;">123 456 7890</p>
-                    <p style="font-size:0.8rem; color:var(--gold); margin-top:2px;">a.n. PT NONGKI Coffee</p>
-                    
-                    <hr style="border-color:rgba(255,255,255,0.05); margin: 1.5rem 0;">
-                    
-                    <p style="color:#A0A0A0; font-size:0.85rem; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Bank Mandiri</p>
-                    <p style="font-size:1.3rem; font-weight:800; color:#f0ece3; margin:0; letter-spacing: 2px;">987 654 3210</p>
-                    <p style="font-size:0.8rem; color:var(--gold); margin-top:2px;">a.n. PT NONGKI Coffee</p>
+                    <p style="color:#A0A0A0; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">
+                        ${va.bank ? va.bank.toUpperCase() : 'Virtual Account'}
+                    </p>
+                    <p style="font-size:1.4rem; font-weight:800; color:#f0ece3; margin:0; letter-spacing:2px;">
+                        ${va.va_number || data.payment_code || '-'}
+                    </p>
+                    <p style="font-size:0.8rem; color:var(--gold); margin-top:2px;">a.n. NONGKI Coffee</p>
                 </div>
-                <p style="color:#A0A0A0; font-size:0.95rem; margin-bottom: 5px;">Total yang harus ditransfer:</p>
-                <h2 style="color: var(--gold); margin: 0 0 10px 0; font-size: 2.2rem; font-weight: 800;">Rp ${total.toLocaleString()}</h2>
-            `;
-        } else if (method === 'ewallet') {
-            modalTitle.innerText = 'Pembayaran E-Wallet';
+                <p style="color:#A0A0A0; font-size:0.9rem; margin-bottom:4px;">Total yang harus ditransfer:</p>
+                <h2 style="color:var(--gold); margin:0 0 8px; font-size:2rem; font-weight:800;">
+                    Rp ${total.toLocaleString()}
+                </h2>
+                <p style="font-size:0.8rem; color:#A0A0A0;">
+                    <i class="fas fa-info-circle"></i> 
+                    Transfer nominal PERSIS sesuai tagihan (termasuk angka unik jika ada).
+                </p>`;
+
+        } else {
+            // Fallback generik
             modalBody.innerHTML = `
-                <div class="bank-detail" style="text-align: center; padding: 2.5rem 1.5rem;">
-                    <p style="color:#A0A0A0; font-size:0.9rem; margin-bottom:10px;">Virtual Account (GoPay / OVO / Dana)</p>
-                    <p style="font-size:1.8rem; font-weight:800; color:var(--gold); margin:0; letter-spacing: 3px;">0888 1234 5678</p>
+                <div class="bank-detail" style="text-align:center; padding:2rem;">
+                    <p style="color:#A0A0A0; font-size:0.9rem; margin-bottom:8px;">Kode Pembayaran</p>
+                    <p style="font-size:1.6rem; font-weight:800; color:var(--gold); letter-spacing:3px; margin:0;">
+                        ${data.payment_code || data.order_id}
+                    </p>
                 </div>
-                <p style="color:#A0A0A0; font-size:0.95rem; margin-bottom: 5px;">Total Tagihan:</p>
-                <h2 style="color: var(--gold); margin: 0 0 10px 0; font-size: 2.2rem; font-weight: 800;">Rp ${total.toLocaleString()}</h2>
-            `;
+                <h2 style="color:var(--gold); margin:0 0 10px; font-size:2rem; font-weight:800;">
+                    Rp ${total.toLocaleString()}
+                </h2>`;
         }
-        modal.classList.add('active');
     }
 
-    // Konfirmasi Sukses Pembayaran
-    document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-        const pending = localStorage.getItem('pendingOrder');
-        if (pending) {
-            localStorage.setItem('lastOrder', pending);
-            localStorage.removeItem('cart');
-            localStorage.removeItem('cartCount');
-            localStorage.removeItem('pendingOrder');
-            window.location.href = "{{ route('order.success') }}";
-        } else {
-            document.getElementById('paymentModal').classList.remove('active');
-            showNongkiAlert('Sistem tidak menemukan pesanan yang sedang diproses. Silakan buat pesanan ulang.');
-        }
-    });
+    // ============================================================
+    // TAMPILKAN / SEMBUNYIKAN STATE MODAL
+    // ============================================================
+    function showModal(state) {
+        const overlay = document.getElementById('paymentModal');
+        overlay.classList.add('active');
 
-    // Batal / Tutup Modal Pembayaran
+        const loadingState  = document.getElementById('loadingState');
+        const modalBody     = document.getElementById('modalBody');
+        const statusBar     = document.getElementById('statusBar');
+        const timerEl       = document.getElementById('paymentTimer');
+        const successState  = document.getElementById('successState');
+        const manualBtn     = document.getElementById('manualConfirmBtn');
+        const cancelBtn     = document.getElementById('closeModalBtn');
+
+        // Reset semua
+        [loadingState, modalBody, statusBar, timerEl, successState].forEach(el => {
+            el.style.display = 'none';
+        });
+        successState.style.display = 'none';
+        manualBtn.style.display = 'none';
+
+        if (state === 'loading') {
+            loadingState.style.display = 'flex';
+            cancelBtn.style.display = 'none';
+        } else if (state === 'payment') {
+            modalBody.style.display = 'block';
+            statusBar.style.display = 'flex';
+            timerEl.style.display = 'flex';
+            cancelBtn.style.display = 'block';
+        } else if (state === 'polling') {
+            statusBar.style.display = 'flex';
+            timerEl.style.display = 'flex';
+            cancelBtn.style.display = 'block';
+        } else if (state === 'success') {
+            successState.style.display = 'flex';
+            cancelBtn.style.display = 'none';
+            manualBtn.style.display = 'none';
+        }
+    }
+
+    // ============================================================
+    // POLLING STATUS — CEK KE BACKEND SETIAP 3 DETIK
+    // ============================================================
+    function startPolling(orderId) {
+        stopPolling();
+        pollingAttempts = 0;
+        updateStatusBar('waiting');
+
+        pollingInterval = setInterval(async () => {
+            pollingAttempts++;
+
+            // Tampilkan "memeriksa..." sesekali
+            if (pollingAttempts % 3 === 0) updateStatusBar('checking');
+
+            try {
+                const res = await fetch(`{{ url('/payment/status') }}/${orderId}`, {
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+                });
+                if (!res.ok) throw new Error('Network error');
+                const data = await res.json();
+
+                handleStatusResponse(data.transaction_status || data.status, orderId);
+
+            } catch (e) {
+                // Abaikan error jaringan sementara, lanjut polling
+                console.warn('[Polling] Network error, retrying...', e);
+                updateStatusBar('waiting');
+            }
+
+            // Tampilkan tombol manual setelah ~5 menit
+            if (pollingAttempts === MANUAL_FALLBACK_AFTER) {
+                document.getElementById('manualConfirmBtn').style.display = 'block';
+            }
+
+            // Hentikan polling setelah batas maksimal
+            if (pollingAttempts >= MAX_POLLING_ATTEMPTS) {
+                stopPolling();
+                updateStatusBar('timeout');
+                document.getElementById('manualConfirmBtn').style.display = 'block';
+            }
+
+        }, 3000); // setiap 3 detik
+    }
+
+    function stopPolling() {
+        if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+    }
+
+    function handleStatusResponse(status, orderId) {
+        switch (status) {
+            case 'capture':
+            case 'settlement':
+            case 'paid':
+                stopPolling();
+                stopTimer();
+                handlePaymentSuccess({ order_id: orderId, transaction_status: status });
+                break;
+
+            case 'pending':
+                updateStatusBar('waiting');
+                break;
+
+            case 'deny':
+            case 'cancel':
+            case 'expire':
+            case 'failure':
+            case 'failed':
+                stopPolling();
+                stopTimer();
+                handlePaymentError('Transaksi ' + status + '. Silakan buat pesanan baru.');
+                break;
+
+            default:
+                updateStatusBar('waiting');
+        }
+    }
+
+    // ============================================================
+    // UPDATE TAMPILAN STATUS BAR
+    // ============================================================
+    function updateStatusBar(state) {
+        const dot   = document.getElementById('statusDot');
+        const value = document.getElementById('statusValue');
+        dot.className = 'status-dot';
+
+        const states = {
+            waiting:  { cls: '',         text: 'Menunggu pembayaran...' },
+            checking: { cls: 'checking', text: 'Memeriksa transaksi...' },
+            paid:     { cls: 'paid',     text: 'Pembayaran dikonfirmasi! ✓' },
+            failed:   { cls: 'failed',   text: 'Transaksi gagal / kedaluwarsa.' },
+            timeout:  { cls: 'failed',   text: 'Waktu cek habis. Konfirmasi manual jika sudah bayar.' },
+        };
+        const s = states[state] || states.waiting;
+        if (s.cls) dot.classList.add(s.cls);
+        value.textContent = s.text;
+    }
+
+    // ============================================================
+    // TIMER COUNTDOWN
+    // ============================================================
+    function startTimer(seconds) {
+        stopTimer();
+        let remaining = seconds;
+        updateTimerDisplay(remaining);
+
+        timerInterval = setInterval(() => {
+            remaining--;
+            updateTimerDisplay(remaining);
+            if (remaining <= 0) {
+                stopTimer();
+                stopPolling();
+                updateStatusBar('timeout');
+                document.getElementById('manualConfirmBtn').style.display = 'block';
+            }
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }
+
+    function updateTimerDisplay(seconds) {
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        const el = document.getElementById('timerDisplay');
+        if (el) el.textContent = `${m}:${s}`;
+    }
+
+    // ============================================================
+    // HANDLE SUCCESS
+    // ============================================================
+    function handlePaymentSuccess(result) {
+        updateStatusBar('paid');
+        showModal('success');
+        stopPolling();
+        stopTimer();
+
+        // Bersihkan cart
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cartCount');
+
+        // Simpan data order terakhir
+        const orderData = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+        orderData.transaction_status = result.transaction_status || 'settlement';
+        localStorage.setItem('lastOrder', JSON.stringify(orderData));
+        localStorage.removeItem('pendingOrder');
+
+        // Redirect setelah 2 detik
+        setTimeout(() => {
+            window.location.href = "{{ route('order.success') }}";
+        }, 2000);
+    }
+
+    // ============================================================
+    // HANDLE ERROR
+    // ============================================================
+    function handlePaymentError(message) {
+        document.getElementById('paymentModal').classList.remove('active');
+        showNongkiAlert(message);
+        resetCheckoutButton();
+        localStorage.removeItem('pendingOrder');
+    }
+
+    // ============================================================
+    // KONFIRMASI MANUAL (FALLBACK)
+    // — Dipakai jika polling gagal tapi user sudah bayar
+    // ============================================================
+    async function handleManualConfirm() {
+        if (!currentOrderId) {
+            showNongkiAlert('Order ID tidak ditemukan. Silakan hubungi kasir.');
+            return;
+        }
+
+        document.getElementById('manualConfirmBtn').disabled = true;
+        document.getElementById('manualConfirmBtn').innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+
+        try {
+            // Cek sekali lagi ke backend sebelum redirect
+            const res = await fetch(`{{ url('/payment/status') }}/${currentOrderId}`, {
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
+            });
+            const data = await res.json();
+            const status = data.transaction_status || data.status;
+
+            if (['capture','settlement','paid'].includes(status)) {
+                handlePaymentSuccess({ order_id: currentOrderId, transaction_status: status });
+            } else {
+                // Kirim ke halaman sukses dengan flag "pending manual verification"
+                const orderData = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+                orderData.transaction_status = 'pending_manual';
+                localStorage.setItem('lastOrder', JSON.stringify(orderData));
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cartCount');
+                localStorage.removeItem('pendingOrder');
+                window.location.href = "{{ route('order.success') }}";
+            }
+        } catch (e) {
+            showNongkiAlert('Gagal memverifikasi. Silakan hubungi kasir dengan Order ID: ' + currentOrderId);
+            document.getElementById('manualConfirmBtn').disabled = false;
+            document.getElementById('manualConfirmBtn').innerHTML =
+                '<i class="fas fa-check-circle" style="margin-right:6px;"></i> Saya Sudah Bayar (Konfirmasi Manual)';
+        }
+    }
+
+    // ============================================================
+    // RESET TOMBOL CHECKOUT
+    // ============================================================
+    function resetCheckoutButton() {
+        const btn = document.getElementById('checkoutBtn');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock" style="margin-right:8px;font-size:0.85rem;"></i> Buat Pesanan Sekarang';
+    }
+
+    // ============================================================
+    // TUTUP MODAL PEMBAYARAN
+    // ============================================================
     document.getElementById('closeModalBtn').addEventListener('click', function() {
+        stopPolling();
+        stopTimer();
         document.getElementById('paymentModal').classList.remove('active');
         localStorage.removeItem('pendingOrder');
+        resetCheckoutButton();
     });
 
-    // Menutup Modal saat klik area gelap di luar box
+    // Klik area gelap
     window.onclick = function(e) {
-        if (e.target == document.getElementById('nongkiAlertModal')) {
-            closeNongkiAlert();
-        }
-        if (e.target == document.getElementById('paymentModal')) {
-            document.getElementById('paymentModal').classList.remove('active');
-            localStorage.removeItem('pendingOrder');
-        }
-    }
+        if (e.target === document.getElementById('nongkiAlertModal')) closeNongkiAlert();
+        // Sengaja TIDAK tutup paymentModal saat klik overlay
+        // supaya user tidak tidak sengaja membatalkan pembayaran
+    };
 
-    // Load keranjang
+    // ============================================================
+    // INIT
+    // ============================================================
     loadCart();
 </script>
 @endpush

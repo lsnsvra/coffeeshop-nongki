@@ -13,13 +13,10 @@
     /* ========================================= */
     /* 1. GLOBAL & RESET STYLES                  */
     /* ========================================= */
-   /* KECUALI TOMBOL GOLD, TEKSNYA HARUS GELAP BIAR TERBACA */
     #cartItemsContainer a.btn-gold, #summaryContainer a.btn-gold {
-        color: var(--dark) !important; /* Paksa teks jadi warna gelap */
+        color: var(--dark) !important;
     } 
 
-    
-    /* MENGHILANGKAN KOTAK FOCUS/OUTLINE BAWAAN BROWSER */
     button:focus, button:active, button:focus-visible,
     .qty-btn:focus, .qty-btn:focus-visible,
     .remove-item-btn:focus, .clear-btn:focus, .btn-back-menu:focus {
@@ -28,17 +25,16 @@
         -webkit-tap-highlight-color: transparent !important;
     }
 
-   /* Efek mendem (scale) HANYA untuk tombol tong sampah yang berdiri sendiri */
     .remove-item-btn:active {
         transform: scale(0.85);
     }
 
-    /* Efek klik untuk tombol Plus/Minus (tanpa merubah ukuran kotak) */
     .qty-btn:active {
-        background: rgba(0, 0, 0, 0.3) !important; /* Background jadi lebih gelap/deep */
-        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4) !important; /* Efek bayangan ke dalam seolah tombol fisik ditekan */
+        background: rgba(0, 0, 0, 0.3) !important;
+        box-shadow: inset 0 3px 6px rgba(0,0,0,0.4) !important;
         color: #fff !important;
     }
+
     /* ========================================= */
     /* 2. TOMBOL KEMBALI KE MENU                 */
     /* ========================================= */
@@ -63,12 +59,11 @@
     .cart-layout {
         display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start;
     }
-   .card-nongki {
+    .card-nongki {
         background: var(--dark-2); 
         border: 1px solid var(--border);
         border-radius: 16px; 
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        /* INI OBATNYA BIAR GAK BOCOR SUDUTNYA */
         overflow: hidden; 
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
@@ -103,7 +98,7 @@
     .remove-item-btn:hover { background: #e05252; color: #fff; transform: scale(1.05); }
 
     /* ========================================= */
-    /* 5. QUANTITY CONTROL (ANTI-BLEEDING FIX)   */
+    /* 5. QUANTITY CONTROL                       */
     /* ========================================= */
     .qty-control {
         display: flex; align-items: center;
@@ -137,11 +132,11 @@
         background: var(--dark-3); flex-shrink: 0;
     }
     .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
-    .cart-item-info { flex: 1; }
-    .item-name { font-size: 1.1rem; font-weight: 600; color: var(--cream); }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 1.1rem; font-weight: 600; color: var(--cream); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .item-variant { font-size: 0.8rem; color: var(--text-muted-c); margin-top: 4px; }
     .item-price { font-size: 0.95rem; color: var(--gold); margin-top: 6px; font-weight: 500; }
-    .item-total-price { font-size: 1.1rem; font-weight: 700; color: var(--cream); text-align: right; }
+    .item-total-price { font-size: 1.1rem; font-weight: 700; color: var(--cream); text-align: right; flex-shrink: 0; }
 
     .clear-btn {
         display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;
@@ -155,10 +150,10 @@
     .promo-input {
         flex: 1; background: var(--dark-3); border: 1px solid var(--border); 
         border-radius: 10px; padding: 0.75rem 1rem; color: var(--cream);
-        outline: none; transition: border-color 0.3s;
+        outline: none; transition: border-color 0.3s; min-width: 0;
     }
     .promo-input:focus { border-color: var(--gold); }
-    .btn-action-left { padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; }
+    .btn-action-left { padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; flex-shrink: 0; }
 
     /* ========================================= */
     /* 7. CUSTOM MODAL NONGKI                    */
@@ -184,14 +179,14 @@
     .modal-icon.info { background: rgba(255, 211, 106, 0.1); color: var(--gold); }
     .modal-icon.danger { background: rgba(224, 82, 82, 0.1); color: #e05252; }
     .modal-title { font-size: 1.25rem; font-weight: 600; color: var(--cream); margin-bottom: 0.5rem; }
-    .modal-message { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 2rem; line-height: 1.5; }
+    .modal-message { font-size: 0.95rem; color: var(--text-muted-c); margin-bottom: 2rem; line-height: 1.5; }
     .modal-actions { display: flex; gap: 1rem; justify-content: center; }
     
     .btn-modal-outline {
         background: transparent; border: 1px solid var(--border); color: var(--cream);
         padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1;
     }
-    .btn-modal-outline:hover { background: var(--dark-3); border-color: var(--text-dim); }
+    .btn-modal-outline:hover { background: var(--dark-3); border-color: var(--text-muted-c); }
     .btn-modal-solid {
         background: var(--gold); border: none; color: var(--dark);
         padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1;
@@ -201,11 +196,24 @@
     .btn-modal-danger:hover { background: #f26868; transform: translateY(-2px); }
 
     /* ========================================= */
-    /* 8. RESPONSIVE MEDIA QUERIES               */
+    /* 8. RESPONSIVE                             */
     /* ========================================= */
     @media (max-width: 900px) {
         .cart-layout { grid-template-columns: 1fr; }
+        /* Ringkasan tidak sticky di mobile supaya tidak overlap */
+        #summaryContainer { position: static !important; }
         .cart-actions-left { padding-right: 1rem; gap: 0.5rem; }
+    }
+
+    @media (max-width: 576px) {
+        .cart-item { gap: 0.75rem; padding: 1rem; }
+        .cart-item-img { width: 56px; height: 56px; }
+        .item-name { font-size: 0.95rem; }
+        .item-total-price { font-size: 0.95rem; }
+        .cart-actions-left { padding-right: 0.75rem; gap: 0.5rem; }
+        .qty-btn { width: 28px; height: 28px; font-size: 1rem; }
+        .qty-control span { width: 28px; }
+        .remove-item-btn { width: 32px; height: 32px; }
     }
 </style>
 @endpush
@@ -224,7 +232,7 @@
         
         <div id="cartItemsList">
             <div style="text-align: center; padding: 4rem 2rem;">
-                <span class="spinner" style="color: var(--gold);">Memuat keranjang...</span>
+                <span style="color: var(--gold);">Memuat keranjang...</span>
             </div>
         </div>
     </div>
@@ -245,13 +253,11 @@
             <span style="font-size: 1.5rem; font-weight: 700; color: var(--gold);" id="grandTotal">Rp 0</span>
         </div>
 
-       <!-- TOMBOL CHECKOUT (Icon Kartu Pembayaran di Kiri) -->
         <button class="btn-gold" id="checkoutBtn" style="width: 100%; margin-top: 1.5rem; padding: 1rem; border-radius: 12px; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; transition: transform 0.2s;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="6" width="18" height="15" rx="2" ry="2"></rect><path d="M3 10h18"></path><path d="M7 15h.01"></path></svg>
             Lanjut ke Pembayaran
         </button>
         
-     <!-- LINK TAMBAH MENU (Opsi A: Cangkir Kopi) -->
         <a href="{{ route('menu.index') }}" class="btn-back-menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
@@ -265,128 +271,130 @@
     </div>
 </div>
 
-<!-- INJEKSI HTML CUSTOM MODAL -->
+<!-- CUSTOM MODAL -->
 <div id="nongkiModal" class="nongki-modal-overlay">
     <div class="nongki-modal-box">
-        <div id="nongkiModalIcon" class="modal-icon info">
-            <!-- Icon diisi via JS -->
-        </div>
+        <div id="nongkiModalIcon" class="modal-icon info"></div>
         <h3 id="nongkiModalTitle" class="modal-title">Info</h3>
         <p id="nongkiModalMessage" class="modal-message">Pesan</p>
-        <div class="modal-actions" id="nongkiModalActions">
-            <!-- Tombol diisi via JS -->
-        </div>
+        <div class="modal-actions" id="nongkiModalActions"></div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
+    // =====================================================================
+    // CART KEY — ambil dari window yang sudah di-inject layouts/app.blade.php
+    // window.CART_USER_ID, window.CART_STORAGE_KEY, window.CART_ITEMS_KEY
+    // Pastikan layouts/app.blade.php sudah inject variabel ini sebelum <body>
+    // =====================================================================
+    const CART_KEY       = window.CART_ITEMS_KEY   || 'cart_items_u0';
+    const CART_COUNT_KEY = window.CART_STORAGE_KEY || 'cart_count_u0';
+
     /* ========================================= */
-    /* LOGIKA CUSTOM MODAL NONGKI                */
+    /* MODAL NONGKI                              */
     /* ========================================= */
     const modalOverlay = document.getElementById('nongkiModal');
-    const modalIcon = document.getElementById('nongkiModalIcon');
-    const modalTitle = document.getElementById('nongkiModalTitle');
+    const modalIcon    = document.getElementById('nongkiModalIcon');
+    const modalTitle   = document.getElementById('nongkiModalTitle');
     const modalMessage = document.getElementById('nongkiModalMessage');
     const modalActions = document.getElementById('nongkiModalActions');
 
     const icons = {
-        info: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`,
+        info:    `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`,
         warning: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
-        danger: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`
+        danger:  `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`
     };
 
-    function closeModal() {
-        modalOverlay.classList.remove('active');
-    }
+    function closeModal() { modalOverlay.classList.remove('active'); }
 
-    // Pengganti alert()
     function nongkiAlert(title, message, type = 'info') {
         modalIcon.className = `modal-icon ${type}`;
         modalIcon.innerHTML = icons[type] || icons.info;
-        modalTitle.innerText = title;
+        modalTitle.innerText   = title;
         modalMessage.innerText = message;
-        
-        modalActions.innerHTML = `
-            <button class="btn-modal-solid" onclick="closeModal()">Mengerti</button>
-        `;
+        modalActions.innerHTML = `<button class="btn-modal-solid" onclick="closeModal()">Mengerti</button>`;
         modalOverlay.classList.add('active');
     }
 
-    // Pengganti confirm()
     function nongkiConfirm(title, message, onConfirm, type = 'danger') {
         modalIcon.className = `modal-icon ${type}`;
         modalIcon.innerHTML = icons[type] || icons.danger;
-        modalTitle.innerText = title;
+        modalTitle.innerText   = title;
         modalMessage.innerText = message;
-        
-        const confirmBtnClass = type === 'danger' ? 'btn-modal-solid btn-modal-danger' : 'btn-modal-solid';
-
+        const confirmClass = type === 'danger' ? 'btn-modal-solid btn-modal-danger' : 'btn-modal-solid';
         modalActions.innerHTML = `
             <button class="btn-modal-outline" onclick="closeModal()">Batal</button>
-            <button id="modalConfirmBtn" class="${confirmBtnClass}">Ya, Lanjutkan</button>
+            <button id="modalConfirmBtn" class="${confirmClass}">Ya, Lanjutkan</button>
         `;
-        
-        document.getElementById('modalConfirmBtn').onclick = () => {
-            closeModal();
-            if(onConfirm) onConfirm();
-        };
-
+        document.getElementById('modalConfirmBtn').onclick = () => { closeModal(); if (onConfirm) onConfirm(); };
         modalOverlay.classList.add('active');
     }
 
     /* ========================================= */
-    /* LOGIKA KERANJANG (CORE)                   */
+    /* CART CORE — PAKAI KEY PER USER            */
     /* ========================================= */
     function getCart() {
-        let cart = localStorage.getItem('cart');
-        cart = cart ? JSON.parse(cart) : [];
+        let raw = localStorage.getItem(CART_KEY);
+        let cart = raw ? JSON.parse(raw) : [];
+        // Filter item invalid
         return cart.filter(item => item && item.id && item.name && item.price > 0 && item.quantity > 0);
     }
 
     function saveCart(cart) {
-        localStorage.setItem('cart', JSON.stringify(cart));
-        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        localStorage.setItem('cartCount', totalItems);
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
+        // Hitung total item
+        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+        // Simpan count dengan key per user
+        localStorage.setItem(CART_COUNT_KEY, totalItems);
+
+        // Update badge di header & sidebar (fungsi dari layouts/app.blade.php)
         if (typeof updateBadges === 'function') {
             updateBadges(totalItems);
         } else {
-            const headerBadge = document.getElementById('cartBadgeHeader');
-            const sidebarBadge = document.getElementById('cartBadgeSidebar');
-            if (headerBadge) { headerBadge.textContent = totalItems; headerBadge.style.display = totalItems > 0 ? 'flex' : 'none'; }
-            if (sidebarBadge) { sidebarBadge.textContent = totalItems; sidebarBadge.style.display = totalItems > 0 ? 'inline-block' : 'none'; }
+            const hb = document.getElementById('cartBadgeHeader');
+            const sb = document.getElementById('cartBadgeSidebar');
+            if (hb) { hb.textContent = totalItems; hb.style.display = totalItems > 0 ? 'flex' : 'none'; }
+            if (sb) { sb.textContent = totalItems; sb.style.display = totalItems > 0 ? 'inline-block' : 'none'; }
         }
     }
 
+    /* ========================================= */
+    /* RENDER CART                               */
+    /* ========================================= */
     function renderCart() {
         const cart = getCart();
-        const container = document.getElementById('cartItemsList');
-        const summaryContainer = document.getElementById('summaryDetails');
+        const container      = document.getElementById('cartItemsList');
+        const summaryEl      = document.getElementById('summaryDetails');
+        const grandTotalEl   = document.getElementById('grandTotal');
+        const clearBtn       = document.getElementById('clearAllBtn');
 
         if (!cart.length) {
             container.innerHTML = `
                 <div style="text-align: center; padding: 5rem 2rem;">
                     <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" style="margin-bottom: 1rem;">
-                        <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                     </svg>
                     <h3 style="color: var(--cream); margin-bottom: 0.5rem;">Keranjang Masih Kosong</h3>
                     <p style="color: var(--text-muted-c); margin-bottom: 1.5rem;">Pilih minuman dan makanan favoritmu dulu yuk!</p>
-                    <a href="{{ route('menu.index') }}" class="btn-gold" style="display: inline-block; padding: 0.6rem 1.5rem; border-radius: 20px;">Lihat Menu</a>
+                    <a href="{{ route('menu.index') }}" class="btn-gold" style="display: inline-block; padding: 0.6rem 1.5rem; border-radius: 20px; color: var(--dark);">Lihat Menu</a>
                 </div>
             `;
-            summaryContainer.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-muted-c);">Belum ada item</div>`;
-            document.getElementById('grandTotal').innerText = 'Rp 0';
-            document.getElementById('clearAllBtn').style.display = 'none'; 
-            saveCart([]);
+            summaryEl.innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--text-muted-c);">Belum ada item</div>`;
+            grandTotalEl.innerText = 'Rp 0';
+            if (clearBtn) clearBtn.style.display = 'none';
+            saveCart([]); // pastikan count badge juga 0
             return;
         }
 
-        document.getElementById('clearAllBtn').style.display = 'flex'; 
+        if (clearBtn) clearBtn.style.display = 'flex';
 
         let itemsHtml = '';
-        let subtotal = 0;
+        let subtotal  = 0;
 
         cart.forEach((item) => {
             const itemTotal = item.price * item.quantity;
@@ -404,68 +412,101 @@
                             <button class="qty-btn" data-id="${item.id}" data-delta="1">+</button>
                         </div>
                     </div>
-
                     <div class="cart-item-img">
-                        ${item.img ? `<img src="${item.img}" alt="${escapeHtml(item.name)}">` : '☕'}
+                        ${item.img ? `<img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.name)}">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;">☕</div>'}
                     </div>
-
                     <div class="cart-item-info">
                         <div class="item-name">${escapeHtml(item.name)}</div>
-                        <div class="item-variant">${item.variant ? item.variant : 'Reguler'}</div>
+                        <div class="item-variant">${item.variant ? escapeHtml(item.variant) : 'Reguler'}</div>
                         <div class="item-price">${formatRupiah(item.price)} <span style="color:var(--text-muted-c); font-size:0.8rem;">/ item</span></div>
                     </div>
-
-                    <div class="item-total-price">
-                        ${formatRupiah(itemTotal)}
-                    </div>
+                    <div class="item-total-price">${formatRupiah(itemTotal)}</div>
                 </div>
             `;
         });
 
         container.innerHTML = itemsHtml;
 
-        const tax = Math.round(subtotal * 0.1);
-        const total = subtotal + tax;
+        const tax      = Math.round(subtotal * 0.1);
         const discount = 0;
+        const total    = subtotal + tax - discount;
 
-        let summaryHtml = `
-            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; font-size: 0.95rem; color: var(--text-dim);">
+        summaryEl.innerHTML = `
+            <div style="display:flex;justify-content:space-between;padding:0.75rem 0;font-size:0.95rem;color:var(--text-muted-c);">
                 <span>Subtotal Barang</span>
-                <span style="color: var(--cream); font-weight: 500;">${formatRupiah(subtotal)}</span>
+                <span style="color:var(--cream);font-weight:500;">${formatRupiah(subtotal)}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; font-size: 0.95rem; color: var(--text-dim);">
+            <div style="display:flex;justify-content:space-between;padding:0.75rem 0;font-size:0.95rem;color:var(--text-muted-c);">
                 <span>Total Diskon</span>
-                <span style="color: var(--green); font-weight: 500;">- ${formatRupiah(discount)}</span>
+                <span style="color:#52b788;font-weight:500;">- ${formatRupiah(discount)}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; font-size: 0.95rem; color: var(--text-dim);">
+            <div style="display:flex;justify-content:space-between;padding:0.75rem 0;font-size:0.95rem;color:var(--text-muted-c);">
                 <span>Pajak (10%)</span>
-                <span style="color: var(--cream); font-weight: 500;">${formatRupiah(tax)}</span>
+                <span style="color:var(--cream);font-weight:500;">${formatRupiah(tax)}</span>
             </div>
         `;
 
-        summaryContainer.innerHTML = summaryHtml;
-        document.getElementById('grandTotal').innerText = formatRupiah(total);
+        grandTotalEl.innerText = formatRupiah(total);
     }
 
+    /* ========================================= */
+    /* HELPERS                                   */
+    /* ========================================= */
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
     }
 
     function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+            return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m];
         });
     }
 
+    /* ========================================= */
+    /* AKSI ITEM (qty & hapus)                   */
+    /* ========================================= */
+    function updateItemQuantity(id, delta) {
+        let cart  = getCart();
+        const idx = cart.findIndex(item => item.id === id);
+        if (idx === -1) return;
+
+        const newQty = cart[idx].quantity + delta;
+        if (newQty <= 0) {
+            nongkiConfirm(
+                'Hapus Menu',
+                `Hapus "${cart[idx].name}" dari keranjang?`,
+                () => { cart.splice(idx, 1); saveCart(cart); renderCart(); },
+                'warning'
+            );
+        } else {
+            cart[idx].quantity = newQty;
+            saveCart(cart);
+            renderCart();
+        }
+    }
+
+    function removeItem(id) {
+        let cart  = getCart();
+        const idx = cart.findIndex(item => item.id === id);
+        if (idx === -1) return;
+        nongkiConfirm(
+            'Hapus Menu',
+            `Hapus "${cart[idx].name}" dari keranjang?`,
+            () => { cart.splice(idx, 1); saveCart(cart); renderCart(); },
+            'warning'
+        );
+    }
+
+    /* ========================================= */
+    /* EVENT LISTENERS                           */
+    /* ========================================= */
     function attachCartEvents() {
         document.getElementById('cartItemsList')?.addEventListener('click', (e) => {
-            const btn = e.target.closest('.qty-btn');
-            if (btn) {
-                const id = parseInt(btn.dataset.id);
-                const delta = parseInt(btn.dataset.delta);
+            const qtyBtn = e.target.closest('.qty-btn');
+            if (qtyBtn) {
+                const id    = parseInt(qtyBtn.dataset.id);
+                const delta = parseInt(qtyBtn.dataset.delta);
                 if (!isNaN(id) && !isNaN(delta)) updateItemQuantity(id, delta);
             }
 
@@ -477,69 +518,17 @@
         });
 
         document.getElementById('clearAllBtn')?.addEventListener('click', () => {
-            // MENGGUNAKAN NONGKI CONFIRM ALIAS CUSTOM MODAL
             nongkiConfirm(
-                'Kosongkan Keranjang?', 
-                'Semua pesanan yang sudah kamu pilih akan dihapus. Yakin mau dilanjutkan?', 
-                () => {
-                    saveCart([]);
-                    renderCart();
-                },
+                'Kosongkan Keranjang?',
+                'Semua pesanan yang sudah kamu pilih akan dihapus. Yakin mau dilanjutkan?',
+                () => { saveCart([]); renderCart(); },
                 'danger'
             );
         });
-    }
-
-    function updateItemQuantity(id, delta) {
-        let cart = getCart();
-        const index = cart.findIndex(item => item.id === id);
-        if (index !== -1) {
-            let newQty = cart[index].quantity + delta;
-            if (newQty <= 0) {
-                // MENGGUNAKAN NONGKI CONFIRM ALIAS CUSTOM MODAL
-                nongkiConfirm(
-                    'Hapus Menu', 
-                    `Apakah kamu yakin ingin menghapus ${cart[index].name} dari keranjang?`, 
-                    () => {
-                        cart.splice(index, 1);
-                        saveCart(cart);
-                        renderCart();
-                    },
-                    'warning'
-                );
-            } else {
-                cart[index].quantity = newQty;
-                saveCart(cart);
-                renderCart();
-            }
-        }
-    }
-
-    function removeItem(id) {
-        let cart = getCart();
-        const index = cart.findIndex(item => item.id === id);
-        if (index !== -1) {
-            // MENGGUNAKAN NONGKI CONFIRM ALIAS CUSTOM MODAL
-            nongkiConfirm(
-                'Hapus Menu', 
-                `Apakah kamu yakin ingin menghapus ${cart[index].name} dari keranjang?`, 
-                () => {
-                    cart.splice(index, 1);
-                    saveCart(cart);
-                    renderCart();
-                },
-                'warning'
-            );
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        renderCart();
-        attachCartEvents();
 
         document.getElementById('applyPromoBtn')?.addEventListener('click', () => {
-            const code = document.getElementById('promoCode').value;
-            if(!code) {
+            const code = document.getElementById('promoCode').value.trim();
+            if (!code) {
                 nongkiAlert('Kode Promo Kosong', 'Silakan masukkan kode promo terlebih dahulu sebelum menekan tombol pakai.', 'warning');
             } else {
                 nongkiAlert('Promo Tidak Valid', `Maaf, kode promo "${code}" belum tersedia atau sudah kadaluarsa.`, 'info');
@@ -550,9 +539,17 @@
             if (getCart().length === 0) {
                 nongkiAlert('Keranjang Kosong', 'Keranjang kamu masih kosong. Tambah menu kopi atau makanan dulu yuk!', 'info');
             } else {
-                window.location.href = "{{ route('payment.index') }}"; 
+                window.location.href = "{{ route('payment.index') }}";
             }
         });
+    }
+
+    /* ========================================= */
+    /* INIT                                      */
+    /* ========================================= */
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCart();
+        attachCartEvents();
     });
 </script>
 @endpush

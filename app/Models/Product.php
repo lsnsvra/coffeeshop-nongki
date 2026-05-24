@@ -6,20 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $table = 'products'; // Nama tabel di HeidiSQL kamu
-    protected $primaryKey = 'ProductID'; // Primary key kamu bukan 'id' tapi 'ProductID'
-    
-    // Daftar kolom yang boleh diisi
+
+    protected $table = 'products';
+    protected $primaryKey = 'ProductID'; // Sesuai DB lu
+    public $timestamps = false; // Karena kita pake CreatedDate & LastUpdatedDate manual
+
     protected $fillable = [
         'NamaKopi', 
-        'Harga', 
-        'Category', 
         'Ukuran', 
+        'Harga', 
+        'Category', // Di DB lu pake 'Category', bukan 'Kategori'
         'Stok', 
-        'Image', 
+        'image', 
+        'CompanyCode', 
+        'Status', 
         'IsDeleted', 
-        'Status'
+        'CreatedBy', 
+        'CreatedDate', 
+        'LastUpdatedBy', 
+        'LastUpdatedDate'
+
     ];
-    
-    public $timestamps = false; // Karena di HeidiSQL kamu pakai CreatedDate manual
+
+    public function materials()
+    {
+        // Hapus withTimestamps, masukin semua nama kolom ekstra ke withPivot
+        return $this->belongsToMany(Material::class, 'menu_material', 'ProductID', 'MaterialID')
+                    ->withPivot('QuantityNeeded', 'CreatedDate', 'LastUpdatedDate'); 
+    }
 }

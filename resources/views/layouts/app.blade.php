@@ -43,18 +43,21 @@
             padding: 0 1.5rem;
             z-index: 1000;
             gap: 1rem;
+            overflow: hidden; /* Cegah konten meluber */
         }
         .header-brand {
             display: flex; align-items: center; gap: 10px;
             text-decoration: none;
             flex-shrink: 0;
             width: calc(var(--sidebar-w) - 1.5rem);
+            min-width: 0;
         }
         .brand-icon {
             width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             border-radius: 9px;
             display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
             box-shadow: 0 4px 14px rgba(201,168,76,0.3);
         }
         .brand-icon svg { width: 18px; height: 18px; fill: var(--dark); }
@@ -63,6 +66,7 @@
             font-size: 1.2rem; font-weight: 600;
             letter-spacing: 0.1em;
             color: var(--gold-light);
+            white-space: nowrap;
         }
 
         /* ========== ROLE BADGE di header ========== */
@@ -77,6 +81,7 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
             flex-shrink: 0;
+            white-space: nowrap;
         }
         .role-badge-admin {
             background: rgba(201,168,76,0.15);
@@ -95,7 +100,9 @@
         }
 
         .header-search {
-            flex: 1; max-width: 400px;
+            flex: 1;
+            max-width: 360px;
+            min-width: 0;
             position: relative;
         }
         .header-search svg {
@@ -120,6 +127,7 @@
         .header-actions {
             margin-left: auto;
             display: flex; align-items: center; gap: 8px;
+            flex-shrink: 0;
         }
         .header-btn {
             width: 38px; height: 38px;
@@ -130,6 +138,7 @@
             transition: all 0.2s;
             position: relative;
             text-decoration: none;
+            flex-shrink: 0;
         }
         .header-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
         .header-btn svg { width: 18px; height: 18px; }
@@ -196,6 +205,8 @@
             display: none;
             background: none; border: none;
             color: var(--cream-dim); cursor: pointer;
+            padding: 4px;
+            flex-shrink: 0;
         }
         .sidebar-toggle svg { width: 22px; height: 22px; }
 
@@ -207,6 +218,7 @@
             border-right: 1px solid var(--border);
             display: flex; flex-direction: column;
             overflow-y: auto;
+            overflow-x: hidden;
             transition: transform 0.3s ease;
             z-index: 900;
         }
@@ -222,6 +234,7 @@
             color: var(--cream-dim); text-decoration: none;
             font-size: 0.88rem; transition: all 0.2s;
             margin-bottom: 2px; position: relative;
+            white-space: nowrap; overflow: hidden;
         }
         .nav-item:hover { background: var(--gold-dim); color: var(--cream); }
         .nav-item.active {
@@ -239,6 +252,7 @@
             margin-left: auto;
             background: var(--gold); color: var(--dark);
             font-size: 0.68rem; padding: 2px 7px; border-radius: 20px;
+            flex-shrink: 0;
         }
 
         /* ========== DIVIDER ROLE ========== */
@@ -255,9 +269,13 @@
             background: var(--dark-3);
             border: 1px solid var(--border);
             border-radius: 16px;
+            flex-shrink: 0;
         }
         .sidebar-user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .sidebar-user-name { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
+        .sidebar-user-name {
+            font-size: 0.88rem; font-weight: 500; color: var(--cream);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
         .sidebar-user-role { font-size: 0.75rem; color: var(--text-muted-c); }
         .btn-logout {
             width: 100%; padding: 8px;
@@ -281,6 +299,7 @@
             padding: 10px 20px; font-size: 0.88rem; font-weight: 600;
             cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
             text-decoration: none;
+            white-space: nowrap;
         }
         .btn-gold:hover { box-shadow: 0 6px 18px rgba(201,168,76,0.35); transform: translateY(-1px); }
         .sidebar-overlay {
@@ -289,16 +308,49 @@
             background: rgba(0,0,0,0.6); z-index: 800;
         }
 
+        /* ========== RESPONSIVE TABLET (768px - 992px) ========== */
         @media (max-width: 992px) {
             .sidebar-toggle { display: flex; }
             .app-sidebar { transform: translateX(-100%); }
             .app-sidebar.open { transform: translateX(0); }
             .sidebar-overlay.show { display: block; }
             .app-main { margin-left: 0; }
+            .header-brand { width: auto; }
+            .header-role-badge { display: none; } /* Sembunyikan badge role di tablet/HP, sudah ada di sidebar */
         }
-        @media (max-width: 576px) {
-            .page-content { padding: 1.2rem; }
+
+        /* ========== RESPONSIVE MOBILE (max 767px) ========== */
+        @media (max-width: 767px) {
+            :root {
+                --header-h: 56px;
+            }
+            .app-header {
+                padding: 0 0.75rem;
+                gap: 0.5rem;
+            }
+            .brand-name { font-size: 1rem; }
+            .brand-icon { width: 30px; height: 30px; }
+            .brand-icon svg { width: 15px; height: 15px; }
             .header-search { display: none; }
+            .page-content { padding: 1rem; }
+            .header-actions { gap: 4px; }
+            .header-btn { width: 34px; height: 34px; }
+            .header-avatar { width: 32px; height: 32px; font-size: 0.72rem; }
+            /* Dropdown menu tidak terpotong di HP */
+            .dropdown-menu {
+                position: fixed !important;
+                right: 0.5rem !important;
+                top: calc(var(--header-h) + 4px) !important;
+                left: auto !important;
+                transform: none !important;
+                max-width: calc(100vw - 1rem);
+            }
+        }
+
+        /* ========== RESPONSIVE SMALL MOBILE (max 400px) ========== */
+        @media (max-width: 400px) {
+            .brand-name { display: none; } /* Hanya icon di layar sangat kecil */
+            .header-brand { width: auto; }
         }
 
         @yield('styles')
@@ -312,6 +364,7 @@
     @php
         $user      = auth()->user();
         $userRole  = $user->role ?? 'user'; // 'admin' | 'kasir' | 'user'
+        $userId    = $user->id; // Dipakai untuk cart key per-user
         $avatar    = $user->avatar;
 
         if ($avatar && (str_starts_with($avatar, 'http://') || str_starts_with($avatar, 'https://'))) {
@@ -328,9 +381,23 @@
     @endphp
     @endauth
 
+    {{--
+        ===================================================================
+        PERBAIKAN BUG KERANJANG (CART KEY PER USER):
+        Inject user ID ke JavaScript supaya localStorage key unik per akun.
+        Jika belum login (guest), userId = 0 (cart tidak aktif).
+        ===================================================================
+    --}}
+    <script>
+        // Cart key unik per user — mencegah data keranjang bocor antar akun
+        window.CART_USER_ID = @auth {{ (int) auth()->id() }} @else 0 @endauth;
+        window.CART_STORAGE_KEY = 'cart_count_u' + window.CART_USER_ID;
+        window.CART_ITEMS_KEY   = 'cart_items_u' + window.CART_USER_ID;
+    </script>
+
     <!-- ========== HEADER ========== -->
     <header class="app-header">
-        <button class="sidebar-toggle" id="sidebarToggle">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Buka menu">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="3" y1="6" x2="21" y2="6"/>
                 <line x1="3" y1="12" x2="21" y2="12"/>
@@ -345,8 +412,8 @@
             <span class="brand-name">NONGKI</span>
         </a>
 
-        {{-- Role badge tampil di samping logo --}}
-       @auth
+        {{-- Role badge tampil di samping logo (disembunyikan di mobile via CSS) --}}
+        @auth
             @if($userRole === 'admin')
                 <span class="header-role-badge role-badge-admin">
                     <i class="fa-solid fa-shield-halved" style="font-size:0.65rem;"></i> Admin
@@ -358,14 +425,13 @@
             @endif
         @endauth
 
-        <!-- Ganti kode pencarian tadi dengan ini -->
-@yield('search_bar')
+        @yield('search_bar')
 
         <div class="header-actions">
             @auth
                 {{-- Keranjang hanya untuk role user/pelanggan --}}
                 @if($userRole === 'user' || $userRole === 'pelanggan')
-                    <a href="{{ route('keranjang') }}" class="header-btn" id="cartHeaderBtn">
+                    <a href="{{ route('keranjang') }}" class="header-btn" id="cartHeaderBtn" aria-label="Keranjang">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
@@ -376,7 +442,7 @@
 
                 {{-- Notifikasi untuk admin --}}
                 @if($userRole === 'admin')
-                    <a href="{{ route('admin.notifikasi') ?? '#' }}" class="header-btn">
+                    <a href="{{ route('admin.notifikasi') ?? '#' }}" class="header-btn" aria-label="Notifikasi">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -385,7 +451,7 @@
                 @endif
 
                 <div class="dropdown">
-                    <a href="#" class="header-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="#" class="header-avatar" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu akun">
                         @if($avatarUrl)
                             <img src="{{ $avatarUrl }}" alt="{{ $initials }}"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -395,11 +461,11 @@
                         @endif
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end"
-                        style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;">
+                        style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;min-width:200px;">
                         <li>
                             <div style="padding:8px 12px; border-bottom:1px solid var(--border);">
-                                <div style="font-weight:600;color:var(--cream);">{{ $user->name }}</div>
-                                <div style="font-size:0.7rem; color:var(--text-muted-c);">{{ $user->email }}</div>
+                                <div style="font-weight:600;color:var(--cream);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $user->name }}</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted-c);overflow:hidden;text-overflow:ellipsis;">{{ $user->email }}</div>
                                 <div style="font-size:0.7rem; margin-top:2px; color:var(--gold);">
                                     {{ ucfirst($userRole) }}
                                 </div>
@@ -675,7 +741,7 @@
                         <span class="avatar-fallback">{{ $initials }}</span>
                     @endif
                 </div>
-                <div>
+                <div style="min-width:0;">
                     <div class="sidebar-user-name">{{ $user->name }}</div>
                     <div class="sidebar-user-role">
                         @if($userRole === 'admin')
@@ -710,17 +776,17 @@
         <div class="page-content">
             @hasSection('page_header')
             <div class="page-header"
-                 style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
-                <div>
+                 style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;">
+                <div style="min-width:0;">
                     <h1 class="page-title"
-                        style="font-family:'Cormorant Garamond',serif;font-size:2rem;">
+                        style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,4vw,2rem);margin:0;">
                         @yield('page_title')
                     </h1>
                     <div class="page-breadcrumb" style="color:var(--text-muted-c);">
                         @yield('breadcrumb')
                     </div>
                 </div>
-                <div>@yield('page_actions')</div>
+                <div style="flex-shrink:0;">@yield('page_actions')</div>
             </div>
             @endif
 
@@ -730,10 +796,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ========== CART (hanya aktif untuk role user) ==========
+        // ===================================================================
+        // CART — KEY UNIK PER USER (FIX BUG LINTAS AKUN)
+        // window.CART_USER_ID dan CART_STORAGE_KEY sudah di-inject di atas
+        // ===================================================================
+
         function getCartCount() {
-            return parseInt(localStorage.getItem('cartCount') || '0');
+            if (!window.CART_USER_ID) return 0; // guest, tidak pakai cart
+            return parseInt(localStorage.getItem(window.CART_STORAGE_KEY) || '0');
         }
+
         function updateBadges(count) {
             const headerBadge  = document.getElementById('cartBadgeHeader');
             const sidebarBadge = document.getElementById('cartBadgeSidebar');
@@ -756,15 +828,25 @@
                 }
             }
         }
+
         function setCartCount(count) {
-            localStorage.setItem('cartCount', count);
+            if (!window.CART_USER_ID) return;
+            localStorage.setItem(window.CART_STORAGE_KEY, count);
             updateBadges(count);
         }
-        function addToCart(button, itemName = '', price = '') {
+
+        function addToCart(button, itemName, price) {
+            if (!window.CART_USER_ID) return; // guest tidak bisa tambah cart
+            itemName = itemName || '';
+            price    = price    || '';
+
             setCartCount(getCartCount() + 1);
-            const items = JSON.parse(localStorage.getItem('cartItems') || '[]');
+
+            // Simpan item dengan key per user
+            const items = JSON.parse(localStorage.getItem(window.CART_ITEMS_KEY) || '[]');
             items.push({ name: itemName, price: price, addedAt: new Date().toISOString() });
-            localStorage.setItem('cartItems', JSON.stringify(items));
+            localStorage.setItem(window.CART_ITEMS_KEY, JSON.stringify(items));
+
             if (button) {
                 const original = button.innerHTML;
                 button.innerHTML = '✓';
@@ -775,22 +857,41 @@
                 }, 800);
             }
         }
+
+        // Bersihkan cart user lain yang mungkin masih tersimpan di browser ini
+        // (opsional — hanya membersihkan key user saat ini jika sudah logout lama)
+        function clearOtherUserCarts() {
+            if (!window.CART_USER_ID) return;
+            // Tidak hapus data user lain; cukup pastikan badge kita dari key yang benar
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             updateBadges(getCartCount());
+
+            // Delegasi event untuk tombol tambah ke keranjang
             document.body.addEventListener('click', function (e) {
                 const btn = e.target.closest('.btn-add, .add-to-cart-btn');
                 if (btn) {
                     e.preventDefault();
-                    addToCart(btn, btn.getAttribute('data-name') || '', btn.getAttribute('data-price') || '');
+                    addToCart(
+                        btn,
+                        btn.getAttribute('data-name')  || '',
+                        btn.getAttribute('data-price') || ''
+                    );
                 }
             });
         });
+
+        // Expose global agar bisa dipanggil dari halaman child
         window.addToCartHandler = addToCart;
+        window.getCartCount     = getCartCount;
+        window.setCartCount     = setCartCount;
 
         // ========== SIDEBAR TOGGLE ==========
         const toggle  = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('appSidebar');
         const overlay = document.getElementById('sidebarOverlay');
+
         if (toggle) {
             toggle.addEventListener('click', () => {
                 sidebar.classList.toggle('open');
@@ -803,6 +904,16 @@
                 overlay.classList.remove('show');
             });
         }
+
+        // Tutup sidebar otomatis saat klik nav item di mobile
+        document.querySelectorAll('.nav-item').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
     </script>
     @stack('scripts')
 </body>
