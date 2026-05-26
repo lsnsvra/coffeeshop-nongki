@@ -72,7 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', function () { return view('profile.profil'); })->name('profil');
     Route::get('/pengaturan', function () { return view('settings.pengaturan'); })->name('pengaturan');
     
-    Route::get('/pembayaran', function () { return view('payment.index'); })->name('payment.index');
+    Route::get('/pembayaran', function () { return view('checkout.index'); })->name('payment.index');
     Route::get('/order-success', function () { return view('payment.success'); })->name('order.success');
 
     // Payment API
