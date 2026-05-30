@@ -4,6 +4,161 @@
 
 @push('styles')
 <style>
+
+    /* ==========================================
+   RESEP MENU LIGHT MODE PREMIUM
+========================================== */
+
+[data-theme="light"]{
+    --bg-main:#F8F6F2;
+    --bg-panel:#FFFFFF;
+    --text-main:#2F241B;
+    --text-muted:#6B7280;
+    --border-color:#E8E2D8;
+    --gold:#D4A437;
+    --gold-dim:rgba(212,164,55,.10);
+}
+
+/* PAGE */
+
+[data-theme="light"] body{
+    background:#F8F6F2 !important;
+}
+
+/* HEADER CARD */
+
+[data-theme="light"] .menu-info-card{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+
+[data-theme="light"] .menu-info-card h1{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .menu-info-card p{
+    color:#6B7280 !important;
+}
+
+/* MENU IMAGE */
+
+[data-theme="light"] .menu-info-card img{
+    border-color:#D4A437 !important;
+}
+
+/* CATEGORY BADGE */
+
+[data-theme="light"] .menu-badge{
+    background:#FFF4D6 !important;
+    color:#B8860B !important;
+}
+
+/* PANEL */
+
+[data-theme="light"] .resep-panel{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+[data-theme="light"] .panel-title{
+    color:#D4A437 !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+/* LABEL */
+
+[data-theme="light"] .nongki-label{
+    color:#B8860B !important;
+}
+
+/* INPUT */
+
+[data-theme="light"] .nongki-input,
+[data-theme="light"] .nongki-select{
+    background:#FFFFFF !important;
+    color:#2F241B !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .nongki-input:focus,
+[data-theme="light"] .nongki-select:focus{
+    border-color:#D4A437 !important;
+    box-shadow:0 0 0 3px rgba(212,164,55,.12);
+}
+
+/* BUTTON */
+
+[data-theme="light"] .btn-submit-resep{
+    background:linear-gradient(
+        135deg,
+        #D4A437,
+        #E6C147
+    ) !important;
+
+    color:#FFFFFF !important;
+}
+
+[data-theme="light"] .btn-back{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .btn-back:hover{
+    border-color:#D4A437 !important;
+    color:#D4A437 !important;
+}
+
+/* TABLE */
+
+[data-theme="light"] .resep-table{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .resep-table th{
+    color:#B8860B !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .resep-table td{
+    color:#2F241B !important;
+    border-bottom:1px solid #F1ECE3 !important;
+}
+
+/* NAMA BAHAN */
+
+[data-theme="light"] .resep-table td[style*="#fff"]{
+    color:#2F241B !important;
+}
+
+/* TAKARAN */
+
+[data-theme="light"] .resep-table span{
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .resep-table small{
+    color:#6B7280 !important;
+}
+
+/* DELETE BUTTON */
+
+[data-theme="light"] .btn-delete-item{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .btn-delete-item:hover{
+    border-color:#DC2626 !important;
+}
+
+/* EMPTY STATE */
+
+[data-theme="light"] td[colspan="3"]{
+    color:#8A7C6B !important;
+}
     /* ========== LUXURY PALETTE (KONSISTEN DF94B9) ========== */
     :root {
         --bg-main: #000000;

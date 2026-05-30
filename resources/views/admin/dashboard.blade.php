@@ -4,6 +4,106 @@
 
 @push('styles')  
 <style>  
+/* ==========================================
+   DASHBOARD LIGHT MODE PREMIUM
+========================================== */
+
+[data-theme="light"] .dashboard-title{
+    color:#C9A84C !important;
+}
+
+[data-theme="light"] .dashboard-subtitle{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .dashboard-subtitle strong{
+    color:#2F241B !important;
+}
+
+/* CARD */
+
+[data-theme="light"] .stat-card-premium{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05) !important;
+}
+
+[data-theme="light"] .stat-card-premium:hover{
+    transform:translateY(-5px);
+    border-color:#D4A437 !important;
+    box-shadow:0 14px 35px rgba(0,0,0,.08) !important;
+}
+
+[data-theme="light"] .stat-icon{
+    background:rgba(212,164,55,.12) !important;
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .stat-label{
+    color:#8A7C6B !important;
+}
+
+[data-theme="light"] .stat-value{
+    color:#2F241B !important;
+}
+
+/* TREND */
+
+[data-theme="light"] .trend-up{
+    color:#27AE60 !important;
+}
+
+[data-theme="light"] .trend-neutral{
+    color:#D4A437 !important;
+}
+
+/* TABLE */
+
+[data-theme="light"] .table-wrapper{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.04);
+}
+
+[data-theme="light"] .table-title{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .nongki-table th{
+    color:#8A7C6B !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .nongki-table td{
+    color:#4B5563 !important;
+    border-bottom:1px solid #F1ECE3 !important;
+}
+
+[data-theme="light"] .nongki-table tbody tr:hover td{
+    background:#FAF8F4 !important;
+}
+
+[data-theme="light"] .text-bold{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .text-gold{
+    color:#D4A437 !important;
+}
+
+/* STATUS */
+
+[data-theme="light"] .status-done{
+    background:#EAF8F1 !important;
+    border:1px solid #CDEEDD !important;
+    color:#27AE60 !important;
+}
+
+[data-theme="light"] .status-process{
+    background:#FFF7E0 !important;
+    border:1px solid #F2DE9A !important;
+    color:#D4A437 !important;
+}
     /* ========== ANIMASI DASAR ========== */  
     .fade-in-up { animation: fadeInUp 0.5s ease forwards; opacity: 0; }  
     @keyframes fadeInUp {  

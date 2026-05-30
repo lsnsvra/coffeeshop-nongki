@@ -6,6 +6,91 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
+    /* ========== TAMBAHAN UNTUK LIGHT MODE ========== */
+    [data-theme="light"] .profile-header {
+        background: linear-gradient(145deg, #FFFFFF 0%, var(--dark-3) 100%) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important;
+        border-color: var(--border) !important;
+    }
+    
+    [data-theme="light"] .profile-name-text,
+    [data-theme="light"] .card-title,
+    [data-theme="light"] #modalTitle {
+        color: var(--cream) !important; /* Teks utama jadi coklat gelap */
+    }
+    
+    [data-theme="light"] .profile-email-text,
+    [data-theme="light"] .form-label,
+    [data-theme="light"] #modalMessage {
+        color: var(--text-muted-c) !important; /* Teks sekunder jadi abu-abu elegan */
+    }
+
+    [data-theme="light"] .profile-avatar {
+        background: #FFFFFF !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08), inset 0 0 20px rgba(201,168,76,0.1) !important;
+    }
+    
+    [data-theme="light"] .avatar-upload-btn {
+        border-color: #FFFFFF !important;
+    }
+
+    [data-theme="light"] .stat-card {
+        background: rgba(0,0,0,0.02) !important; /* Efek kotak abu-abu super terang */
+        border-color: rgba(201, 168, 76, 0.25) !important;
+    }
+    [data-theme="light"] .stat-card:hover {
+        background: rgba(0,0,0,0.04) !important;
+    }
+    [data-theme="light"] .stat-number {
+        color: #A6832A !important; /* Emas dipergelap agar kontras di light mode */
+    }
+    [data-theme="light"] .stat-label {
+        color: var(--text-muted-c) !important;
+    }
+
+    [data-theme="light"] .profile-card {
+        background: #FFFFFF !important;
+        border-color: var(--dark-4) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+    }
+    [data-theme="light"] .profile-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.06) !important;
+        border-color: var(--gold) !important;
+    }
+
+    [data-theme="light"] .form-control {
+        background: var(--dark-3) !important;
+        border-color: var(--border) !important;
+        color: var(--cream) !important;
+    }
+    [data-theme="light"] .form-control:focus {
+        background: #FFFFFF !important;
+        border-color: var(--gold) !important;
+        box-shadow: 0 0 0 4px var(--gold-dim) !important;
+    }
+    [data-theme="light"] .form-control::placeholder {
+        color: rgba(0,0,0,0.3) !important;
+    }
+    [data-theme="light"] .input-icon {
+        color: var(--text-muted-c) !important;
+    }
+
+    /* Modal Styling untuk Light Mode */
+    [data-theme="light"] .nongki-modal-overlay {
+        background: rgba(255,255,255,0.7) !important;
+    }
+    [data-theme="light"] .nongki-modal-box {
+        background: #FFFFFF !important;
+        border-color: var(--border) !important;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+    }
+    
+    [data-theme="light"] .btn-gold[style*="transparent"] {
+        color: #A6832A !important; 
+        border-color: #A6832A !important;
+    }
+    /* ============================================== */
+
     /* 1. LAYOUT & ANIMATION */
     .profile-container { max-width: 1050px; margin: 0 auto; animation: fadeIn 0.6s ease-out; padding-bottom: 3rem; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -160,20 +245,17 @@
                 <input type="file" id="avatarUpload" style="display: none;" accept="image/*">
             </div>
 
-            <!-- DETAIL INFO HEADER (DIPERBAIKI) -->
             <div style="flex:1;">
                 <div style="display: inline-block; font-size: 0.65rem; color: #1a1814; background: var(--gold); padding: 5px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; font-weight: 700;">
                     <i class="fas fa-crown" style="margin-right: 4px;"></i> Pelanggan Setia
                 </div>
-                <div style="font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem 0; color: #f0ece3; letter-spacing: -0.5px;">{{ $user->name }}</div>
+                <div class="profile-name-text" style="font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem 0; color: #f0ece3; letter-spacing: -0.5px;">{{ $user->name }}</div>
                 
-                <!-- FIX BAGIAN EMAIL: Warna terang & Fallback jika kosong -->
-                <div style="color: #d1cbbd; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                <div class="profile-email-text" style="color: #d1cbbd; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-envelope" style="color: var(--gold);"></i> 
                     <span>{{ $user->email ?? 'Belum ada email' }}</span>
                 </div>
                 
-                <!-- FIX BAGIAN STATS: Tulisan dan padding lebih rapi -->
                 <div class="profile-stats">
                     <div class="stat-card">
                         <div class="stat-number">87</div>
@@ -192,7 +274,6 @@
         </div>
     </div>
 
-    <!-- FORM CARDS TETAP AMAN -->
     <div class="profile-grid">
         <div class="profile-card">
             <div class="card-title"><i class="fas fa-user-edit"></i> Informasi Data Diri</div>
@@ -258,7 +339,6 @@
     </div>
 </div>
 
-<!-- NONGKI CUSTOM MODAL (Tetap Aman) -->
 <div class="nongki-modal-overlay" id="nongkiModal">
     <div class="nongki-modal-box">
         <div id="modalIcon" class="modal-icon"></div>

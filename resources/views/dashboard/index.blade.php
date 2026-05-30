@@ -9,6 +9,103 @@
     /* Import font elegan khusus untuk judul Hero */
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
+    /* ========== TAMBAHAN UNTUK LIGHT MODE ========== */
+    /* Hero Section berubah jadi nuansa "Morning Cafe" (Terang & Fresh) */
+    [data-theme="light"] .hero-overlay {
+        background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(249,246,240,0.95) 100%),
+                    radial-gradient(circle at center, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 100%) !important;
+    }
+    [data-theme="light"] .hero-title {
+        color: #2E251A !important; /* Coklat gelap premium */
+        text-shadow: 0 5px 20px rgba(255,255,255,0.9) !important;
+    }
+    [data-theme="light"] .hero-desc {
+        color: #5A4E40 !important;
+    }
+    [data-theme="light"] .hero-badge {
+        background: rgba(255,255,255,0.7) !important;
+        color: #A6832A !important;
+        border-color: rgba(166, 131, 42, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+    }
+
+    /* Section Titles */
+    [data-theme="light"] .section-title {
+        color: var(--cream, #2E251A) !important;
+    }
+    [data-theme="light"] .section-subtitle {
+        color: #A6832A !important;
+    }
+
+    /* Features Card */
+    [data-theme="light"] .feature-card {
+        background: rgba(255, 255, 255, 0.8) !important; /* Efek kaca terang */
+        border-color: var(--border) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
+    }
+    [data-theme="light"] .feature-card:hover {
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08), inset 0 0 20px rgba(201,168,76,0.08) !important;
+        border-color: var(--gold) !important;
+    }
+    [data-theme="light"] .feature-title {
+        color: var(--cream, #2E251A) !important;
+    }
+    [data-theme="light"] .feature-desc {
+        color: var(--text-muted-c, #8E8275) !important;
+    }
+    [data-theme="light"] .feature-icon {
+        background: rgba(166, 131, 42, 0.08) !important;
+        color: #A6832A !important;
+        border-color: rgba(166, 131, 42, 0.2) !important;
+    }
+    [data-theme="light"] .feature-card:hover .feature-icon {
+        background: #A6832A !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Menu Grid */
+    [data-theme="light"] .menu-card {
+        background: #FFFFFF !important;
+        border-color: var(--border) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+    }
+    [data-theme="light"] .menu-card:hover {
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08), 0 0 20px rgba(201,168,76,0.1) !important;
+        border-color: var(--gold) !important;
+    }
+    [data-theme="light"] .menu-name {
+        color: var(--cream, #2E251A) !important;
+    }
+    [data-theme="light"] .btn-buy {
+        color: #A6832A !important;
+        border-color: #A6832A !important;
+    }
+    [data-theme="light"] .menu-card:hover .btn-buy {
+        background: #A6832A !important;
+        color: #FFFFFF !important;
+    }
+    [data-theme="light"] .btn-view-all {
+        color: #A6832A !important;
+        border-color: #A6832A !important;
+    }
+    [data-theme="light"] .btn-view-all:hover {
+        background: rgba(166, 131, 42, 0.08) !important;
+    }
+
+    /* Stats Panel */
+    [data-theme="light"] .stats-panel {
+        background: rgba(255, 255, 255, 0.85) !important; /* Efek frosted glass putih */
+        border-color: var(--border) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05) !important;
+    }
+    [data-theme="light"] .stat-num {
+        color: #A6832A !important;
+    }
+    [data-theme="light"] .stat-label {
+        color: var(--text-muted-c, #8E8275) !important;
+    }
+    /* ============================================== */
+
     /* ========== ANIMATIONS & TIMING ========== */
     :root {
         --transition-smooth: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +22,19 @@
             --border: rgba(201,168,76,0.18);
             --sidebar-w: 280px;
         }
+
+        [data-theme="light"]{
+    --dark:#F8F6F2;
+    --dark-2:#FFFFFF;
+    --dark-3:#F5F1EA;
+    --dark-4:#EEE7DC;
+
+    --cream:#2F241B;
+    --cream-dim:#6B7280;
+    --text-muted:#8A7C6B;
+
+    --border:#E8E2D8;
+}
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'DM Sans', sans-serif;
@@ -137,6 +150,40 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        .theme-switch{
+    width:100%;
+    margin-top:16px;
+    margin-bottom:12px;
+
+    padding:12px 14px;
+
+    border-radius:14px;
+    border:1px solid var(--border);
+
+    background:rgba(201,168,76,.08);
+
+    color:var(--cream);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    cursor:pointer;
+    transition:.25s ease;
+
+    font-size:14px;
+    font-weight:600;
+}
+
+.theme-switch:hover{
+    border-color:var(--gold);
+    background:rgba(201,168,76,.15);
+}
+
+.theme-switch i{
+    color:var(--gold);
+}
         .btn-logout {
             width: 100%;
             padding: 10px;
@@ -281,6 +328,19 @@
             .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
             .main-content { margin-left: 0; padding: 20px; }
         }
+        .theme-toggle{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:52px;
+    height:52px;
+    border:none;
+    border-radius:50%;
+    background:var(--gold);
+    color:#fff;
+    cursor:pointer;
+    z-index:99999;
+}
         @yield('extra-styles')
     </style>
     @stack('styles')
@@ -340,6 +400,10 @@
                     <div class="role">Administrator</div>
                 </div>
             </div>
+            <button type="button" id="themeToggle" class="theme-switch">
+    <i class="fas fa-moon"></i>
+    <span>Dark Mode</span>
+</button>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="btn-logout">
@@ -354,6 +418,54 @@
     </main>
 
     @stack('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const btn = document.getElementById('themeToggle');
+
+    const savedTheme =
+        localStorage.getItem('nongki_theme') || 'dark';
+
+    document.documentElement.setAttribute(
+        'data-theme',
+        savedTheme
+    );
+
+    updateButton();
+
+    btn.addEventListener('click', () => {
+
+        const current =
+            document.documentElement.getAttribute('data-theme');
+
+        const next =
+            current === 'dark'
+                ? 'light'
+                : 'dark';
+
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('nongki_theme', next);
+
+        updateButton();
+    });
+
+    function updateButton() {
+
+        const theme =
+            document.documentElement.getAttribute('data-theme');
+
+        if(theme === 'light'){
+            btn.innerHTML =
+                '<i class="fas fa-sun"></i><span> Light Mode</span>';
+        } else {
+            btn.innerHTML =
+                '<i class="fas fa-moon"></i><span> Dark Mode</span>';
+        }
+    }
+});
+</script>
+
 </body>
 </html>

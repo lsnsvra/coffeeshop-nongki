@@ -21,6 +21,46 @@
     --blue: #2980b9;
   }
 
+  /* ========== TAMBAHAN UNTUK LIGHT MODE ========== */
+  [data-theme="light"] {
+    --bg-dark: #F9F6F0;       /* Latar belakang halaman */
+    --bg-card: #FFFFFF;       /* Latar belakang kartu pesanan jadi putih */
+    --bg-card2: #F3EFE6;      /* Latar abu-abu sangat terang */
+    --gold: #A6832A;          /* Emas sedikit digelapkan agar kontras di latar putih */
+    --gold-light: #B89035;
+    --text-primary: #2E251A;  /* Teks utama jadi coklat gelap elegan */
+    --text-muted: #8E8275;    /* Teks abu-abu kecoklatan */
+    --border: #E0D7C6;        /* Garis pembatas terang */
+    --green: #229954;         /* Warna badge disesuaikan agar lebih jelas */
+    --orange: #D35400;
+    --red: #C0392B;
+    --blue: #2471A3;
+  }
+
+  /* Penyesuaian elemen spesifik di Light Mode agar lebih rapi */
+  [data-theme="light"] .order-items {
+    background: rgba(166, 131, 42, 0.05); /* Mengubah efek kaca di dark mode menjadi krem transparan di light mode */
+  }
+  [data-theme="light"] .order-card {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02); /* Bayangan lembut untuk kartu putih */
+  }
+  [data-theme="light"] .order-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  }
+  [data-theme="light"] .reorder-btn {
+    color: #FFFFFF; /* Teks tombol jadi putih di light mode agar terbaca di atas emas */
+  }
+  [data-theme="light"] .reorder-btn[style*="transparent"] {
+    color: var(--gold) !important; /* Jika tombol transparan, kembalikan ke warna emas */
+  }
+  [data-theme="light"] .tab.active {
+    color: #FFFFFF;
+  }
+  [data-theme="light"] .back-btn:hover {
+    color: #FFFFFF;
+  }
+  /* ============================================== */
+
   .page-container {
     max-width: 900px;
     margin: 0 auto;
@@ -172,7 +212,6 @@
   </div>
 
   <div id="orderList">
-    <!-- ITEM 1 -->
     <div class="order-card" data-status="selesai">
       <div class="order-top">
         <div>
@@ -194,7 +233,6 @@
       </div>
     </div>
 
-    <!-- ITEM 2 -->
     <div class="order-card" data-status="proses">
       <div class="order-top">
         <div>
@@ -216,7 +254,6 @@
       </div>
     </div>
 
-    <!-- ITEM 3 -->
     <div class="order-card" data-status="pending">
       <div class="order-top">
         <div>

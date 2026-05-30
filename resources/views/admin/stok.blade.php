@@ -4,6 +4,360 @@
 
 @push('styles')
 <style>
+ /* ==================================================
+   NONGKI ADMIN - STOK LIGHT MODE PREMIUM
+================================================== */
+
+[data-theme="light"]{
+    --bg-main:#F8F6F2;
+    --bg-panel:#FFFFFF;
+    --text-main:#2F241B;
+    --text-muted:#8A7C6B;
+    --border-color:#E8E2D8;
+    --gold:#D4A437;
+    --gold-dim:rgba(212,164,55,.12);
+}
+
+/* PAGE */
+
+[data-theme="light"] body{
+    background:#F8F6F2 !important;
+}
+
+[data-theme="light"] .main-content,
+[data-theme="light"] .content-wrapper,
+[data-theme="light"] .inventory-container,
+[data-theme="light"] .report-container{
+    background:#F8F6F2 !important;
+}
+
+/* HEADER */
+
+[data-theme="light"] h1{
+    color:#C9A84C !important;
+}
+
+[data-theme="light"] .page-subtitle,
+[data-theme="light"] p{
+    color:#6B7280 !important;
+}
+
+/* HEADER BOX */
+
+[data-theme="light"] .page-header-box{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    border-radius:22px;
+    padding:24px;
+    margin-bottom:24px;
+    box-shadow:0 6px 20px rgba(0,0,0,.04);
+}
+
+/* SUMMARY CARD */
+
+[data-theme="light"] .stok-mini-card{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 6px 20px rgba(0,0,0,.04);
+    transition:.3s;
+}
+
+[data-theme="light"] .stok-mini-card:hover{
+    border-color:#D4A437 !important;
+    transform:translateY(-3px);
+}
+
+[data-theme="light"] .stok-mini-card h4,
+[data-theme="light"] .stok-mini-card div{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .stok-mini-icon{
+    background:#F8F3E8 !important;
+    color:#D4A437 !important;
+}
+
+/* BUTTON */
+
+[data-theme="light"] .btn-add-stok{
+    background:linear-gradient(
+        135deg,
+        #D4A437,
+        #E6C147
+    ) !important;
+
+    color:#FFFFFF !important;
+    border:none !important;
+}
+
+[data-theme="light"] .btn-add-stok:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(212,164,55,.20);
+}
+
+[data-theme="light"] .btn-resep-stok{
+    background:#FFF8E7 !important;
+    border:1px solid #D4A437 !important;
+    color:#B8860B !important;
+}
+
+[data-theme="light"] .btn-resep-stok:hover{
+    background:#FFF2CC !important;
+}
+
+/* PANEL */
+
+[data-theme="light"] .inventory-panel{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    border-radius:24px !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+[data-theme="light"] .inventory-header{
+    border-bottom:1px solid #ECE7DD !important;
+    padding-bottom:18px;
+}
+
+[data-theme="light"] .inventory-header h3{
+    color:#2F241B !important;
+}
+
+/* TABLE */
+
+[data-theme="light"] table{
+    background:#FFFFFF !important;
+}
+
+[data-theme="light"] th{
+    color:#8A7C6B !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] td{
+    color:#4B5563 !important;
+    border-bottom:1px solid #F1ECE3 !important;
+}
+
+[data-theme="light"] tbody tr:hover td{
+    background:#FAF8F4 !important;
+}
+
+/* MATERIAL NAME */
+
+[data-theme="light"] .material-name,
+[data-theme="light"] .ingredient-name{
+    color:#2F241B !important;
+    font-weight:700;
+}
+
+/* STOCK BAR */
+
+[data-theme="light"] .stok-bar-bg,
+[data-theme="light"] .progress-bg{
+    background:#ECE7DD !important;
+}
+
+[data-theme="light"] .stok-bar-fill,
+[data-theme="light"] .progress-fill{
+    background:linear-gradient(
+        90deg,
+        #D4A437,
+        #E6C147
+    ) !important;
+}
+
+/* STATUS */
+
+[data-theme="light"] .status-badge{
+    border:none !important;
+}
+
+[data-theme="light"] .status-aman,
+[data-theme="light"] .badge-success{
+    background:#EAF8F1 !important;
+    color:#27AE60 !important;
+}
+
+[data-theme="light"] .status-kritis,
+[data-theme="light"] .badge-danger{
+    background:#FDECEC !important;
+    color:#DC2626 !important;
+}
+
+/* ACTION BUTTON */
+
+[data-theme="light"] .btn-table-action{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .btn-edit-stok{
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .btn-delete-stok{
+    color:#DC2626 !important;
+}
+
+/* AUDIT */
+
+[data-theme="light"] .audit-box{
+    color:#8A7C6B !important;
+}
+
+[data-theme="light"] .audit-box strong,
+[data-theme="light"] .audit-user{
+    color:#2F241B !important;
+}
+
+/* MODAL */
+
+[data-theme="light"] .modal-content{
+    background:#FFFFFF !important;
+    color:#2F241B !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .modal-header{
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .modal-footer{
+    border-top:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea{
+    background:#FFFFFF !important;
+    color:#2F241B !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus{
+    border-color:#D4A437 !important;
+    box-shadow:0 0 0 3px rgba(212,164,55,.12) !important;
+}
+
+/* EMPTY STATE */
+
+[data-theme="light"] .empty-state{
+    color:#8A7C6B !important;
+}
+
+/* ======================================
+   FIX TEKS STOK LIGHT MODE
+====================================== */
+
+[data-theme="light"] .inventory-panel{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .inventory-panel td{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .inventory-panel strong{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .inventory-panel b{
+    color:#2F241B !important;
+}
+
+/* Nama bahan */
+
+[data-theme="light"] .inventory-panel td div{
+    color:#2F241B !important;
+}
+
+/* Jumlah stok */
+
+[data-theme="light"] .inventory-panel td:nth-child(3){
+    color:#2F241B !important;
+    font-weight:700 !important;
+}
+
+/* Satuan */
+
+[data-theme="light"] .inventory-panel td:nth-child(4){
+    color:#D4A437 !important;
+    font-weight:700 !important;
+}
+
+/* Audit */
+
+[data-theme="light"] .inventory-panel td:nth-child(6){
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .inventory-panel td:nth-child(6) strong,
+[data-theme="light"] .inventory-panel td:nth-child(6) b{
+    color:#2F241B !important;
+}
+/* ===== RESEP MODAL LIGHT MODE ===== */
+
+[data-theme="light"] .menu-list-item{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 4px 12px rgba(0,0,0,.04);
+}
+
+[data-theme="light"] .menu-list-item:hover{
+    border-color:#D4A437 !important;
+    background:#FFFCF5 !important;
+}
+
+[data-theme="light"] .menu-list-item h4,
+[data-theme="light"] .menu-list-item .menu-name{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .menu-list-item p,
+[data-theme="light"] .menu-list-item span{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .menu-list-item img{
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .btn-config-recipe,
+[data-theme="light"] .btn-atur-resep{
+    background:#FFF7E8 !important;
+    border:1px solid #D4A437 !important;
+    color:#B8860B !important;
+}
+
+[data-theme="light"] .btn-config-recipe:hover,
+[data-theme="light"] .btn-atur-resep:hover{
+    background:#FFEFC0 !important;
+}
+/* FIX TEXT RESEP MODAL LIGHT MODE */
+
+[data-theme="light"] .menu-list-item *{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .menu-list-item small,
+[data-theme="light"] .menu-list-item .category,
+[data-theme="light"] .menu-list-item p,
+[data-theme="light"] .menu-list-item span{
+    color:#B8860B !important;
+}
+
+[data-theme="light"] .menu-list-item h1,
+[data-theme="light"] .menu-list-item h2,
+[data-theme="light"] .menu-list-item h3,
+[data-theme="light"] .menu-list-item h4,
+[data-theme="light"] .menu-list-item h5,
+[data-theme="light"] .menu-list-item h6{
+    color:#2F241B !important;
+}
+
     /* ========== CLEANUP & CONSISTENCY ========== */
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     input[type=number] { -moz-appearance: textfield; }

@@ -12,6 +12,62 @@
     }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* ========== TAMBAHAN UNTUK LIGHT MODE ========== */
+    [data-theme="light"] .page-title,
+    [data-theme="light"] .empty-state h3,
+    [data-theme="light"] .fav-name {
+        color: var(--cream) !important; /* Teks utama jadi coklat gelap */
+    }
+    
+    [data-theme="light"] .page-subtitle,
+    [data-theme="light"] .empty-state p,
+    [data-theme="light"] .breadcrumb-modern .separator {
+        color: var(--text-muted-c) !important; /* Teks sub jadi abu-abu elegan */
+    }
+    
+    [data-theme="light"] .breadcrumb-modern .current {
+        color: var(--cream) !important;
+    }
+
+    [data-theme="light"] .fav-card {
+        background: var(--dark-2) !important; /* Background card jadi putih */
+        border: 1px solid var(--border) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+    }
+    
+    [data-theme="light"] .fav-card:hover {
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08), 0 0 15px var(--gold-dim) !important;
+        border-color: var(--gold) !important;
+        transform: translateY(-8px);
+    }
+
+    /* Kurangi efek gelap pada gambar di Light Mode */
+    [data-theme="light"] .fav-img-wrap::after {
+        background: linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.1) 100%) !important;
+    }
+
+    /* Tombol silang merah disesuaikan untuk latar terang */
+    [data-theme="light"] .btn-remove-fav {
+        background: rgba(255,255,255,0.9) !important;
+        border: 1px solid rgba(255,77,77,0.2) !important;
+        color: #ff4d4d !important;
+    }
+    [data-theme="light"] .btn-remove-fav:hover {
+        background: #ff4d4d !important;
+        color: #fff !important;
+    }
+
+    [data-theme="light"] .btn-add-cart:hover {
+        color: #FFFFFF !important; /* Teks tombol keranjang jadi putih saat dihover */
+    }
+    [data-theme="light"] .btn-explore {
+        color: #FFFFFF !important;
+    }
+    [data-theme="light"] .btn-explore svg {
+        fill: #FFFFFF !important;
+    }
+    /* ============================================== */
+
     /* 2. HEADER */
     .page-header { margin-bottom: 3rem; position: relative; }
 
@@ -123,7 +179,7 @@
         background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
         color: #000; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(201,168,76,0.3);
     }
-    .btn-add-cart:hover svg { stroke: #000; }
+    .btn-add-cart:hover svg { stroke: currentColor; }
 
     /* 9. EMPTY STATE */
     .empty-state { text-align: center; padding: 5rem 2rem; }
@@ -165,7 +221,6 @@
 
 @section('content')
 <div class="favorite-container">
-    <!-- HEADER -->
     <div class="page-header">
         <div class="breadcrumb-modern">
             <a href="{{ route('home') }}">
@@ -184,10 +239,8 @@
         <p class="page-subtitle">Kopi pilihan terbaik yang selalu pas di seleramu.</p>
     </div>
 
-    <!-- GRID FAVORIT -->
     <div id="favoriteGrid" class="favorite-grid"></div>
 
-    <!-- EMPTY STATE -->
     <div id="emptyState" class="empty-state" style="display:none;">
         <div class="empty-icon-wrap">
             <svg viewBox="0 0 24 24">

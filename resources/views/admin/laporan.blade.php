@@ -4,6 +4,143 @@
 
 @push('styles')
 <style>
+
+/* ==========================================
+   LAPORAN PENJUALAN LIGHT MODE PREMIUM
+========================================== */
+
+[data-theme="light"] .page-header h1{
+    color:#C9A84C !important;
+}
+
+[data-theme="light"] .page-header p{
+    color:#6B7280 !important;
+}
+
+/* FILTER BAR */
+
+[data-theme="light"] .filter-bar{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+[data-theme="light"] .filter-bar-label{
+    color:#8A7C6B !important;
+}
+
+[data-theme="light"] .form-nongki{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .form-nongki:focus{
+    border-color:#D4A437 !important;
+    box-shadow:0 0 0 3px rgba(212,164,55,.12);
+}
+
+/* BUTTON */
+
+[data-theme="light"] .btn-outline-nongki{
+    background:#FFFFFF !important;
+    border:1px solid #D4A437 !important;
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .btn-outline-nongki:hover{
+    background:#FFF7E8 !important;
+}
+
+[data-theme="light"] .btn-nongki{
+    background:linear-gradient(
+        135deg,
+        #D4A437,
+        #E6C147
+    ) !important;
+
+    color:#FFFFFF !important;
+}
+
+/* CARD */
+
+[data-theme="light"] .report-card{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+[data-theme="light"] .report-card:hover{
+    border-color:#D4A437 !important;
+}
+
+[data-theme="light"] .report-card .icon{
+    background:rgba(212,164,55,.12) !important;
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .report-card .label{
+    color:#8A7C6B !important;
+}
+
+[data-theme="light"] .report-card .value{
+    color:#2F241B !important;
+}
+
+/* TABLE */
+
+[data-theme="light"] .table-container{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+[data-theme="light"] .table-header{
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .table-header h4{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .table-badge{
+    background:#FFF7E8 !important;
+    border:1px solid #F2DE9A !important;
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .nongki-table thead tr{
+    background:#FAF8F4 !important;
+}
+
+[data-theme="light"] .nongki-table th{
+    color:#8A7C6B !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .nongki-table td{
+    color:#4B5563 !important;
+    border-bottom:1px solid #F2ECE2 !important;
+}
+
+[data-theme="light"] .nongki-table tbody tr:hover{
+    background:#FAF8F4 !important;
+}
+
+[data-theme="light"] .order-id{
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .amount{
+    color:#2F241B !important;
+}
+
+/* EMPTY STATE */
+
+[data-theme="light"] .empty-state{
+    color:#8A7C6B !important;
+}
+
     /* ========== CSS VARIABLES ========== */
     :root {
         --gold: #C9A84C;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +24,131 @@
             --sidebar-w: 260px;
             --header-h: 64px;
         }
+
+        /* ========== LIGHT THEME ========== */
+        [data-theme="light"] {
+            --dark:         #F9F6F0; /* Latar belakang utama (lebih bersih & hangat) */
+            --dark-2:       #FFFFFF; /* Latar belakang sidebar/dropdown */
+            --dark-3:       #F3EFE6; /* Latar belakang input/hover */
+            --dark-4:       #EAE4D8; /* Border abu-abu tipis */
+            --cream:        #2E251A; /* Teks utama (coklat gelap elegan, lebih kontras) */
+            --cream-dim:    #5E4F3E; /* Teks sekunder/ikon */
+            --text-muted-c: #948677; /* Teks muted/label */
+            --border:       rgba(201,168,76,0.25); /* Border emas sedikit lebih tebal di light mode */
+            --gold-dim:     rgba(201,168,76,0.15); /* Highlight emas redup */
+        }
+        [data-theme="light"] body {
+            background: var(--dark);
+            color: var(--cream);
+        }
+        [data-theme="light"] .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0,0,0,.05); /* Tambahan shadow halus memisahkan header */
+            border-bottom: 1px solid var(--dark-4);
+        }
+        [data-theme="light"] .app-sidebar {
+            background: var(--dark-2);
+            box-shadow: 6px 0 20px rgba(0,0,0,.04); /* Shadow halus memisahkan sidebar */
+            border-right: 1px solid var(--dark-4);
+            
+        }
+            [data-theme="light"] .header-search input {
+            background: #FFFFFF;
+            color: var(--cream);
+            border: 1px solid #E7E0D4;
+            box-shadow: 0 2px 8px rgba(0,0,0,.03);
+        }
+                [data-theme="light"] .header-search input:focus {
+            background: #FFFFFF;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-dim);
+        }
+        [data-theme="light"] .sidebar-user {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        [data-theme="light"] .dropdown-menu {
+            background: var(--dark-2) !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+            border: 1px solid var(--border) !important;
+        }
+        [data-theme="light"] .header-btn, 
+        [data-theme="light"] .theme-toggle-btn {
+            background: var(--dark-2);
+            border-color: var(--dark-4);
+            color: var(--cream-dim);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        [data-theme="light"] .header-btn:hover, 
+        [data-theme="light"] .theme-toggle-btn:hover {
+            background: var(--gold-dim);
+            color: #A6832A; /* Emas yang sedikit lebih pekat agar terbaca di light mode */
+            border-color: var(--gold);
+        }
+        [data-theme="light"] .nav-item {
+            color: var(--cream-dim);
+        }
+        [data-theme="light"] .nav-item:hover {
+            background: var(--dark-3);
+            color: var(--cream);
+        }
+            [data-theme="light"] .nav-item.active {
+            background: #F3E9D0;
+            color: #A6832A;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(201,168,76,.15);
+        }
+        [data-theme="light"] .brand-name {
+            color: #A6832A; /* Brand name kontras dengan background putih header */
+        }
+        [data-theme="light"] .role-badge-user {
+            background: var(--dark-3);
+            color: var(--cream-dim);
+        }
+        [data-theme="light"] .btn-logout {
+            background: var(--dark-2);
+            border-color: var(--border);
+            color: var(--text-muted-c);
+        }
+        [data-theme="light"] .btn-logout:hover {
+            border-color: #e05252;
+            color: #e05252;
+            background: rgba(224,82,82,0.08);
+        }
+        /* ================================== */
+
+        /* ========== TOMBOL THEME TOGGLE ========== */
+        .theme-toggle-btn {
+            width: 38px; height: 38px;
+            background: var(--dark-3);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--cream-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .theme-toggle-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-dim);
+        }
+        .theme-toggle-btn svg {
+            width: 18px; height: 18px;
+            position: absolute;
+            transition: opacity 0.2s, transform 0.3s;
+        }
+        /* ikon matahari — tampil di dark mode */
+        .theme-toggle-btn .icon-sun  { opacity: 1;  transform: rotate(0deg) scale(1); }
+        .theme-toggle-btn .icon-moon { opacity: 0;  transform: rotate(90deg) scale(0.5); }
+        /* ikon bulan — tampil di light mode */
+        [data-theme="light"] .theme-toggle-btn .icon-sun  { opacity: 0;  transform: rotate(-90deg) scale(0.5); }
+        [data-theme="light"] .theme-toggle-btn .icon-moon { opacity: 1;  transform: rotate(0deg) scale(1); }
+
         *, *::before, *::after { box-sizing: border-box; }
         body {
             font-family: 'DM Sans', sans-serif;
@@ -43,7 +168,8 @@
             padding: 0 1.5rem;
             z-index: 1000;
             gap: 1rem;
-            overflow: hidden; /* Cegah konten meluber */
+            overflow: hidden;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
         .header-brand {
             display: flex; align-items: center; gap: 10px;
@@ -119,6 +245,7 @@
             color: var(--cream);
             font-size: 0.875rem;
             outline: none;
+            transition: all 0.3s;
         }
         .header-search input:focus {
             border-color: var(--gold);
@@ -219,7 +346,7 @@
             display: flex; flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background 0.3s, border-color 0.3s, box-shadow 0.3s;
             z-index: 900;
         }
         .sidebar-section { padding: 1.2rem 1rem 0.5rem; }
@@ -270,6 +397,7 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             flex-shrink: 0;
+            transition: all 0.3s;
         }
         .sidebar-user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .sidebar-user-name {
@@ -283,6 +411,7 @@
             border-radius: 8px; color: var(--text-muted-c);
             font-size: 0.82rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 7px;
+            transition: all 0.3s;
         }
         .btn-logout:hover { border-color: #e05252; color: #e05252; background: rgba(224,82,82,0.08); }
 
@@ -316,18 +445,13 @@
             .sidebar-overlay.show { display: block; }
             .app-main { margin-left: 0; }
             .header-brand { width: auto; }
-            .header-role-badge { display: none; } /* Sembunyikan badge role di tablet/HP, sudah ada di sidebar */
+            .header-role-badge { display: none; }
         }
 
         /* ========== RESPONSIVE MOBILE (max 767px) ========== */
         @media (max-width: 767px) {
-            :root {
-                --header-h: 56px;
-            }
-            .app-header {
-                padding: 0 0.75rem;
-                gap: 0.5rem;
-            }
+            :root { --header-h: 56px; }
+            .app-header { padding: 0 0.75rem; gap: 0.5rem; }
             .brand-name { font-size: 1rem; }
             .brand-icon { width: 30px; height: 30px; }
             .brand-icon svg { width: 15px; height: 15px; }
@@ -336,7 +460,6 @@
             .header-actions { gap: 4px; }
             .header-btn { width: 34px; height: 34px; }
             .header-avatar { width: 32px; height: 32px; font-size: 0.72rem; }
-            /* Dropdown menu tidak terpotong di HP */
             .dropdown-menu {
                 position: fixed !important;
                 right: 0.5rem !important;
@@ -349,13 +472,21 @@
 
         /* ========== RESPONSIVE SMALL MOBILE (max 400px) ========== */
         @media (max-width: 400px) {
-            .brand-name { display: none; } /* Hanya icon di layar sangat kecil */
+            .brand-name { display: none; }
             .header-brand { width: auto; }
         }
 
         @yield('styles')
     </style>
     @stack('styles')
+
+    {{-- Anti-flash: terapkan tema sebelum render --}}
+    <script>
+        (function() {
+            var t = localStorage.getItem('nongki_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body>
 
@@ -363,8 +494,8 @@
     @auth
     @php
         $user      = auth()->user();
-        $userRole  = $user->role ?? 'user'; // 'admin' | 'kasir' | 'user'
-        $userId    = $user->id; // Dipakai untuk cart key per-user
+        $userRole  = $user->role ?? 'user';
+        $userId    = $user->id;
         $avatar    = $user->avatar;
 
         if ($avatar && (str_starts_with($avatar, 'http://') || str_starts_with($avatar, 'https://'))) {
@@ -381,21 +512,12 @@
     @endphp
     @endauth
 
-    {{--
-        ===================================================================
-        PERBAIKAN BUG KERANJANG (CART KEY PER USER):
-        Inject user ID ke JavaScript supaya localStorage key unik per akun.
-        Jika belum login (guest), userId = 0 (cart tidak aktif).
-        ===================================================================
-    --}}
     <script>
-        // Cart key unik per user — mencegah data keranjang bocor antar akun
-        window.CART_USER_ID = @auth {{ (int) auth()->id() }} @else 0 @endauth;
+        window.CART_USER_ID     = @auth {{ (int) auth()->id() }} @else 0 @endauth;
         window.CART_STORAGE_KEY = 'cart_count_u' + window.CART_USER_ID;
         window.CART_ITEMS_KEY   = 'cart_items_u' + window.CART_USER_ID;
     </script>
 
-    <!-- ========== HEADER ========== -->
     <header class="app-header">
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Buka menu">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -412,7 +534,6 @@
             <span class="brand-name">NONGKI</span>
         </a>
 
-        {{-- Role badge tampil di samping logo (disembunyikan di mobile via CSS) --}}
         @auth
             @if($userRole === 'admin')
                 <span class="header-role-badge role-badge-admin">
@@ -428,8 +549,28 @@
         @yield('search_bar')
 
         <div class="header-actions">
+
+            {{-- ===== TOMBOL TOGGLE TEMA ===== --}}
+            <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Ganti tema">
+                {{-- Matahari (tampil di dark mode) --}}
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                {{-- Bulan (tampil di light mode) --}}
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+
             @auth
-                {{-- Keranjang hanya untuk role user/pelanggan --}}
                 @if($userRole === 'user' || $userRole === 'pelanggan')
                     <a href="{{ route('keranjang') }}" class="header-btn" id="cartHeaderBtn" aria-label="Keranjang">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -440,7 +581,6 @@
                     </a>
                 @endif
 
-                {{-- Notifikasi untuk admin --}}
                 @if($userRole === 'admin')
                     <a href="{{ route('admin.notifikasi') ?? '#' }}" class="header-btn" aria-label="Notifikasi">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -460,31 +600,29 @@
                             <span class="avatar-fallback">{{ $initials }}</span>
                         @endif
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end"
+                    <ul class="dropdown-menu dropdown-menu-end" 
                         style="background:var(--dark-3);border:1px solid var(--border);border-radius:12px;min-width:200px;">
                         <li>
                             <div style="padding:8px 12px; border-bottom:1px solid var(--border);">
                                 <div style="font-weight:600;color:var(--cream);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $user->name }}</div>
                                 <div style="font-size:0.7rem; color:var(--text-muted-c);overflow:hidden;text-overflow:ellipsis;">{{ $user->email }}</div>
-                                <div style="font-size:0.7rem; margin-top:2px; color:var(--gold);">
-                                    {{ ucfirst($userRole) }}
-                                </div>
+                                <div style="font-size:0.7rem; margin-top:2px; color:var(--gold);">{{ ucfirst($userRole) }}</div>
                             </div>
                         </li>
                         <li><hr class="dropdown-divider" style="border-color:var(--border);"></li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('profile.edit') }}"
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}" 
                                style="color:var(--cream-dim);">Profil Saya</a>
                         </li>
                         @if($userRole === 'admin')
                             <li>
-                                <a class="dropdown-item" href="{{ route('admin.dashboard') }}"
+                                <a class="dropdown-item" href="{{ route('admin.dashboard') }}" 
                                    style="color:var(--cream-dim);">Dashboard Admin</a>
                             </li>
                         @endif
                         @if($userRole === 'kasir')
                             <li>
-                                <a class="dropdown-item" href="{{ route('kasir.pos') }}"
+                                <a class="dropdown-item" href="{{ route('kasir.pos') }}" 
                                    style="color:var(--cream-dim);">POS Kasir</a>
                             </li>
                         @endif
@@ -502,17 +640,13 @@
         </div>
     </header>
 
-    <!-- ========== SIDEBAR ========== -->
     <aside class="app-sidebar" id="appSidebar">
         <div class="sidebar-section">
 
-            {{-- ============================================================
-                 NAVIGASI ADMIN
-                 ============================================================ --}}
             @auth
             @if($userRole === 'admin')
                 <div class="sidebar-section-label">Dashboard</div>
-                <a href="{{ route('admin.dashboard') }}"
+                <a href="{{ route('admin.dashboard') }}" 
                    class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -523,8 +657,8 @@
 
                 <div class="nav-divider"></div>
                 <div class="sidebar-section-label">Laporan</div>
-
-                <a href="{{ route('admin.laporan.penjualan') }}"
+                
+                <a href="{{ route('admin.laporan.penjualan') }}" 
                    class="nav-item {{ request()->routeIs('admin.laporan*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -535,7 +669,7 @@
                     Laporan Penjualan
                 </a>
 
-                <a href="{{ route('admin.laporan.harian') }}"
+                <a href="{{ route('admin.laporan.harian') }}" 
                    class="nav-item {{ request()->routeIs('admin.laporan.harian') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -548,7 +682,7 @@
                 <div class="nav-divider"></div>
                 <div class="sidebar-section-label">Manajemen</div>
 
-                <a href="{{ route('admin.stok') }}"
+                <a href="{{ route('admin.stok') }}" 
                    class="nav-item {{ request()->routeIs('admin.stok*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
@@ -556,7 +690,7 @@
                     Stok Bahan
                 </a>
 
-                <a href="{{ route('admin.menu') }}"
+                <a href="{{ route('admin.menu') }}" 
                    class="nav-item {{ request()->routeIs('admin.menu*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
@@ -564,7 +698,7 @@
                     Menu
                 </a>
 
-                <a href="{{ route('admin.pengguna') }}"
+                <a href="{{ route('admin.pengguna') }}" 
                    class="nav-item {{ request()->routeIs('admin.pengguna*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -575,7 +709,7 @@
                     Pengguna
                 </a>
 
-                <a href="{{ route('pengaturan') }}"
+                <a href="{{ route('pengaturan') }}" 
                    class="nav-item {{ request()->routeIs('pengaturan') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"/>
@@ -584,13 +718,10 @@
                     Pengaturan
                 </a>
 
-            {{-- ============================================================
-                 NAVIGASI KASIR
-                 ============================================================ --}}
             @elseif($userRole === 'kasir')
                 <div class="sidebar-section-label">POS</div>
 
-                <a href="{{ route('kasir.pos') }}"
+                <a href="{{ route('kasir.pos') }}" 
                    class="nav-item {{ request()->routeIs('kasir.pos') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -600,7 +731,7 @@
                     Kasir / POS
                 </a>
 
-                <a href="{{ route('kasir.menu') }}"
+                <a href="{{ route('kasir.menu') }}" 
                    class="nav-item {{ request()->routeIs('kasir.menu*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
@@ -611,7 +742,7 @@
                 <div class="nav-divider"></div>
                 <div class="sidebar-section-label">Transaksi</div>
 
-                <a href="{{ route('kasir.transaksi') }}"
+                <a href="{{ route('kasir.transaksi') }}" 
                    class="nav-item {{ request()->routeIs('kasir.transaksi*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -619,7 +750,7 @@
                     Riwayat Transaksi
                 </a>
 
-                <a href="{{ route('kasir.pesanan') }}"
+                <a href="{{ route('kasir.pesanan') }}" 
                    class="nav-item {{ request()->routeIs('kasir.pesanan*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
@@ -628,13 +759,10 @@
                     Pesanan Masuk
                 </a>
 
-            {{-- ============================================================
-                 NAVIGASI USER / PELANGGAN (default)
-                 ============================================================ --}}
             @else
                 <div class="sidebar-section-label">Navigasi</div>
 
-                <a href="{{ route('dashboard') }}"
+                <a href="{{ route('dashboard') }}" 
                    class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -643,7 +771,7 @@
                     Beranda
                 </a>
 
-                <a href="{{ route('menu.index') }}"
+                <a href="{{ route('menu.index') }}" 
                    class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
@@ -651,8 +779,8 @@
                     Menu Kopi
                 </a>
 
-                <a href="{{ route('keranjang') }}"
-                   class="nav-item {{ request()->routeIs('keranjang') ? 'active' : '' }}"
+                <a href="{{ route('keranjang') }}" 
+                   class="nav-item {{ request()->routeIs('keranjang') ? 'active' : '' }}" 
                    id="sidebarCartLink">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -662,7 +790,7 @@
                     <span class="nav-badge" id="cartBadgeSidebar" style="display:none;">0</span>
                 </a>
 
-                <a href="{{ route('riwayat.pesanan') }}"
+                <a href="{{ route('riwayat.pesanan') }}" 
                    class="nav-item {{ request()->routeIs('riwayat.pesanan') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
@@ -671,7 +799,7 @@
                     Riwayat Pesanan
                 </a>
 
-                <a href="{{ route('favorit') }}"
+                <a href="{{ route('favorit') }}" 
                    class="nav-item {{ request()->routeIs('favorit') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -679,7 +807,7 @@
                     Favorit
                 </a>
 
-                <a href="{{ route('profile.edit') }}"
+                <a href="{{ route('profile.edit') }}" 
                    class="nav-item {{ request()->routeIs('profile*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -688,7 +816,7 @@
                     Profil Saya
                 </a>
 
-                <a href="{{ route('pengaturan') }}"
+                <a href="{{ route('pengaturan') }}" 
                    class="nav-item {{ request()->routeIs('pengaturan') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"/>
@@ -698,9 +826,8 @@
                 </a>
             @endif
             @else
-                {{-- Guest: tidak login --}}
                 <div class="sidebar-section-label">Menu</div>
-                <a href="{{ route('menu.index') }}"
+                <a href="{{ route('menu.index') }}" 
                    class="nav-item {{ request()->routeIs('menu*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 21h16v-2H2v2zM18 3H2v10c0 3.31 2.69 6 6 6h4c3.31 0 6-2.69 6-6v-1h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
@@ -728,7 +855,6 @@
             @endauth
         </div>
 
-        {{-- ========== SIDEBAR USER INFO ========== --}}
         @auth
         <div class="sidebar-user">
             <div class="sidebar-user-info">
@@ -771,14 +897,13 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- ========== MAIN CONTENT ========== -->
     <main class="app-main">
         <div class="page-content">
             @hasSection('page_header')
-            <div class="page-header"
+            <div class="page-header" 
                  style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;">
                 <div style="min-width:0;">
-                    <h1 class="page-title"
+                    <h1 class="page-title" 
                         style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,4vw,2rem);margin:0;">
                         @yield('page_title')
                     </h1>
@@ -797,12 +922,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ===================================================================
-        // CART — KEY UNIK PER USER (FIX BUG LINTAS AKUN)
-        // window.CART_USER_ID dan CART_STORAGE_KEY sudah di-inject di atas
+        // CART — KEY UNIK PER USER
         // ===================================================================
-
         function getCartCount() {
-            if (!window.CART_USER_ID) return 0; // guest, tidak pakai cart
+            if (!window.CART_USER_ID) return 0;
             return parseInt(localStorage.getItem(window.CART_STORAGE_KEY) || '0');
         }
 
@@ -836,58 +959,39 @@
         }
 
         function addToCart(button, itemName, price) {
-            if (!window.CART_USER_ID) return; // guest tidak bisa tambah cart
+            if (!window.CART_USER_ID) return;
             itemName = itemName || '';
             price    = price    || '';
-
             setCartCount(getCartCount() + 1);
-
-            // Simpan item dengan key per user
             const items = JSON.parse(localStorage.getItem(window.CART_ITEMS_KEY) || '[]');
             items.push({ name: itemName, price: price, addedAt: new Date().toISOString() });
             localStorage.setItem(window.CART_ITEMS_KEY, JSON.stringify(items));
-
             if (button) {
                 const original = button.innerHTML;
                 button.innerHTML = '✓';
                 button.style.background = '#52b788';
-                setTimeout(() => {
-                    button.innerHTML = original;
-                    button.style.background = '';
-                }, 800);
+                setTimeout(() => { button.innerHTML = original; button.style.background = ''; }, 800);
             }
-        }
-
-        // Bersihkan cart user lain yang mungkin masih tersimpan di browser ini
-        // (opsional — hanya membersihkan key user saat ini jika sudah logout lama)
-        function clearOtherUserCarts() {
-            if (!window.CART_USER_ID) return;
-            // Tidak hapus data user lain; cukup pastikan badge kita dari key yang benar
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             updateBadges(getCartCount());
-
-            // Delegasi event untuk tombol tambah ke keranjang
             document.body.addEventListener('click', function (e) {
                 const btn = e.target.closest('.btn-add, .add-to-cart-btn');
                 if (btn) {
                     e.preventDefault();
-                    addToCart(
-                        btn,
-                        btn.getAttribute('data-name')  || '',
-                        btn.getAttribute('data-price') || ''
-                    );
+                    addToCart(btn, btn.getAttribute('data-name') || '', btn.getAttribute('data-price') || '');
                 }
             });
         });
 
-        // Expose global agar bisa dipanggil dari halaman child
         window.addToCartHandler = addToCart;
         window.getCartCount     = getCartCount;
         window.setCartCount     = setCartCount;
 
-        // ========== SIDEBAR TOGGLE ==========
+        // ===================================================================
+        // SIDEBAR TOGGLE
+        // ===================================================================
         const toggle  = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('appSidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -904,8 +1008,6 @@
                 overlay.classList.remove('show');
             });
         }
-
-        // Tutup sidebar otomatis saat klik nav item di mobile
         document.querySelectorAll('.nav-item').forEach(function(link) {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 992) {
@@ -914,6 +1016,23 @@
                 }
             });
         });
+
+        // ===================================================================
+        // THEME TOGGLE — dark / light, tersimpan di localStorage
+        // ===================================================================
+        const themeBtn = document.getElementById('themeToggleBtn');
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('nongki_theme', theme);
+        }
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', function () {
+                const current = document.documentElement.getAttribute('data-theme');
+                applyTheme(current === 'light' ? 'dark' : 'light');
+            });
+        }
     </script>
     @stack('scripts')
 </body>

@@ -6,6 +6,96 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
+    /* ========== TAMBAHAN UNTUK LIGHT MODE ========== */
+    [data-theme="light"] .page-title,
+    [data-theme="light"] .breadcrumb-modern .current,
+    [data-theme="light"] .settings-header,
+    [data-theme="light"] .setting-label,
+    [data-theme="light"] #modalTitle {
+        color: var(--cream) !important; /* Teks utama jadi coklat gelap elegan */
+    }
+
+    [data-theme="light"] .page-subtitle,
+    [data-theme="light"] .breadcrumb-modern .separator,
+    [data-theme="light"] .setting-desc,
+    [data-theme="light"] #modalMessage {
+        color: var(--text-muted-c) !important; /* Teks sekunder jadi abu-abu */
+    }
+
+    [data-theme="light"] .settings-card {
+        background: #FFFFFF !important; /* Kartu pengaturan jadi putih */
+        border-color: var(--border) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
+    }
+    [data-theme="light"] .settings-card:hover {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+        border-color: var(--gold) !important;
+    }
+
+    [data-theme="light"] .settings-header {
+        background: var(--dark-3) !important; /* Header kartu jadi sedikit krem terang */
+        border-bottom-color: var(--dark-4) !important;
+    }
+
+    [data-theme="light"] .setting-item {
+        border-bottom-color: var(--dark-4) !important;
+    }
+    [data-theme="light"] .setting-item:hover {
+        background: rgba(0,0,0,0.02) !important;
+    }
+
+    /* Toggle Switch Light Mode */
+    [data-theme="light"] .toggle-slider {
+        background-color: var(--dark-4) !important;
+        border-color: var(--border) !important;
+    }
+    [data-theme="light"] .toggle-slider:before {
+        background-color: #FFFFFF !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+    }
+    [data-theme="light"] input:checked + .toggle-slider {
+        background-color: var(--gold) !important;
+        border-color: var(--gold) !important;
+    }
+    [data-theme="light"] input:checked + .toggle-slider:before {
+        background-color: #FFFFFF !important;
+    }
+
+    /* Version Badge */
+    [data-theme="light"] .version-badge {
+        background: rgba(201, 168, 76, 0.1) !important;
+        color: #A6832A !important;
+        border-color: rgba(201, 168, 76, 0.2) !important;
+    }
+
+    /* Modal Light Mode */
+    [data-theme="light"] .nongki-modal-overlay {
+        background: rgba(255,255,255,0.8) !important;
+    }
+    [data-theme="light"] .nongki-modal-box {
+        background: #FFFFFF !important;
+        border-color: var(--border) !important;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+    }
+    [data-theme="light"] .modal-btn-cancel {
+        background: var(--dark-3) !important;
+        color: var(--cream) !important;
+        border-color: var(--border) !important;
+    }
+    [data-theme="light"] .modal-btn-cancel:hover {
+        background: var(--dark-4) !important;
+    }
+    
+    /* Warna tombol emas di mode terang supaya lebih jelas */
+    [data-theme="light"] .btn-outline-gold {
+        color: #A6832A !important;
+        border-color: #A6832A !important;
+    }
+    [data-theme="light"] .btn-outline-gold:hover {
+        background: rgba(201, 168, 76, 0.1) !important;
+    }
+    /* ============================================== */
+
     /* 1. ANIMASI & LAYOUT DASAR */
     .settings-container { max-width: 900px; margin: 0 auto; animation: fadeIn 0.6s ease-out; padding-bottom: 3rem; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
