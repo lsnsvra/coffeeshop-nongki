@@ -4,6 +4,105 @@
 
 @push('styles')
 <style>
+    /* ==================================================
+   NONGKI PREMIUM LIGHT MODE
+================================================== */
+
+[data-theme="light"] .hero-title{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .hero-title em{
+    color:#D4A437 !important;
+}
+
+[data-theme="light"] .hero-sub{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .menu-name{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .menu-desc{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .filter-pill{
+    background:#FFFFFF !important;
+    border:1px solid #E7E0D4 !important;
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .filter-pill:hover{
+    border-color:#D4A437 !important;
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .filter-pill.active{
+    background:#D4A437 !important;
+    border-color:#D4A437 !important;
+    color:#FFFFFF !important;
+}
+
+[data-theme="light"] .sort-select{
+    background:#FFFFFF !important;
+    border:1px solid #E7E0D4 !important;
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .menu-card{
+    background:#FFFFFF !important;
+    border:1px solid #EAE4DA !important;
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+[data-theme="light"] .menu-card:hover{
+    border-color:#D4A437 !important;
+    box-shadow:0 10px 25px rgba(0,0,0,.08) !important;
+}
+
+[data-theme="light"] .menu-fav{
+    background:rgba(255,255,255,.95) !important;
+    border:1px solid #E7E0D4 !important;
+}
+
+[data-theme="light"] .menu-price-overlay{
+    background:rgba(255,255,255,.95) !important;
+    border:1px solid #E9D9A9;
+    color:#B8860B !important;
+    backdrop-filter:blur(10px);
+}
+
+[data-theme="light"] .menu-rating{
+    color:#F4B400 !important;
+}
+
+[data-theme="light"] .menu-rating span{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .btn-add{
+    background:#D4A437 !important;
+    color:#FFFFFF !important;
+}
+
+[data-theme="light"] .btn-add:hover{
+    background:#BF922B !important;
+}
+
+[data-theme="light"] .menu-hero::before{
+    filter:brightness(.85) saturate(.9);
+}
+
+[data-theme="light"] .menu-hero::after{
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,.85) 15%,
+        rgba(255,255,255,.25) 50%,
+        transparent 100%
+    );
+}
     /* Hero Banner */
     .menu-hero {
         position: relative;

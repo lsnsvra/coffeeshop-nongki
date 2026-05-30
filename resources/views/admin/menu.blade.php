@@ -5,6 +5,125 @@
 @push('styles')
 <style>
 
+    /* ==========================================
+   MENU INVENTORY LIGHT MODE PREMIUM
+========================================== */
+
+[data-theme="light"]{
+    --bg-panel:#FFFFFF;
+    --text-main:#2F241B;
+    --text-muted:#6B7280;
+    --border-color:#E8E2D8;
+}
+
+/* PAGE */
+
+[data-theme="light"] .menu-container{
+    color:#2F241B !important;
+}
+
+/* PANEL */
+
+[data-theme="light"] .nongki-panel{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05) !important;
+}
+
+/* TABLE */
+
+[data-theme="light"] .table-luxury{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .table-luxury th{
+    color:#B8860B !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .table-luxury td{
+    color:#2F241B !important;
+    border-bottom:1px solid #F1ECE3 !important;
+}
+
+[data-theme="light"] .table-luxury tbody tr:hover{
+    background:#FAF8F4 !important;
+}
+
+/* NAMA PRODUK */
+
+[data-theme="light"] .table-luxury td div{
+    color:#2F241B !important;
+}
+
+/* HARGA */
+
+[data-theme="light"] .table-luxury td[style*="font-weight: 900"]{
+    color:#2F241B !important;
+}
+
+/* USER LOG */
+
+[data-theme="light"] .timestamp-box{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .timestamp-box div{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .timestamp-box div:last-child{
+    color:#2F241B !important;
+    border-top:1px solid #ECE7DD !important;
+}
+
+/* IMAGE */
+
+[data-theme="light"] .img-preview{
+    border:1px solid #E8E2D8 !important;
+    background:#F8F6F2 !important;
+}
+
+/* BUTTON */
+
+[data-theme="light"] .btn-icon{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .btn-icon:hover{
+    border-color:#D4A437 !important;
+}
+
+[data-theme="light"] .btn-nongki{
+    background:linear-gradient(
+        135deg,
+        #D4A437,
+        #E6C147
+    ) !important;
+
+    color:#FFFFFF !important;
+}
+
+/* MODAL */
+
+[data-theme="light"] .modal-content{
+    background:#FFFFFF !important;
+    color:#2F241B !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .form-control{
+    background:#FFFFFF !important;
+    color:#2F241B !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .form-control:focus{
+    border-color:#D4A437 !important;
+    box-shadow:0 0 0 3px rgba(212,164,55,.12);
+}
+
     /* ========== LUXURY THEME UI - NONGKI OFFICIAL ========== */
     :root {
         --gold: #d4af37;

@@ -4,6 +4,130 @@
 
 @push('styles')
 <style>
+
+/* ==========================================
+   USER MANAGEMENT LIGHT MODE PREMIUM
+========================================== */
+
+[data-theme="light"] .user-panel{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
+}
+
+/* HEADER */
+
+[data-theme="light"] .dashboard-header h1{
+    color:#C9A84C !important;
+}
+
+[data-theme="light"] .dashboard-header p{
+    color:#6B7280 !important;
+}
+
+/* TABLE */
+
+[data-theme="light"] .nongki-table{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .nongki-table th{
+    color:#B8860B !important;
+    border-bottom:1px solid #ECE7DD !important;
+}
+
+[data-theme="light"] .nongki-table td{
+    color:#2F241B !important;
+    border-bottom:1px solid #F1ECE3 !important;
+}
+
+[data-theme="light"] .nongki-table tbody tr:hover{
+    background:#FAF8F4 !important;
+}
+
+/* USER NAME */
+
+[data-theme="light"] .main-name{
+    color:#2F241B !important;
+}
+
+/* EMAIL */
+
+[data-theme="light"] td[style*="#ccc"]{
+    color:#6B7280 !important;
+}
+
+/* AVATAR */
+
+[data-theme="light"] .avatar-circle{
+    background:#F8F3E8 !important;
+    border:2px solid #D4A437 !important;
+    color:#D4A437 !important;
+}
+
+/* AUDIT */
+
+[data-theme="light"] .audit-box{
+    background:#FAF8F4 !important;
+    color:#6B7280 !important;
+    border-left:3px solid #D4A437 !important;
+}
+
+[data-theme="light"] .audit-box strong{
+    color:#D4A437 !important;
+}
+
+/* DROPDOWN */
+
+[data-theme="light"] .nongki-dropdown{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+[data-theme="light"] .role-select-custom{
+    background:#FFFFFF !important;
+    color:#2F241B !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+/* MODAL */
+
+[data-theme="light"] .nongki-modal{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+[data-theme="light"] .nongki-modal h3{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .nongki-modal p{
+    color:#6B7280 !important;
+}
+
+[data-theme="light"] .btn-modal-cancel{
+    background:#FFFFFF !important;
+    color:#6B7280 !important;
+    border:1px solid #E8E2D8 !important;
+}
+
+/* TOAST */
+
+[data-theme="light"] .nongki-toast{
+    background:#FFFFFF !important;
+    border-color:#E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+
+[data-theme="light"] .toast-title{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .toast-msg{
+    color:#6B7280 !important;
+}
+
     /* ========== LAYOUT & FONT RESET ========== */
     .fade-in-up { animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }

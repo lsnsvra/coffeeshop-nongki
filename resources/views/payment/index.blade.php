@@ -4,6 +4,47 @@
 
 @push('styles')
 <style>
+
+  /* ===== CHECKOUT LIGHT MODE FIX ===== */
+
+[data-theme="light"] .checkout-container{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] .checkout-section,
+[data-theme="light"] .order-summary,
+[data-theme="light"] .payment-card,
+[data-theme="light"] .summary-card{
+    background:#FFFFFF !important;
+    border:1px solid #E8E2D8 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.05) !important;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5{
+    color:#2F241B !important;
+}
+
+[data-theme="light"] p,
+[data-theme="light"] span,
+[data-theme="light"] small,
+[data-theme="light"] label{
+    color:#6B7280;
+}
+
+[data-theme="light"] strong,
+[data-theme="light"] .price,
+[data-theme="light"] .total-price{
+    color:#B8860B !important;
+}
+
+[data-theme="light"] button.btn-checkout{
+    background:linear-gradient(135deg,#D4A437,#E6C147) !important;
+    color:#fff !important;
+}
     /* ========== LAYOUT DASAR ========== */
     .checkout-container {
         display: grid;
