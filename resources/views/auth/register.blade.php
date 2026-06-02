@@ -57,6 +57,27 @@
     --success: #27794A;
   }
 
+
+  @media (prefers-color-scheme: light) {
+    html:not([data-theme]) {
+      --bg: #F5F0E8;
+      --surface: #F0EBE1;
+      --text-1: #1A1208;
+      --text-2: rgba(26, 18, 8, 0.65);
+      --text-3: rgba(26, 18, 8, 0.42);
+      --border: rgba(26, 18, 8, 0.1);
+      --border-strong: rgba(26, 18, 8, 0.22);
+      --input-bg: #FFFFFF;
+      --panel-bg: rgba(255, 255, 255, 0.98);
+      --tab-bg: #EDE7DB;
+      --shadow: 0 2px 16px rgba(160, 130, 60, 0.10);
+      --brand-overlay: linear-gradient(135deg, rgba(15, 10, 5, 0.42) 0%, rgba(15, 10, 5, 0.78) 100%);
+      --error: #C0392B;
+      --success: #27794A;
+    }
+  }
+
+
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
@@ -186,6 +207,8 @@
   }
 
   .benefit-icon svg { width: 14px; height: 14px; color: var(--gold); }
+
+
   .benefit-text { font-size: .84rem; color: rgba(255, 255, 255, 0.68); }
 
   .brand-footer {
@@ -205,8 +228,10 @@
     background: var(--panel-bg);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Mengubah center ke flex-start agar sejajar dari atas */
-    padding: 3.5rem 2.75rem 2.75rem 2.75rem; /* Memberikan ruang ideal di atas */
+
+    justify-content: center;
+    padding: 2.75rem;
+
     position: relative;
     overflow-y: auto;
     border-left: 1px solid var(--border);
@@ -217,21 +242,38 @@
   .form-panel::-webkit-scrollbar { width: 3px; }
   .form-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
 
-  /* NAVIGATION / TOP CONTROL OVERLAYS */
-  .panel-controls {
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    cursor: pointer;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    justify-content: center;
+    transition: all var(--transition);
+    font-size: 16px;
   }
 
+  .theme-toggle:hover { border-color: var(--gold); background: var(--gold-dim); }
+
+  /* SYS BADGE */
   .sys-badge {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
     font-size: .68rem;
     color: var(--text-3);
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: .35rem .75rem;
+    padding: .25rem .65rem;
     display: flex;
     align-items: center;
     gap: .35rem;
@@ -242,22 +284,6 @@
   .sys-badge:hover { border-color: var(--gold); color: var(--gold); }
   .sys-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
-  .theme-toggle {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition);
-    font-size: 14px;
-  }
-
-  .theme-toggle:hover { border-color: var(--gold); background: var(--gold-dim); }
-
   /* TABS */
   .auth-tabs {
     display: flex;
@@ -265,8 +291,9 @@
     background: var(--tab-bg);
     padding: .45rem;
     border-radius: 13px;
-    margin-bottom: 1.5rem;
-    transition: background var(--transition);
+
+    margin-bottom: 1.75rem;
+  transition: background var(--transition);
   }
 
   .auth-tab {
@@ -290,6 +317,10 @@
 
   .auth-tab:not(.active):hover { color: var(--gold); }
 
+
+  /* FORM HEADER */
+  .form-header { margin-bottom: 1.5rem; }
+
   /* FORM HEADER */
   .form-header { margin-bottom: 1.5rem; }
   .form-title {
@@ -297,10 +328,16 @@
     font-size: 1.9rem;
     font-weight: 400;
     color: var(--text-1);
-    margin-bottom: .25rem;
+
+    margin-bottom: .35rem;
     transition: color var(--transition);
   }
+
   .form-subtitle { font-size: .83rem; color: var(--text-3); }
+
+  /* INPUTS */
+  .form-group { margin-bottom: 1rem; }
+
 
   /* INPUTS */
   .form-group { margin-bottom: 1rem; position: relative; }
@@ -313,6 +350,9 @@
     color: var(--text-2);
     margin-bottom: .4rem;
   }
+
+  .input-wrap { position: relative; }
+
 
   .input-wrap { position: relative; }
   .input-icon {
@@ -359,14 +399,12 @@
   }
   .eye-toggle:hover { color: var(--gold); }
 
-  /* PASSWORD STRENGTH (Optimized Space) */
-  .strength-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 6px;
-  }
-  .strength-bar { display: flex; gap: 3px; width: 80px; }
+
+  .eye-toggle:hover { color: var(--gold); }
+
+  /* PASSWORD STRENGTH */
+  .strength-bar { display: flex; gap: 4px; margin-top: 7px; }
+
   .strength-segment {
     flex: 1;
     height: 3px;
@@ -374,11 +412,17 @@
     border-radius: 2px;
     transition: all var(--transition);
   }
+
+
+
   .strength-segment.weak { background: #E05252; }
   .strength-segment.fair { background: #E09F3E; }
   .strength-segment.good { background: #70B8FF; }
   .strength-segment.strong { background: #52B788; }
-  .strength-text { font-size: .7rem; color: var(--text-3); }
+
+
+  .strength-text { font-size: .7rem; color: var(--text-3); margin-top: 4px; }
+
 
   /* TERMS */
   .terms-wrap {
@@ -389,12 +433,18 @@
     cursor: pointer;
     user-select: none;
   }
+
+
   .terms-wrap input { display: none; }
+
+
   .terms-check {
     width: 17px;
     height: 17px;
     border: 1.5px solid var(--border-strong);
-    border-radius: 5px; 
+
+    border-radius: 5px;
+
     background: var(--input-bg);
     display: flex;
     align-items: center;
@@ -404,7 +454,10 @@
     transition: all var(--transition);
   }
 
+
   .terms-wrap input:checked + .terms-check { background: var(--gold); border-color: var(--gold); }
+
+
   .terms-wrap input:checked + .terms-check::after {
     content: '';
     width: 9px;
@@ -416,6 +469,12 @@
   .terms-text { font-size: .8rem; color: var(--text-2); line-height: 1.45; }
   .terms-text a { color: var(--gold); text-decoration: none; }
   .terms-text a:hover { text-decoration: underline; }
+
+
+  .terms-text { font-size: .8rem; color: var(--text-2); line-height: 1.45; }
+  .terms-text a { color: var(--gold); text-decoration: none; }
+  .terms-text a:hover { text-decoration: underline; }
+
 
   /* BUTTONS */
   .btn-submit {
@@ -449,6 +508,11 @@
   .btn-submit:hover::before { left: 100%; }
   .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 7px 22px rgba(201, 168, 76, 0.38); }
 
+
+  .btn-submit:hover::before { left: 100%; }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 7px 22px rgba(201, 168, 76, 0.38); }
+
+
   .divider { display: flex; align-items: center; gap: .9rem; margin: 1.25rem 0; }
   .div-line { flex: 1; height: 1px; background: var(--border-strong); }
   .div-text { font-size: .68rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
@@ -470,6 +534,7 @@
     transition: all var(--transition);
     text-decoration: none;
   }
+
   .btn-google:hover { border-color: var(--gold); background: var(--gold-dim); color: var(--text-1); transform: translateY(-1px); }
 
   .form-footer { text-align: center; margin-top: 1.25rem; font-size: .83rem; color: var(--text-3); }
@@ -547,14 +612,13 @@
 
   <!-- FORM PANEL -->
   <div class="form-panel">
-    <!-- CONTROLS CONTAINER -->
-    <div class="panel-controls a-up d1">
-      <div class="sys-badge" id="sysBadge" title="Klik untuk kembali ikuti sistem">
-        <div class="sys-dot"></div>
-        <span id="sysLabel">Ikut sistem</span>
-      </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">☀️</button>
+
+    <div class="sys-badge" id="sysBadge" title="Klik untuk kembali ikuti sistem">
+      <div class="sys-dot"></div>
+      <span id="sysLabel">Ikut sistem</span>
     </div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">☀️</button>
 
     <div class="auth-tabs a-up d1">
       <a href="{{ route('login') }}" class="auth-tab">Masuk</a>
@@ -776,4 +840,6 @@
   }
   </script>
 </body>
+
 </html>
+
