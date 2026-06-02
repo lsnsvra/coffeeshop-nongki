@@ -215,7 +215,10 @@
 @section('content')  
 <div class="dashboard-header fade-in-up">  
     <h1 class="dashboard-title">Overview Dashboard</h1>  
-    <p class="dashboard-subtitle">Selamat datang, <strong>{{ Auth::user()->Nama ?? Auth::user()->name ?? 'Administrator' }}</strong>. Menampilkan data transaksi per tanggal: <strong>{{ \Carbon\Carbon::parse($hariIni)->format('d F Y') }}</strong></p>  
+   <p class="dashboard-subtitle">
+    Selamat datang, <strong>{{ Auth::user()->Nama ?? 'Administrator' }}</strong>. 
+    Menampilkan data transaksi per tanggal: <strong>{{ \Carbon\Carbon::parse($hariIni)->format('d F Y') }}</strong>
+</p>
 </div>
 
 <div class="stat-grid">  
@@ -280,39 +283,40 @@
                     <th>Waktu</th>  
                 </tr>  
             </thead>  
-            <tbody>  
-                @forelse($recentOrders as $order)
-                <tr>  
-                    <td class="text-gold">#{{ str_pad($order->OrderID, 5, '0', STR_PAD_LEFT) }}</td> 
-                    
-                    <td class="text-bold">{{ $order->nama_user ?? 'Guest/Kasir' }}</td>  
-                    
-                    <td>Rp {{ number_format($order->TotalHarga ?? 0, 0, ',', '.') }}</td>  
-                    
-                    <td>
-                        @if(strtolower($order->StatusOrder ?? '') == 'paid')
-                            <span class="status-badge status-done">Lunas</span>
-                        @else
-                            <span class="status-badge status-process">Pending</span>
-                        @endif
-                    </td>  
-                    
-                    <td>
-                        @if(!empty($order->created_at))
-                            {{ \Carbon\Carbon::parse($order->created_at)->format('d M Y — H:i') }} WIB
-                        @elseif(!empty($order->CreatedDate))
-                            {{ \Carbon\Carbon::parse($order->CreatedDate)->format('d M Y — H:i') }} WIB
-                        @else
-                            -- Mei 2026 --
-                        @endif
-                    </td> 
-                </tr>  
-                @empty
-                <tr>
-                    <td colspan="5" style="text-align: center; color: rgba(245, 237, 216, 0.4); padding: 2rem;">Belum ada riwayat pesanan.</td>
-                </tr>
-                @endforelse
-            </tbody>
+            <tbody>   
+    @forelse($recentOrders as $order)
+    <tr> 
+        <td class="text-gold">#{{ str_pad($order->OrderID, 5, '0', STR_PAD_LEFT) }}</td> 
+        <td class="text-bold">{{ $order->nama_user ?? 'Guest/Kasir' }}</td> 
+        <td>Rp {{ number_format($order->TotalHarga ?? 0, 0, ',', '.') }}</td> 
+        
+        <td>
+            @php $status = strtolower($order->StatusOrder ?? ''); @endphp
+            
+            @if(in_array($status, ['paid', 'settlement', 'success', 'lunas']))
+                <span class="status-badge status-done">Lunas</span>
+            @elseif($status == 'pending')
+                <span class="status-badge status-process">Pending</span>
+            @else
+                <span class="status-badge status-process">{{ ucfirst($status) }}</span>
+            @endif
+        </td>
+        
+        <td>
+            {{-- Menggunakan kolom TanggalOrder sesuai database --}}
+            @if(!empty($order->TanggalOrder))
+                {{ \Carbon\Carbon::parse($order->TanggalOrder)->format('d M Y — H:i') }} WIB
+            @else
+                --
+            @endif
+        </td> 
+    </tr> 
+    @empty
+    <tr>
+        <td colspan="6" style="text-align: center; color: rgba(245, 237, 216, 0.4); padding: 2rem;">Belum ada riwayat pesanan.</td>
+    </tr>
+    @endforelse
+</tbody>
         </table>  
     </div>  
 </div>  

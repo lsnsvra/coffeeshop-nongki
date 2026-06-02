@@ -25,6 +25,7 @@ class Material extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'menu_material', 'MaterialID', 'ProductID')
-                    ->withPivot('QuantityNeeded');
+                    ->withPivot('QuantityNeeded')
+                    ->withTimestamps('CreatedDate', 'LastUpdatedDate');
     }
 }

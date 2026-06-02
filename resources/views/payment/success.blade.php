@@ -10,7 +10,7 @@
         text-align: center;
     }
 
-    /* Animasi centang */
+    /* Animasi centang bawaan kamu */
     .checkmark-wrapper {
         margin: 0 auto 1.5rem;
         width: 100px;
@@ -64,18 +64,41 @@
         color: inherit;
         text-decoration: none;
     }
+
+    /* ── Ukuran Tombol Bulat Lonjong (Capsule) Agak Gedean Dikit & Pas ── */
+    .btn-gold, .btn-outline-gold {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.92rem;          
+        font-weight: 500;
+        padding: 0.5rem 1.5rem;      
+        border-radius: 40px;         /* Mempertahankan bentuk bulat lonjong capsule */
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        height: 38px;                /* Tinggi diperbesar sedikit agar pas mantap */
+        min-width: 140px;            
+    }
+
+    .btn-gold {
+        background: var(--gold, #d4af37);
+        color: #000 !important;
+        border: 1px solid var(--gold, #d4af37);
+    }
+    .btn-gold:hover {
+        background: #f3e5ab;
+        border-color: #f3e5ab;
+    }
+
     .btn-outline-gold {
         background: transparent;
         border: 1px solid var(--gold, #d4af37);
-        color: var(--gold, #d4af37);
-        padding: 0.5rem 1rem;
-        border-radius: 40px;
-        text-decoration: none;
-        transition: all 0.3s ease;
+        color: var(--gold, #d4af37) !important;
     }
     .btn-outline-gold:hover {
         background: var(--gold-dim, rgba(212, 175, 55, 0.1));
-        color: var(--gold-light, #f3e5ab);
+        color: var(--gold-light, #f3e5ab) !important;
     }
 </style>
 @endpush
@@ -94,78 +117,66 @@
     <p>Terima kasih, pesanan Anda telah kami terima.</p>
 
     <div class="order-detail" id="orderDetail">
-        Memuat detail pesanan...
+        <div>
+            <strong>Nomor Pesanan:</strong> 
+            <span style="color: var(--gold);">{{ $order->order_code ?? $order->OrderID }}</span>
+        </div>
+        <div style="margin: 0.5rem 0;">
+            <strong>Metode Pembayaran:</strong> 
+            {{ strtoupper(str_replace('_', ' ', $order->payment_method ?? 'Midtrans Otomatis')) }}
+        </div>
+        <div>
+            <strong>Tanggal Transaksi:</strong> 
+            {{ $order->TanggalOrder ? \Carbon\Carbon::parse($order->TanggalOrder)->translatedFormat('d F Y, H:i') : now()->translatedFormat('d F Y, H:i') }} WIB
+        </div>
+        
+        <hr style="border-color:var(--border, #333); margin: 1rem 0;">
+        <div style="margin-bottom: 0.5rem;"><strong>Item Pesanan:</strong></div>
+        
+        @if($order->orderDetails && $order->orderDetails->count() > 0)
+            @foreach($order->orderDetails as $detail)
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border, #333); align-items: center;">
+                    
+                    @php
+                        // Cari data produk langsung berdasarkan foreign key pembawa item detail
+                        $idProduk = $detail->ProductID ?? $detail->product_id ?? null;
+                        $produkLangsung = App\Models\Product::where('ProductID', $idProduk)->first();
+                        
+                        // Tarik nama file image dan nama kopi berdasarkan database asli Anda
+                        $namaGambar = $produkLangsung ? $produkLangsung->image : ($detail->product->image ?? '');
+                        $namaKopi = $produkLangsung ? $produkLangsung->NameKopi : ($detail->product->NameKopi ?? 'Menu Kopi');
+                    @endphp
+                    
+                    <img src="{{ asset('products/' . $namaGambar) }}" 
+                         style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;" 
+                         onerror="this.src='https://placehold.co/40x40?text=☕'">
+                    
+                    <div style="flex:1">
+                        <div>{{ $namaKopi }} x {{ $detail->Qty }}</div>
+                        <div style="font-size:0.8rem; color: var(--gold);">Rp {{ number_format($detail->Subtotal, 0, ',', '.') }}</div>
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <p style="color: #888; font-size: 0.9rem;">Detail item tersimpan di sistem.</p>
+        @endif
+
+        <hr style="border-color:var(--border, #333); margin: 0.5rem 0;">
+        <div style="text-align:right; font-size:1.2rem; font-weight:bold; color:var(--gold);">
+            Total Bayar: Rp {{ number_format($order->TotalHarga, 0, ',', '.') }}
+        </div>
     </div>
 
-    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
-        <a href="{{ route('menu.index') }}" class="btn-gold">Pesan Lagi</a>
-        <a href="{{ route('riwayat.pesanan') }}" class="btn-outline-gold">Lihat Riwayat</a>
+    <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+        <a href="/menu" class="btn-gold">Pesan Lagi</a>
+        <a href="/riwayat-pesanan" class="btn-outline-gold">Lihat Riwayat</a>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    const lastOrder = localStorage.getItem('lastOrder');
-    
-    if (lastOrder) {
-        const order = JSON.parse(lastOrder);
-        
-        // 🌟 Sinkronisasi ID Database/String ke teks display halaman
-        const methodMap = {
-            '1': 'Transfer Bank',
-            '2': 'QRIS',
-            '3': 'E-Wallet',
-            'transfer': 'Transfer Bank',
-            'qris': 'QRIS',
-            'ewallet': 'E-Wallet'
-        };
-        
-        let itemsHtml = '';
-        
-        if (order.items && order.items.length > 0) {
-            order.items.forEach(item => {
-                // Menghitung subtotal per item dengan aman
-                const price = Number(item.price) || 0;
-                const qty = Number(item.quantity) || Number(item.Qty) || 0;
-                const itemName = item.name || item.ProductName || 'Menu';
-                const itemImg = item.img || 'https://placehold.co/40x40?text=☕';
-
-                itemsHtml += `
-                    <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border, #333);">
-                        <img src="${itemImg}" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;" onerror="this.src='https://placehold.co/40x40?text=☕'">
-                        <div style="flex:1">
-                            <div>${itemName} x ${qty}</div>
-                            <div style="font-size:0.8rem; color: var(--gold);">Rp ${(price * qty).toLocaleString('id-ID')}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // Pengaman isi variabel agar tidak muncul 'undefined' jika dikirim berbeda oleh controller
-        const displayId = order.orderId || order.order_code || '-';
-        const displayMethod = methodMap[order.method] || order.method || 'Lainnya';
-        const displayDate = order.date ? new Date(order.date).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString('id-ID');
-        const displayTotal = Number(order.total).toLocaleString('id-ID');
-
-        const detailHtml = `
-            <div><strong>Nomor Pesanan:</strong> <span style="color: var(--gold);">${displayId}</span></div>
-            <div style="margin: 0.5rem 0;"><strong>Metode Pembayaran:</strong> ${displayMethod}</div>
-            <div><strong>Tanggal Transaksi:</strong> ${displayDate}</div>
-            <hr style="border-color:var(--border, #333); margin: 1rem 0;">
-            <div style="margin-bottom: 0.5rem;"><strong>Item Pesanan:</strong></div>
-            ${itemsHtml}
-            <hr style="border-color:var(--border, #333); margin: 0.5rem 0;">
-            <div style="text-align:right; font-size:1.2rem; font-weight:bold; color:var(--gold);">Total Bayar: Rp ${displayTotal}</div>
-        `;
-        
-        document.getElementById('orderDetail').innerHTML = detailHtml;
-        
-        // Opsional: Hapus baris komentar di bawah jika ingin langsung membersihkan keranjang setelah sukses tampil
-        // localStorage.removeItem('lastOrder');
-    } else {
-        document.getElementById('orderDetail').innerHTML = '<p style="text-align:center;">Tidak ada data pesanan terbaru aktif.</p>';
-    }
+    localStorage.removeItem('lastOrder');
+    localStorage.removeItem('pendingOrder');
 </script>
 @endpush

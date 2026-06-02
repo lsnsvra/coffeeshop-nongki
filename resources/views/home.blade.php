@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,80 +14,152 @@
             box-sizing: border-box;
         }
 
-        :root {
+        /* ========== DARK MODE (default) ========== */
+        :root,
+        [data-theme="dark"] {
             --gold: #C9A84C;
             --gold-light: #E8C96A;
             --gold-dim: rgba(201,168,76,0.15);
-            --dark: #0A0A0A;
-            --dark-2: #111111;
-            --dark-3: #1A1A1A;
-            --cream: #F5EDD8;
-            --cream-dim: rgba(245,237,216,0.7);
+
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1A1A1A;
+            --bg-card: rgba(26,21,9,0.6);
+            --bg-card-hover: rgba(26,21,9,0.8);
+
+            --text-primary: #F5EDD8;
+            --text-dim: rgba(245,237,216,0.7);
             --text-muted: rgba(245,237,216,0.5);
+
+            --border-subtle: rgba(201,168,76,0.1);
+            --border-hover: rgba(201,168,76,0.4);
+
+            --hero-overlay: radial-gradient(circle at center, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.85) 100%);
+            --hero-brightness: brightness(0.35) saturate(0.8);
+
+            --footer-bg: transparent;
+            --footer-border: rgba(201,168,76,0.1);
+
+            --btn-secondary-bg: rgba(201,168,76,0.05);
+            --btn-secondary-hover-bg: rgba(201,168,76,0.15);
+            --btn-secondary-text: #F5EDD8;
+
+            --toggle-bg: rgba(201,168,76,0.1);
+            --toggle-border: rgba(201,168,76,0.3);
+            --toggle-icon-color: #E8C96A;
+            --toggle-hover-bg: rgba(201,168,76,0.2);
+
+            --features-gradient: linear-gradient(180deg, #0A0A0A 0%, #111111 100%);
+            --cta-gradient: linear-gradient(135deg, #111111, #1A1A1A);
+        }
+
+        /* ========== LIGHT MODE ========== */
+        [data-theme="light"] {
+            --gold: #A67C2A;
+            --gold-light: #C9A84C;
+            --gold-dim: rgba(166,124,42,0.12);
+
+            --bg-primary: #FFFBF2;
+            --bg-secondary: #FEF6E4;
+            --bg-tertiary: #F5EDD8;
+            --bg-card: rgba(255,251,242,0.85);
+            --bg-card-hover: rgba(255,251,242,0.98);
+
+            --text-primary: #1C150A;
+            --text-dim: rgba(28,21,10,0.72);
+            --text-muted: rgba(28,21,10,0.5);
+
+            --border-subtle: rgba(166,124,42,0.15);
+            --border-hover: rgba(166,124,42,0.5);
+
+            --hero-overlay: radial-gradient(circle at center, rgba(255,251,242,0.1) 0%, rgba(10,8,3,0.6) 100%);
+            --hero-brightness: brightness(0.55) saturate(0.9);
+
+            --footer-bg: #FEF6E4;
+            --footer-border: rgba(166,124,42,0.15);
+
+            --btn-secondary-bg: rgba(255,255,255,0.5);
+            --btn-secondary-hover-bg: rgba(255,255,255,0.8);
+            --btn-secondary-text: #1C150A;
+
+            --toggle-bg: rgba(255,255,255,0.7);
+            --toggle-border: rgba(166,124,42,0.35);
+            --toggle-icon-color: #A67C2A;
+            --toggle-hover-bg: rgba(255,255,255,0.95);
+
+            --features-gradient: linear-gradient(180deg, #FFFBF2 0%, #FEF6E4 100%);
+            --cta-gradient: linear-gradient(135deg, #FEF6E4, #F5EDD8);
         }
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: var(--dark);
-            color: var(--cream);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.4s ease, color 0.4s ease;
         }
+
+        /* ========== THEME TOGGLE BUTTON ========== */
+        .theme-toggle {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.5rem;
+            z-index: 1000;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: 1px solid var(--toggle-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .theme-toggle:hover {
+            background: var(--toggle-hover-bg);
+            border-color: var(--gold);
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 6px 20px rgba(201,168,76,0.25);
+        }
+
+        .theme-toggle i {
+            font-size: 18px;
+            color: var(--toggle-icon-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Hide/show icons based on theme */
+        [data-theme="dark"] .icon-sun { display: block; }
+        [data-theme="dark"] .icon-moon { display: none; }
+        [data-theme="light"] .icon-sun { display: none; }
+        [data-theme="light"] .icon-moon { display: block; }
 
         /* ========== ANIMATIONS ========== */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-
         @keyframes shimmerText {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
-
         @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
@@ -104,30 +176,22 @@
         .delay-4 { animation-delay: 0.4s; opacity: 0; }
         .delay-5 { animation-delay: 0.5s; opacity: 0; }
 
-.shimmer-word {
-    display: inline-block;
-    font-style: normal;
-    background: linear-gradient(90deg, 
-        #C9A84C 0%, 
-        #E8C96A 40%,
-        #FFFFFF 50%,
-        #E8C96A 60%,
-        #C9A84C 100%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: shimmerText 2s ease-in-out infinite;
-}
+        .shimmer-word {
+            display: inline-block;
+            font-style: italic;
+            background: linear-gradient(90deg,
+                var(--gold) 0%,
+                var(--gold-light) 40%,
+                #FFFFFF 50%,
+                var(--gold-light) 60%,
+                var(--gold) 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmerText 2s ease-in-out infinite;
+        }
 
-@keyframes shimmerText {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
         /* ========== HERO SECTION ========== */
         .hero {
             position: relative;
@@ -142,29 +206,22 @@
 
         .hero-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80') center/cover no-repeat;
-            filter: brightness(0.35) saturate(0.8);
+            filter: var(--hero-brightness);
             z-index: 0;
             transform: scale(1.05);
-            transition: transform 8s ease;
+            transition: transform 8s ease, filter 0.4s ease;
         }
 
-        .hero:hover .hero-bg {
-            transform: scale(1.1);
-        }
+        .hero:hover .hero-bg { transform: scale(1.1); }
 
         .hero-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.85) 100%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--hero-overlay);
             z-index: 1;
+            transition: background 0.4s ease;
         }
 
         .hero-content {
@@ -174,9 +231,7 @@
             margin: 0 auto;
         }
 
-        .logo {
-            margin-bottom: 2rem;
-        }
+        .logo { margin-bottom: 2rem; }
 
         .logo-text {
             font-family: 'Cormorant Garamond', serif;
@@ -217,18 +272,12 @@
             font-weight: 400;
             line-height: 1.2;
             margin-bottom: 1rem;
-        }
-
-        .hero-title em {
-            font-style: italic;
-            color: var(--gold);
-            position: relative;
-            display: inline-block;
+            color: #F5EDD8; /* always light in hero since bg is dark image */
         }
 
         .hero-description {
             font-size: clamp(0.95rem, 2vw, 1.1rem);
-            color: var(--cream-dim);
+            color: rgba(245,237,216,0.75);
             max-width: 550px;
             margin: 0 auto 2rem;
             line-height: 1.7;
@@ -243,7 +292,7 @@
 
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            color: var(--dark);
+            color: #0A0A0A;
             padding: 12px 32px;
             border-radius: 40px;
             text-decoration: none;
@@ -259,33 +308,30 @@
         .btn-primary::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             transition: left 0.5s ease;
         }
 
-        .btn-primary:hover::before {
-            left: 100%;
-        }
+        .btn-primary:hover::before { left: 100%; }
 
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(201,168,76,0.4);
-            color: var(--dark);
+            color: #0A0A0A;
         }
 
+        /* Hero secondary button always light since hero is dark */
         .btn-secondary {
-            border: 1px solid rgba(201,168,76,0.4);
-            color: var(--cream);
+            border: 1px solid rgba(245,237,216,0.4);
+            color: #F5EDD8;
             padding: 12px 32px;
             border-radius: 40px;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
-            background: rgba(201,168,76,0.05);
+            background: rgba(245,237,216,0.05);
             backdrop-filter: blur(4px);
             display: inline-flex;
             align-items: center;
@@ -293,17 +339,18 @@
         }
 
         .btn-secondary:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(201,168,76,0.15);
+            border-color: var(--gold-light);
+            color: var(--gold-light);
+            background: rgba(201,168,76,0.12);
             transform: translateY(-3px);
         }
 
         /* ========== FEATURES SECTION ========== */
         .features {
             padding: 6rem 2rem;
-            background: linear-gradient(180deg, var(--dark) 0%, var(--dark-2) 100%);
+            background: var(--features-gradient);
             position: relative;
+            transition: background 0.4s ease;
         }
 
         .section-title {
@@ -313,11 +360,11 @@
             font-weight: 400;
             margin-bottom: 3rem;
             position: relative;
+            color: var(--text-primary);
+            transition: color 0.4s ease;
         }
 
-        .section-title span {
-            color: var(--gold);
-        }
+        .section-title span { color: var(--gold); }
 
         .section-title::after {
             content: '';
@@ -339,18 +386,22 @@
         .feature-card {
             text-align: center;
             padding: 2rem;
-            background: rgba(26,21,9,0.6);
-            border: 1px solid rgba(201,168,76,0.1);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
             border-radius: 24px;
             transition: all 0.4s ease;
             backdrop-filter: blur(8px);
         }
 
         .feature-card:hover {
-            border-color: rgba(201,168,76,0.4);
+            border-color: var(--border-hover);
             transform: translateY(-8px);
-            background: rgba(26,21,9,0.8);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: var(--bg-card-hover);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="light"] .feature-card:hover {
+            box-shadow: 0 20px 40px rgba(166,124,42,0.1);
         }
 
         .feature-icon {
@@ -365,9 +416,7 @@
             transition: transform 0.3s ease;
         }
 
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1);
-        }
+        .feature-card:hover .feature-icon { transform: scale(1.1); }
 
         .feature-icon i {
             font-size: 28px;
@@ -378,19 +427,23 @@
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            transition: color 0.4s ease;
         }
 
         .feature-desc {
             font-size: 0.85rem;
-            color: var(--cream-dim);
+            color: var(--text-dim);
             line-height: 1.6;
+            transition: color 0.4s ease;
         }
 
         /* ========== MENU PREVIEW SECTION ========== */
         .menu-preview {
             padding: 6rem 2rem;
-            background: var(--dark);
+            background: var(--bg-primary);
             position: relative;
+            transition: background 0.4s ease;
         }
 
         .menu-grid {
@@ -402,8 +455,8 @@
         }
 
         .menu-card {
-            background: var(--dark-2);
-            border: 1px solid rgba(201,168,76,0.1);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
             border-radius: 20px;
             overflow: hidden;
             transition: all 0.4s ease;
@@ -412,8 +465,12 @@
 
         .menu-card:hover {
             transform: translateY(-8px);
-            border-color: rgba(201,168,76,0.4);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="light"] .menu-card:hover {
+            box-shadow: 0 20px 40px rgba(166,124,42,0.12);
         }
 
         .menu-img {
@@ -423,18 +480,16 @@
             transition: transform 0.6s ease;
         }
 
-        .menu-card:hover .menu-img {
-            transform: scale(1.05);
-        }
+        .menu-card:hover .menu-img { transform: scale(1.05); }
 
-        .menu-info {
-            padding: 1.2rem;
-        }
+        .menu-info { padding: 1.2rem; }
 
         .menu-name {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 0.25rem;
+            color: var(--text-primary);
+            transition: color 0.4s ease;
         }
 
         .menu-price {
@@ -455,35 +510,34 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: gap 0.3s ease;
+            transition: gap 0.3s ease, background 0.3s ease, border-color 0.3s ease;
             padding: 10px 24px;
-            border: 1px solid rgba(201,168,76,0.3);
+            border: 1px solid var(--border-subtle);
             border-radius: 40px;
-            background: rgba(201,168,76,0.05);
+            background: var(--gold-dim);
         }
 
         .btn-view-all a:hover {
             gap: 14px;
-            background: rgba(201,168,76,0.1);
+            background: rgba(201,168,76,0.12);
             border-color: var(--gold);
         }
 
         /* ========== CTA SECTION ========== */
         .cta-section {
             padding: 5rem 2rem;
-            background: linear-gradient(135deg, var(--dark-2), var(--dark-3));
+            background: var(--cta-gradient);
             text-align: center;
             position: relative;
             overflow: hidden;
+            transition: background 0.4s ease;
         }
 
         .cta-section::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -20%;
-            width: 140%;
-            height: 200%;
+            top: -50%; left: -20%;
+            width: 140%; height: 200%;
             background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
             animation: float 15s ease infinite;
         }
@@ -495,18 +549,21 @@
             margin-bottom: 1rem;
             position: relative;
             z-index: 1;
+            color: var(--text-primary);
+            transition: color 0.4s ease;
         }
 
         .cta-description {
-            color: var(--cream-dim);
+            color: var(--text-dim);
             margin-bottom: 2rem;
             position: relative;
             z-index: 1;
+            transition: color 0.4s ease;
         }
 
         .btn-cta {
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            color: var(--dark);
+            color: #0A0A0A;
             padding: 14px 40px;
             border-radius: 50px;
             text-decoration: none;
@@ -522,16 +579,18 @@
         .btn-cta:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(201,168,76,0.4);
-            color: var(--dark);
+            color: #0A0A0A;
         }
 
         /* ========== FOOTER ========== */
         .footer {
             padding: 2rem;
             text-align: center;
-            border-top: 1px solid rgba(201,168,76,0.1);
+            border-top: 1px solid var(--footer-border);
             font-size: 0.75rem;
             color: var(--text-muted);
+            background: var(--footer-bg);
+            transition: all 0.4s ease;
         }
 
         .footer-links {
@@ -548,46 +607,40 @@
             transition: color 0.3s;
         }
 
-        .footer-links a:hover {
-            color: var(--gold);
+        .footer-links a:hover { color: var(--gold); }
+
+        /* ========== LIGHT MODE EXTRA POLISH ========== */
+        /* Subtle texture for light bg */
+        [data-theme="light"] body {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        [data-theme="light"] .features {
+            box-shadow: inset 0 -1px 0 rgba(166,124,42,0.08);
         }
 
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            .features, .menu-preview, .cta-section {
-                padding: 3rem 1rem;
-            }
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            .btn-primary, .btn-secondary {
-                width: 220px;
-                justify-content: center;
-            }
-            .section-title {
-                font-size: 2rem;
-            }
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-links {
-                gap: 1rem;
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
-            }
+            .features, .menu-preview, .cta-section { padding: 3rem 1rem; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .btn-primary, .btn-secondary { width: 220px; justify-content: center; }
+            .section-title { font-size: 2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .footer-links { gap: 1rem; }
+            .theme-toggle { top: 0.8rem; right: 0.8rem; width: 40px; height: 40px; }
+            .theme-toggle i { font-size: 16px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Ganti tema">
+        <i class="fas fa-sun icon-sun"></i>
+        <i class="fas fa-moon icon-moon"></i>
+    </button>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-bg"></div>
@@ -646,32 +699,32 @@
     </section>
 
     <!-- Menu Preview Section -->
-<section class="menu-preview">
-    <h2 class="section-title">Menu <span>Populer</span></h2>
-    <div class="menu-grid">
-        <div class="menu-card animate-zoom delay-1">
-            <div class="menu-img" style="background-image: url('{{ asset('images/products/halzenutt_coffe.jpeg') }}');"></div>
-            <div class="menu-info">
-                <div class="menu-name">Hazelnut Coffee</div>
-                <div class="menu-price">Rp 40.000</div>
+    <section class="menu-preview">
+        <h2 class="section-title">Menu <span>Populer</span></h2>
+        <div class="menu-grid">
+            <div class="menu-card animate-zoom delay-1">
+                <div class="menu-img" style="background-image: url('{{ asset("images/products/halzenutt_coffe.jpeg") }}');"></div>
+                <div class="menu-info">
+                    <div class="menu-name">Hazelnut Coffee</div>
+                    <div class="menu-price">Rp 40.000</div>
+                </div>
+            </div>
+            <div class="menu-card animate-zoom delay-2">
+                <div class="menu-img" style="background-image: url('{{ asset("images/products/matcha_latte.jpeg") }}');"></div>
+                <div class="menu-info">
+                    <div class="menu-name">Matcha Latte</div>
+                    <div class="menu-price">Rp 45.000</div>
+                </div>
+            </div>
+            <div class="menu-card animate-zoom delay-3">
+                <div class="menu-img" style="background-image: url('{{ asset("images/products/french_fries.jpeg") }}');"></div>
+                <div class="menu-info">
+                    <div class="menu-name">French Fries</div>
+                    <div class="menu-price">Rp 22.000</div>
+                </div>
             </div>
         </div>
-        <div class="menu-card animate-zoom delay-2">
-            <div class="menu-img" style="background-image: url('{{ asset('images/products/matcha_latte.jpeg') }}');"></div>
-            <div class="menu-info">
-                <div class="menu-name">Matcha Latte</div>
-                <div class="menu-price">Rp 45.000</div>
-            </div>
-        </div>
-        <div class="menu-card animate-zoom delay-3">
-            <div class="menu-img" style="background-image: url('{{ asset('images/products/french_fries.jpeg') }}');"></div>
-            <div class="menu-info">
-                <div class="menu-name">French Fries</div>
-                <div class="menu-price">Rp 22.000</div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- CTA Section -->
     <section class="cta-section">
@@ -694,5 +747,21 @@
         </div>
         <p>©️ 2026 NONGKI Coffee. Hak cipta dilindungi.</p>
     </footer>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved preference
+        const saved = localStorage.getItem('nongki-theme') || 'dark';
+        html.setAttribute('data-theme', saved);
+
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('nongki-theme', next);
+        });
+    </script>
 </body>
 </html>
