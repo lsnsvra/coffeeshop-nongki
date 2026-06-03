@@ -411,73 +411,150 @@
         font-size: 0.875rem;
     }
 
-    /* ========== PRINT STYLES ========== */
+   /* ========== PRINT STYLES (FULL WIDTH OPTIMIZATION) ========== */
     .print-header { display: none; }
     .print-footer { display: none; }
 
     @media print {
-        @page { size: A4; margin: 20mm; }
-
-        .no-print,
-        .sidebar,
-        .btn-logout,
-        .sidebar-bottom,
-        .sidebar-user { display: none !important; }
-
-        body { background: white !important; color: black !important; font-family: 'Times New Roman', serif; }
-        .main-content { margin: 0 !important; padding: 0 !important; width: 100% !important; position: static !important; }
-
-        .print-header {
-            display: block !important;
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px double #000;
-            padding-bottom: 12px;
+        @page { 
+            size: A4; 
+            margin: 15mm 15mm 15mm 15mm; /* Memperkecil margin kertas agar area cetak lebih luas */
         }
-        .print-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 28pt; margin: 0; color: #000; }
-        .print-header p { margin: 4px 0; font-size: 10pt; color: #333; }
-        .print-header .report-title { font-weight: bold; text-transform: uppercase; margin-top: 10px; font-size: 14pt; }
-
-        .report-card-grid {
-            grid-template-columns: 1fr 1fr 1fr !important;
-            border: 1px solid #000;
-            border-radius: 0;
-            gap: 0;
-        }
-        .report-card {
-            border: none !important;
-            border-right: 1px solid #000 !important;
-            background: transparent !important;
-            padding: 14px 16px !important;
-            border-radius: 0 !important;
+        
+        /* 1. MEMAKSA KONTEN UTAMA MENJADI FULL WIDTH */
+        body, .fade-in-up, main, #wrapper, #content, .container, .container-fluid { 
+            background: #FFFFFF !important; 
+            color: #000000 !important; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
             transform: none !important;
         }
-        .report-card::before { display: none; }
-        .report-card:last-child { border-right: none !important; }
-        .report-card .icon { display: none; }
-        .report-card .value { color: black !important; font-size: 15pt !important; margin: 0; }
-        .report-card .value.small { font-size: 13pt !important; }
-        .report-card .label { color: #555 !important; font-size: 9pt !important; margin-bottom: 4px; }
 
-        .table-container { background: transparent !important; border: none !important; border-radius: 0 !important; margin-top: 20px; }
-        .table-header { padding: 0 0 10px 0 !important; border-bottom: 2px solid #000 !important; }
-        .table-header h4 { color: #000 !important; font-size: 14pt !important; }
-        .table-badge { display: none; }
-
-        .nongki-table { border: 1px solid #000 !important; }
-        .nongki-table thead tr { background: #eee !important; }
-        .nongki-table th { background: #eee !important; color: black !important; border: 1px solid #000 !important; font-size: 9pt !important; padding: 8px 12px !important; }
-        .nongki-table td { color: black !important; border: 1px solid #000 !important; padding: 8px 12px !important; font-size: 10pt !important; }
-        .order-id { color: #000 !important; }
-        .amount { color: #000 !important; font-weight: bold; }
-
-        .print-footer {
-            display: block !important;
-            margin-top: 50px;
-            float: right;
-            width: 200px;
-            text-align: center;
+        /* Sembunyikan elemen dashboard yang mengganggu */
+        .no-print, .filter-bar, .page-header, .sidebar, .navbar, .btn, .d-none, .table-header {
+            display: none !important;
         }
+
+        /* 2. KOP SURAT FORMAL */
+        .print-header { 
+            display: block !important; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border-bottom: 3px solid #000000; 
+            padding-bottom: 12px; 
+            width: 100% !important;
+        }
+        .print-header h1 { 
+            font-family: 'Times New Roman', serif !important;
+            font-size: 26pt; 
+            font-weight: bold;
+            color: #000000 !important; 
+            margin: 0; 
+            letter-spacing: 2px;
+        }
+        .print-header p { 
+            font-size: 10pt; 
+            color: #333333 !important;
+            margin: 3px 0; 
+        }
+        .print-header .report-title {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* 3. GRID STAT CARDS (Melebar Proporsional) */
+        .report-card-grid { 
+            display: flex !important; 
+            justify-content: space-between; 
+            gap: 20px;
+            margin: 25px 0; 
+            width: 100% !important;
+            page-break-inside: avoid;
+        }
+        .report-card { 
+            flex: 1;
+            border: 1px solid #CCCCCC !important; 
+            border-radius: 8px !important;
+            padding: 15px !important; 
+            text-align: center; 
+            background: #FAFAFA !important; 
+        }
+        .report-card::before, .report-card .icon { display: none !important; }
+        .report-card .label { 
+            font-size: 9pt !important; 
+            text-transform: uppercase; 
+            color: #555555 !important; 
+            font-weight: 600; 
+            margin-bottom: 6px;
+        }
+        .report-card .value { 
+            font-size: 16pt !important; 
+            font-weight: bold; 
+            color: #000000 !important; 
+        }
+        .report-card .value.small { font-size: 13pt !important; }
+
+        /* 4. TABEL FULL WIDTH */
+        .table-container, .table-responsive { 
+            border: none !important; 
+            background: transparent !important;
+            box-shadow: none !important;
+            margin-top: 20px; 
+            width: 100% !important;
+        }
+        .nongki-table { 
+            width: 100% !important; 
+            border-collapse: collapse !important; 
+        }
+        .nongki-table thead tr {
+            background: #EAEAEA !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .nongki-table th { 
+            color: #000000 !important; 
+            border: 1px solid #111111 !important; 
+            padding: 12px 10px !important; 
+            font-size: 10pt !important; 
+            font-weight: bold !important;
+            text-transform: uppercase;
+        }
+        .nongki-table td { 
+            border: 1px solid #111111 !important; 
+            padding: 10px !important; 
+            color: #000000 !important; 
+            font-size: 10pt !important;
+        }
+        
+        .order-id { font-family: monospace; color: #000000 !important; font-size: 9.5pt; }
+        .amount { color: #000000 !important; font-weight: bold; }
+        
+        .nongki-table td span {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            color: #000000 !important;
+            font-weight: bold !important;
+        }
+
+        /* 5. TANDA TANGAN */
+        .print-footer {
+            display: block !important; 
+            margin-top: 50px; 
+            text-align: right; 
+            font-size: 11pt;
+            width: 100% !important;
+            page-break-inside: avoid;
+        }
+        .print-footer p { margin: 2px 0; }
     }
 </style>
 @endpush
@@ -501,16 +578,19 @@
         </div>
     </div>
 
-    {{-- ========== FILTER BAR ========== --}}
+    
+   {{-- ========== FILTER BAR ========== --}}
     <div class="filter-bar no-print">
         <span class="filter-bar-label"><i class="fa-solid fa-calendar-days" style="margin-right:6px;"></i>Periode</span>
-
-        <form action="" method="GET" class="filter-group">
+        
+        {{-- Pastikan method adalah GET dan mengarah ke URL laporan --}}
+        <form action="{{ url('admin/laporan') }}" method="GET" class="filter-group">
             <input type="date" name="start" value="{{ $start }}" class="form-nongki">
             <span class="filter-separator">—</span>
             <input type="date" name="end" value="{{ $end }}" class="form-nongki">
-
+            
             <div class="filter-actions">
+                {{-- Tombol ini HARUS memiliki type="submit" agar form mengirimkan tanggal yang kamu pilih --}}
                 <button type="submit" class="btn-outline-nongki">
                     <i class="fa-solid fa-magnifying-glass"></i> Filter Data
                 </button>
@@ -551,25 +631,72 @@
                 <thead>
                     <tr>
                         <th>ID Order</th>
-                        <th>Tanggal &amp; Waktu</th>
+                        <th>Tanggal</th>
+                        <th>Pembeli</th>
+                        <th>Detail Produk</th>
+                        <th>Status</th>
                         <th style="text-align: right;">Total Harga</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($transaksiTerakhir as $t)
                     <tr>
+                        {{-- ID Order --}}
                         <td><span class="order-id">#{{ str_pad($t->OrderID, 5, '0', STR_PAD_LEFT) }}</span></td>
-                        <td>{{ \Carbon\Carbon::parse($t->CreatedDate)->format('d/m/Y H:i') }}</td>
-                        <td style="text-align: right;"><span class="amount">Rp {{ number_format($t->TotalHarga ?? $t->total ?? 0, 0, ',', '.') }}</span></td>
+                        
+                        {{-- Tanggal (SINKRON MENGGUNAKAN TanggalOrder) --}}
+                        <td>
+                            @if(!empty($t->TanggalOrder))
+                                {{ \Carbon\Carbon::parse($t->TanggalOrder)->format('d/m/y H:i') }} WIB
+                            @else
+                                --
+                            @endif
+                        </td>
+                        
+                        {{-- Pembeli --}}
+                        <td>{{ $t->nama_pembeli ?? 'Tamu / Kasir' }}</td>
+                        
+                        {{-- Detail Produk --}}
+                        <td>
+                            @php
+                                $details = DB::table('order_details')
+                                    ->join('products', 'order_details.ProductID', '=', 'products.ProductID')
+                                    ->where('order_details.OrderID', $t->OrderID)
+                                    ->get();
+                            @endphp
+                            @foreach($details as $item)
+                                <div style="font-size: 0.75rem;">• {{ $item->NamaKopi ?? $item->NamaProduct }} ({{ $item->Qty }}x)</div>
+                            @endforeach
+                        </td>
+                        
+                        {{-- Status (OTOMATIS MENGUBAH SETTLEMENT/PAID MENJADI LUNAS DENGAN BADGE HIJAU) --}}
+                        <td>
+                            @php
+                                $statusRaw = strtolower($t->StatusOrder ?? '');
+                                $isLunas = in_array($statusRaw, ['paid', 'settlement', 'success', 'lunas']);
+                            @endphp
+
+                            @if($isLunas)
+                                <span style="color: #27AE60; background: rgba(39, 174, 96, 0.1); padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; border: 1px solid rgba(39, 174, 96, 0.2); display: inline-block;">
+                                    Lunas
+                                </span>
+                            @elseif($statusRaw == 'pending')
+                                <span style="color: #E2B93B; background: rgba(226, 185, 59, 0.1); padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; border: 1px solid rgba(226, 185, 59, 0.2); display: inline-block;">
+                                    Pending
+                                </span>
+                            @else
+                                <span style="color: #E2B93B; background: rgba(226, 185, 59, 0.1); padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; border: 1px solid rgba(226, 185, 59, 0.2); display: inline-block;">
+                                    {{ ucfirst($t->StatusOrder) }}
+                                </span>
+                            @endif
+                        </td>
+                        
+                        {{-- Total Harga --}}
+                        <td style="text-align: right;"><span class="amount">Rp {{ number_format($t->TotalHarga, 0, ',', '.') }}</span></td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3">
-                            <div class="empty-state">
-                                <i class="fa-regular fa-folder-open" style="font-size: 1.8rem; margin-bottom: 10px; color: var(--gold-dim); display:block;"></i>
-                                Tidak ada data untuk periode ini.
-                            </div>
-                        </td>
+                        <td colspan="6" class="empty-state">Tidak ada data transaksi pada periode ini.</td>
                     </tr>
                     @endforelse
                 </tbody>
