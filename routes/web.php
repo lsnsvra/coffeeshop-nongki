@@ -12,9 +12,11 @@ use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+
 
 // ============================================================
 // 1. ROUTE PUBLIC (LANDING PAGE & MENU PELANGGAN)
@@ -39,7 +41,23 @@ Route::get('/products', function () {
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+Route::middleware(['auth'])->group(function () {
+    // Jalur utama riwayat pesanan (menggunakan Controller agar data dinamis dari DB terlempar ke Blade)
+    Route::get('/riwayat-pesanan', [OrderController::class, 'riwayat'])->name('riwayat.pesanan');
+    
+    // Pastikan baris ini ada di sini dan mengarah ke PaymentController
+    Route::get('/order-success/{order_id}', [PaymentController::class, 'orderSuccess'])->name('order.success');
+    Route::get('/order-detail/{id}', [PaymentController::class, 'orderSuccess'])->name('order.detail');
+});
+
 require __DIR__.'/auth.php';
+
+
+// ============================================================
+// 🌟 AREA JALUR PUBLIK PAYMENT GATEWAY (DI LUAR AUTH)
+// ============================================================
+// Dipindahkan ke sini agar Midtrans & Postman tidak dihadang halaman login / Error 419
+Route::post('/midtrans-callback', [PaymentController::class, 'handleNotification']);
 
 
 // ============================================================
@@ -47,10 +65,10 @@ require __DIR__.'/auth.php';
 // ============================================================
 Route::middleware('auth')->group(function () {
     
-    Route::post('/checkout/instan/{id}', [TransaksiController::class, 'checkoutInstan'])->name('checkout.instan');
-    Route::post('/proses-pembayaran', [TransaksiController::class, 'simpanTransaksi'])->name('transaksi.simpan');
-
-    // REDIRECT DASHBOARD CERDAS (DIPERBAIKI: Panggil method di DashboardController)
+    Route::post('/checkout/instan/{id}', [PaymentController::class, 'checkoutInstan'])->name('checkout.instan');
+    Route::post('/order/reorder/{id}', [PaymentController::class, 'reorder'])->name('order.reorder');
+    Route::post('/proses-pembayaran', [PaymentController::class, 'simpanTransaksi'])->name('transaksi.simpan');
+    // REDIRECT DASHBOARD CERDAS (Panggil method di DashboardController)
     Route::get('/dashboard', [DashboardController::class, 'redirectBasedOnRole'])->name('dashboard');
 
     Route::get('/manager/dashboard', function () {
@@ -67,15 +85,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/menu-kopi', [UserController::class, 'semuaMenu'])->name('customer.menu');
 
     Route::get('/keranjang', function () { return view('cart.keranjang'); })->name('keranjang');
-    Route::get('/riwayat-pesanan', function () { return view('orders.riwayat-pesanan'); })->name('riwayat.pesanan');
     Route::get('/favorit', function () { return view('favorites.favorit'); })->name('favorit');
     Route::get('/profil', function () { return view('profile.profil'); })->name('profil');
     Route::get('/pengaturan', function () { return view('settings.pengaturan'); })->name('pengaturan');
     
     Route::get('/pembayaran', function () { return view('checkout.index'); })->name('payment.index');
-    Route::get('/order-success', function () { return view('payment.success'); })->name('order.success');
 
-    // Payment API
+    // Payment API Internal
     Route::post('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
     Route::get('/payment/status/{orderId}', [PaymentController::class, 'checkStatus'])->name('payment.status');
 });

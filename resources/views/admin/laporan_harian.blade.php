@@ -31,3 +31,4 @@
     <p style="color: var(--text-muted);">Grafik dan tabel detail akan ditampilkan di sini.</p>
 </div>
 @endsection
+

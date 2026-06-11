@@ -28,29 +28,27 @@ class RecipeController extends Controller
      * Simpan bahan baku ke dalam resep menu (Pivot Table)
      */
     public function store(Request $request, $id)
-    {
-        // Validasi input dari form lu
-        $request->validate([
-            'MaterialID' => 'required',
-            'QuantityNeeded' => 'required|numeric|min:0.1'
-        ]);
+{
+    $request->validate([
+        'MaterialID' => 'required',
+        'QuantityNeeded' => 'required|numeric|min:0.1'
+    ]);
 
-        $product = Product::findOrFail($id);
+    $product = Product::findOrFail($id);
 
-        // Cek dulu, jangan sampe bahan yang sama diinput dua kali ke menu yang sama
-        if ($product->materials()->where('menu_material.MaterialID', $request->MaterialID)->exists()) {
-            return back()->with('error', 'Bahan baku ini sudah ada di komposisi resep!');
-        }
-
-        // Simpan ke tabel pivot (menu_material)
-        $product->materials()->attach($request->MaterialID, [
-            'QuantityNeeded' => $request->QuantityNeeded,
-            'CreatedDate' => Carbon::now(),
-            'LastUpdatedDate' => Carbon::now()
-        ]);
-
-        return back()->with('success', 'Bahan berhasil ditambahkan ke resep!');
+    if ($product->materials()->where('menu_material.MaterialID', $request->MaterialID)->exists()) {
+        return back()->with('error', 'Bahan baku ini sudah ada di komposisi resep!');
     }
+
+    // Mengisi kolom pivot secara manual karena kita tidak memakai otomatisasi timestamps bawaan Laravel
+    $product->materials()->attach($request->MaterialID, [
+        'QuantityNeeded' => $request->QuantityNeeded,
+        'CreatedDate' => Carbon::now(),
+        'LastUpdatedDate' => Carbon::now()
+    ]);
+
+    return back()->with('success', 'Bahan berhasil ditambahkan ke resep!');
+}
 
     /**
      * Hapus bahan baku dari resep

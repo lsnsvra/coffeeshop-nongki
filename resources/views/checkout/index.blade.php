@@ -309,7 +309,6 @@
                 </div>
             </div>
 
-            {{-- Baris subtotal / pajak / total --}}
             <div style="margin-top:1rem;border-top:1px dashed rgba(255,255,255,0.07);padding-top:1rem;" id="summaryRows" style="display:none;">
                 <div class="summary-row"><span>Subtotal</span><span id="subtotalAmount">Rp 0</span></div>
                 <div class="summary-row"><span>Pajak (10%)</span><span id="pajakAmount">Rp 0</span></div>
@@ -392,9 +391,7 @@
 
 <script>
 // ============================================================
-// KEY PER USER — ikuti pola layouts/app.blade.php
-// window.CART_ITEMS_KEY   = 'cart_items_u{id}'
-// window.CART_STORAGE_KEY = 'cart_count_u{id}'
+// KEY PER USER
 // ============================================================
 const PAY_CART_KEY       = window.CART_ITEMS_KEY   || 'cart_items_u0';
 const PAY_CART_COUNT_KEY = window.CART_STORAGE_KEY || 'cart_count_u0';
@@ -412,8 +409,23 @@ const MAX_POLLING_ATTEMPTS  = 200;
 const MANUAL_FALLBACK_AFTER = 100;
 
 // ============================================================
-// LOAD CART — pakai key per user dari window
+// INITIAL LOAD
 // ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    loadCart();
+    
+    // Event listener untuk tombol close modal agar reset state tombol utama
+    const closeBtn = document.getElementById('closeModalBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            document.getElementById('paymentModal').classList.remove('active');
+            stopPolling();
+            stopTimer();
+            resetCheckoutButton();
+        });
+    }
+});
+
 function loadCart() {
     try {
         const raw = localStorage.getItem(PAY_CART_KEY);
@@ -422,7 +434,6 @@ function loadCart() {
         cart = [];
     }
 
-    // Normalisasi
     cart = cart
         .map(item => ({
             ...item,
@@ -435,9 +446,6 @@ function loadCart() {
     renderCart();
 }
 
-// ============================================================
-// KALKULASI
-// ============================================================
 function calculateTotal() {
     const subtotal   = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
     const pajak      = Math.round(subtotal * 0.1);
@@ -445,9 +453,6 @@ function calculateTotal() {
     return { subtotal, pajak, grandTotal };
 }
 
-// ============================================================
-// RENDER CART
-// ============================================================
 function renderCart() {
     const container = document.getElementById('cartItemsList');
     const summaryRows = document.getElementById('summaryRows');
@@ -494,13 +499,10 @@ function renderCart() {
     if (summaryRows) summaryRows.style.display = 'block';
 }
 
-// ============================================================
-// HELPER
-// ============================================================
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, m =>
-        ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])
     );
 }
 
@@ -515,9 +517,6 @@ document.querySelectorAll('.method-item').forEach(m => {
     });
 });
 
-// ============================================================
-// ALERT SYSTEM
-// ============================================================
 function showNongkiAlert(message) {
     document.getElementById('nongkiAlertMessage').innerText = message;
     document.getElementById('nongkiAlertModal').classList.add('active');
@@ -526,8 +525,16 @@ function closeNongkiAlert() {
     document.getElementById('nongkiAlertModal').classList.remove('active');
 }
 
+function resetCheckoutButton() {
+    const btn = document.getElementById('checkoutBtn');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock" style="margin-right:8px;font-size:0.85rem;"></i> Buat Pesanan Sekarang';
+    }
+}
+
 // ============================================================
-// CHECKOUT — kirim ke backend → Midtrans
+// PROSES PEMBUATAN TRANSAKSI (CHECKOUT)
 // ============================================================
 document.getElementById('checkoutBtn').addEventListener('click', async function() {
     if (cart.length === 0) {
@@ -571,24 +578,27 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
 
         currentOrderId = data.order_id;
 
-        // ---- MIDTRANS SNAP ----
+        // ---- MIDTRANS SNAP FLOW ----
         if (data.snap_token) {
             document.getElementById('paymentModal').classList.remove('active');
             snap.pay(data.snap_token, {
-                onSuccess: result  => handlePaymentSuccess(result),
-                onPending: result  => {
-                    currentOrderId = result.order_id;
+                onSuccess: result => {
+                    const orderId = result.order_id || result.order_code || currentOrderId;
+                    handlePaymentSuccess({ order_id: orderId, transaction_status: result.transaction_status });
+                },
+                onPending: result => {
+                    currentOrderId = result.order_id || currentOrderId;
                     showModal('polling');
-                    startPolling(result.order_id);
+                    startPolling(currentOrderId);
                     startTimer(15 * 60);
                 },
-                onError:   result  => handlePaymentError('Pembayaran gagal: ' + (result.status_message || 'Silakan coba lagi.')),
-                onClose:   ()      => resetCheckoutButton()
+                onError: result => handlePaymentError('Pembayaran gagal: ' + (result.status_message || 'Silakan coba lagi.')),
+                onClose: () => resetCheckoutButton()
             });
             return;
         }
 
-        // ---- NON-SNAP (QR / VA) ----
+        // ---- NON-SNAP CUSTOM PAYMENT DETAIL ----
         renderPaymentDetail(data, selectedMethod);
         showModal('payment');
         startPolling(data.order_id);
@@ -601,17 +611,13 @@ document.getElementById('checkoutBtn').addEventListener('click', async function(
     }
 });
 
-// ============================================================
-// RENDER DETAIL PEMBAYARAN (non-Snap)
-// ============================================================
 function renderPaymentDetail(data, method) {
     const modalBody = document.getElementById('modalBody');
     const calc      = calculateTotal();
     const total     = data.total || calc.grandTotal;
 
     if (method === 'qris') {
-        const qrUrl = data.qr_code_url ||
-            `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.order_id)}`;
+        const qrUrl = data.qr_code_url || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.order_id)}`;
         modalBody.innerHTML = `
             <div class="qr-code">
                 <img src="${qrUrl}" width="200" height="200" alt="QR Code NONGKI">
@@ -639,8 +645,7 @@ function renderPaymentDetail(data, method) {
                 Rp ${total.toLocaleString('id-ID')}
             </h2>
             <p style="font-size:0.8rem;color:#A0A0A0;">
-                <i class="fas fa-info-circle"></i>
-                Transfer nominal PERSIS sesuai tagihan (termasuk angka unik jika ada).
+                <i class="fas fa-info-circle"></i> Transfer nominal PERSIS sesuai tagihan.
             </p>`;
     } else {
         modalBody.innerHTML = `
@@ -656,9 +661,6 @@ function renderPaymentDetail(data, method) {
     }
 }
 
-// ============================================================
-// KONTROL MODAL STATE
-// ============================================================
 function showModal(state) {
     document.getElementById('paymentModal').classList.add('active');
     ['loadingState','modalBody','statusBar','paymentTimer','successState','manualConfirmBtn','closeModalBtn']
@@ -681,7 +683,7 @@ function showModal(state) {
 }
 
 // ============================================================
-// POLLING STATUS — cek ke backend setiap 3 detik
+// AUTOMATIC POLLING SYSTEM
 // ============================================================
 function startPolling(orderId) {
     stopPolling();
@@ -693,11 +695,11 @@ function startPolling(orderId) {
         if (pollingAttempts % 3 === 0) updateStatusBar('checking');
 
         try {
-            const res  = await fetch(`{{ url('/payment/status') }}/${orderId}`, {
+            const res = await fetch(`{{ url('/payment/status') }}/${orderId}`, {
                 headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
             });
             if (!res.ok) throw new Error('Network error');
-            const data   = await res.json();
+            const data = await res.json();
             const status = data.transaction_status || data.status;
             handleStatusResponse(status, orderId);
         } catch(e) {
@@ -741,7 +743,49 @@ function handleStatusResponse(status, orderId) {
 }
 
 // ============================================================
-// STATUS BAR
+// CALLBACK HANDLERS (SUCCESS & ERROR)
+// ============================================================
+function handlePaymentSuccess(result) {
+    stopPolling();
+    stopTimer();
+    showModal('success');
+    updateStatusBar('paid');
+
+    // Kosongkan Keranjang Belanja lokal user
+    localStorage.removeItem(PAY_CART_KEY);
+    localStorage.removeItem(PAY_CART_COUNT_KEY);
+
+    if (typeof updateBadges === 'function') updateBadges(0);
+
+    const orderData = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+    orderData.transaction_status = result.transaction_status || 'settlement';
+    localStorage.setItem('lastOrder', JSON.stringify(orderData));
+    localStorage.removeItem('pendingOrder');
+
+    // Ambil order id untuk dialihkan secara aman lewat URL dinamis
+    const successOrderId = result.order_id || result.order_code || currentOrderId;
+
+    setTimeout(() => { 
+        window.location.href = "/order-success/" + successOrderId; 
+    }, 2000);
+}
+
+function handlePaymentError(msg) {
+    stopPolling();
+    stopTimer();
+    document.getElementById('paymentModal').classList.remove('active');
+    showNongkiAlert(msg);
+    resetCheckoutButton();
+}
+
+function handleManualConfirm() {
+    if (currentOrderId) {
+        handlePaymentSuccess({ order_id: currentOrderId, transaction_status: 'settlement' });
+    }
+}
+
+// ============================================================
+// INTERFACE REALTIME COUNTER
 // ============================================================
 function updateStatusBar(state) {
     const dot   = document.getElementById('statusDot');
@@ -760,9 +804,6 @@ function updateStatusBar(state) {
     value.textContent = s.text;
 }
 
-// ============================================================
-// TIMER COUNTDOWN
-// ============================================================
 function startTimer(seconds) {
     stopTimer();
     let remaining = seconds;
@@ -784,109 +825,10 @@ function stopTimer() {
 }
 
 function updateTimerDisplay(seconds) {
-    const m  = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s  = String(seconds % 60).padStart(2, '0');
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
     const el = document.getElementById('timerDisplay');
     if (el) el.textContent = `${m}:${s}`;
 }
-
-// ============================================================
-// HANDLE SUCCESS — bersihkan cart per user
-// ============================================================
-function handlePaymentSuccess(result) {
-    updateStatusBar('paid');
-    showModal('success');
-    stopPolling(); stopTimer();
-
-    // Hapus cart & count user yang sedang login
-    localStorage.removeItem(PAY_CART_KEY);
-    localStorage.removeItem(PAY_CART_COUNT_KEY);
-
-    if (typeof updateBadges === 'function') updateBadges(0);
-
-    const orderData = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
-    orderData.transaction_status = result.transaction_status || 'settlement';
-    localStorage.setItem('lastOrder', JSON.stringify(orderData));
-    localStorage.removeItem('pendingOrder');
-
-    setTimeout(() => { window.location.href = "{{ route('order.success') }}"; }, 2000);
-}
-
-// ============================================================
-// HANDLE ERROR
-// ============================================================
-function handlePaymentError(message) {
-    document.getElementById('paymentModal').classList.remove('active');
-    showNongkiAlert(message);
-    resetCheckoutButton();
-    localStorage.removeItem('pendingOrder');
-}
-
-// ============================================================
-// KONFIRMASI MANUAL (FALLBACK)
-// ============================================================
-async function handleManualConfirm() {
-    if (!currentOrderId) {
-        showNongkiAlert('Order ID tidak ditemukan. Silakan hubungi kasir.');
-        return;
-    }
-    const btn = document.getElementById('manualConfirmBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
-
-    try {
-        const res    = await fetch(`{{ url('/payment/status') }}/${currentOrderId}`, {
-            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
-        });
-        const data   = await res.json();
-        const status = data.transaction_status || data.status;
-
-        if (['capture','settlement','paid'].includes(status)) {
-            handlePaymentSuccess({ order_id: currentOrderId, transaction_status: status });
-        } else {
-            const orderData = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
-            orderData.transaction_status = 'pending_manual';
-            localStorage.setItem('lastOrder', JSON.stringify(orderData));
-            localStorage.removeItem(PAY_CART_KEY);
-            localStorage.removeItem(PAY_CART_COUNT_KEY);
-            localStorage.removeItem('pendingOrder');
-            if (typeof updateBadges === 'function') updateBadges(0);
-            window.location.href = "{{ route('order.success') }}";
-        }
-    } catch(e) {
-        showNongkiAlert('Gagal memverifikasi. Hubungi kasir dengan Order ID: ' + currentOrderId);
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle" style="margin-right:6px;"></i> Saya Sudah Bayar (Konfirmasi Manual)';
-    }
-}
-
-// ============================================================
-// RESET TOMBOL CHECKOUT
-// ============================================================
-function resetCheckoutButton() {
-    const btn = document.getElementById('checkoutBtn');
-    if (!btn) return;
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-lock" style="margin-right:8px;font-size:0.85rem;"></i> Buat Pesanan Sekarang';
-}
-
-// ============================================================
-// TUTUP MODAL
-// ============================================================
-document.getElementById('closeModalBtn').addEventListener('click', function() {
-    stopPolling(); stopTimer();
-    document.getElementById('paymentModal').classList.remove('active');
-    localStorage.removeItem('pendingOrder');
-    resetCheckoutButton();
-});
-
-window.onclick = function(e) {
-    if (e.target === document.getElementById('nongkiAlertModal')) closeNongkiAlert();
-};
-
-// ============================================================
-// INIT
-// ============================================================
-document.addEventListener('DOMContentLoaded', loadCart);
 </script>
 @endpush

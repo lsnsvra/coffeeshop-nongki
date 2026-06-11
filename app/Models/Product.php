@@ -30,8 +30,7 @@ class Product extends Model
 
     public function materials()
     {
-        // Hapus withTimestamps, masukin semua nama kolom ekstra ke withPivot
         return $this->belongsToMany(Material::class, 'menu_material', 'ProductID', 'MaterialID')
-                    ->withPivot('QuantityNeeded', 'CreatedDate', 'LastUpdatedDate'); 
+                    ->withPivot('QuantityNeeded', 'CreatedDate', 'LastUpdatedDate');
     }
 }

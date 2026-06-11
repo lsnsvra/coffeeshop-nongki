@@ -57,6 +57,7 @@
     --success: #27794A;
   }
 
+
   @media (prefers-color-scheme: light) {
     html:not([data-theme]) {
       --bg: #F5F0E8;
@@ -75,6 +76,7 @@
       --success: #27794A;
     }
   }
+
 
   body {
     font-family: 'DM Sans', sans-serif;
@@ -190,7 +192,6 @@
   }
 
   .benefits { display: flex; flex-direction: column; gap: .7rem; }
-
   .benefit-item { display: flex; align-items: center; gap: .75rem; }
 
   .benefit-icon {
@@ -206,6 +207,7 @@
   }
 
   .benefit-icon svg { width: 14px; height: 14px; color: var(--gold); }
+
 
   .benefit-text { font-size: .84rem; color: rgba(255, 255, 255, 0.68); }
 
@@ -226,8 +228,10 @@
     background: var(--panel-bg);
     display: flex;
     flex-direction: column;
+
     justify-content: center;
     padding: 2.75rem;
+
     position: relative;
     overflow-y: auto;
     border-left: 1px solid var(--border);
@@ -237,6 +241,7 @@
 
   .form-panel::-webkit-scrollbar { width: 3px; }
   .form-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
 
   /* THEME TOGGLE */
   .theme-toggle {
@@ -286,8 +291,9 @@
     background: var(--tab-bg);
     padding: .45rem;
     border-radius: 13px;
+
     margin-bottom: 1.75rem;
-    transition: background var(--transition);
+  transition: background var(--transition);
   }
 
   .auth-tab {
@@ -311,14 +317,18 @@
 
   .auth-tab:not(.active):hover { color: var(--gold); }
 
+
   /* FORM HEADER */
   .form-header { margin-bottom: 1.5rem; }
 
+  /* FORM HEADER */
+  .form-header { margin-bottom: 1.5rem; }
   .form-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.9rem;
     font-weight: 400;
     color: var(--text-1);
+
     margin-bottom: .35rem;
     transition: color var(--transition);
   }
@@ -328,6 +338,9 @@
   /* INPUTS */
   .form-group { margin-bottom: 1rem; }
 
+
+  /* INPUTS */
+  .form-group { margin-bottom: 1rem; position: relative; }
   .form-label {
     display: block;
     font-size: .72rem;
@@ -340,6 +353,8 @@
 
   .input-wrap { position: relative; }
 
+
+  .input-wrap { position: relative; }
   .input-icon {
     position: absolute;
     left: .9rem;
@@ -382,6 +397,8 @@
     color: var(--text-3);
     transition: color var(--transition);
   }
+  .eye-toggle:hover { color: var(--gold); }
+
 
   .eye-toggle:hover { color: var(--gold); }
 
@@ -396,12 +413,16 @@
     transition: all var(--transition);
   }
 
+
+
   .strength-segment.weak { background: #E05252; }
   .strength-segment.fair { background: #E09F3E; }
   .strength-segment.good { background: #70B8FF; }
   .strength-segment.strong { background: #52B788; }
 
+
   .strength-text { font-size: .7rem; color: var(--text-3); margin-top: 4px; }
+
 
   /* TERMS */
   .terms-wrap {
@@ -413,13 +434,17 @@
     user-select: none;
   }
 
+
   .terms-wrap input { display: none; }
+
 
   .terms-check {
     width: 17px;
     height: 17px;
     border: 1.5px solid var(--border-strong);
+
     border-radius: 5px;
+
     background: var(--input-bg);
     display: flex;
     align-items: center;
@@ -429,7 +454,9 @@
     transition: all var(--transition);
   }
 
+
   .terms-wrap input:checked + .terms-check { background: var(--gold); border-color: var(--gold); }
+
 
   .terms-wrap input:checked + .terms-check::after {
     content: '';
@@ -439,10 +466,15 @@
     border-bottom: 2px solid #0A0A0A;
     transform: rotate(-45deg) translateY(-1px);
   }
+  .terms-text { font-size: .8rem; color: var(--text-2); line-height: 1.45; }
+  .terms-text a { color: var(--gold); text-decoration: none; }
+  .terms-text a:hover { text-decoration: underline; }
+
 
   .terms-text { font-size: .8rem; color: var(--text-2); line-height: 1.45; }
   .terms-text a { color: var(--gold); text-decoration: none; }
   .terms-text a:hover { text-decoration: underline; }
+
 
   /* BUTTONS */
   .btn-submit {
@@ -473,9 +505,13 @@
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
     transition: left .5s ease;
   }
+  .btn-submit:hover::before { left: 100%; }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 7px 22px rgba(201, 168, 76, 0.38); }
+
 
   .btn-submit:hover::before { left: 100%; }
   .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 7px 22px rgba(201, 168, 76, 0.38); }
+
 
   .divider { display: flex; align-items: center; gap: .9rem; margin: 1.25rem 0; }
   .div-line { flex: 1; height: 1px; background: var(--border-strong); }
@@ -576,6 +612,7 @@
 
   <!-- FORM PANEL -->
   <div class="form-panel">
+
     <div class="sys-badge" id="sysBadge" title="Klik untuk kembali ikuti sistem">
       <div class="sys-dot"></div>
       <span id="sysLabel">Ikut sistem</span>
@@ -653,13 +690,15 @@
             </svg>
           </span>
         </div>
-        <div class="strength-bar">
-          <div class="strength-segment" id="s1"></div>
-          <div class="strength-segment" id="s2"></div>
-          <div class="strength-segment" id="s3"></div>
-          <div class="strength-segment" id="s4"></div>
+        <div class="strength-container">
+          <div class="strength-text" id="strength-label">Masukkan password</div>
+          <div class="strength-bar">
+            <div class="strength-segment" id="s1"></div>
+            <div class="strength-segment" id="s2"></div>
+            <div class="strength-segment" id="s3"></div>
+            <div class="strength-segment" id="s4"></div>
+          </div>
         </div>
-        <div class="strength-text" id="strength-label">Masukkan password</div>
       </div>
 
       <div class="form-group a-up d5">
@@ -801,4 +840,6 @@
   }
   </script>
 </body>
+
 </html>
+
