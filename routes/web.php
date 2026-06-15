@@ -11,6 +11,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\StokController;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
@@ -105,6 +106,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     
+    // Hapus tulisan '/admin' dan 'admin.' karena sudah ter-cover otomatis oleh Group di atas
+  Route::get('/laporan/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.exportPdf');
+
     // ---- MANAJEMEN MENU ----
     Route::get('/menu', [ProductController::class, 'index'])->name('menu');
     Route::post('/menu/store', [ProductController::class, 'store'])->name('menu.store');

@@ -590,16 +590,16 @@
             <input type="date" name="end" value="{{ $end }}" class="form-nongki">
             
             <div class="filter-actions">
-                {{-- Tombol ini HARUS memiliki type="submit" agar form mengirimkan tanggal yang kamu pilih --}}
-                <button type="submit" class="btn-outline-nongki">
-                    <i class="fa-solid fa-magnifying-glass"></i> Filter Data
-                </button>
-                <button type="button" onclick="window.print()" class="btn-nongki">
-                    <i class="fa-solid fa-file-pdf"></i> Export PDF
-                </button>
-            </div>
-        </form>
-    </div>
+    <button type="submit" class="btn-outline-nongki">
+        <i class="fa-solid fa-magnifying-glass"></i> Filter Data
+    </button>
+    <a href="{{ route('admin.laporan.exportPdf', ['start_date' => $start, 'end_date' => $end]) }}" 
+       class="btn-nongki" style="text-decoration: none;">
+        <i class="fa-solid fa-file-pdf"></i> Export PDF
+    </a>
+</div>
+</form>
+</div>
 
     {{-- ========== STAT CARDS ========== --}}
     <div class="report-card-grid">
