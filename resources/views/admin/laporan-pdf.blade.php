@@ -100,7 +100,7 @@
             <tr>
                 <th width="12%">ID Order</th>
                 <th width="15%">Waktu</th>
-                <th width="20%">Pembeli</th>
+                <th width="20%">Pelanggan</th>
                 <th width="35%">Detail Produk</th>
                 <th width="18%" class="text-right">Total Harga</th>
             </tr>

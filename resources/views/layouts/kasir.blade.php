@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>@yield('title', 'Kasir — NONGKI Coffee')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,6 +106,7 @@
         .kasir-main::-webkit-scrollbar { width: 6px; }
         .kasir-main::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
     @stack('styles')
 </head>
 <body>
@@ -112,9 +115,8 @@
         <div class="sidebar-logo"><i class="fa-solid fa-mug-saucer"></i> NONGKI</div>
         <nav class="sidebar-nav">
             <a href="{{ route('kasir.pos') }}" class="nav-item {{ request()->routeIs('kasir.pos') ? 'active' : '' }}"><i class="fa-solid fa-cash-register"></i> POS</a>
-            <a href="{{ route('kasir.menu') }}" class="nav-item {{ request()->routeIs('kasir.menu') ? 'active' : '' }}"><i class="fa-solid fa-utensils"></i> Menu</a>
             <a href="{{ route('kasir.transaksi') }}" class="nav-item {{ request()->routeIs('kasir.transaksi*') ? 'active' : '' }}"><i class="fa-solid fa-clock-rotate-left"></i> Transaksi</a>
-            <a href="{{ route('kasir.pesanan') }}" class="nav-item {{ request()->routeIs('kasir.pesanan*') ? 'active' : '' }}"><i class="fa-solid fa-bell"></i> Pesanan</a>
+            
         </nav>
         <div class="sidebar-footer">
             <div class="user-info">
