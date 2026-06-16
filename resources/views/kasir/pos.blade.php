@@ -1,742 +1,525 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>NONGKI - POS Kasir</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'] 
-                    },
-                    colors: {
-                        nongki: {
-                            bg: '#14110E',
-                            card: '#1C1815',
-                            border: '#2A241F',
-                            gold: '#CBA052',
-                            goldHover: '#B38A40',
-                            text: '#D1D1D1',
-                            muted: '#7A7A7A'
-                        }
+@extends('layouts.kasir')
+
+@section('title', 'POS Kasir — NONGKI')
+
+@push('styles')
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: { 
+                    sans: ['Inter', 'sans-serif'],
+                    serif: ['Playfair Display', 'serif'] 
+                },
+                colors: {
+                    nongki: {
+                        bg: '#14110E',
+                        card: '#1C1815',
+                        border: '#2A241F',
+                        gold: '#CBA052',
+                        goldHover: '#B38A40',
+                        text: '#D1D1D1',
+                        muted: '#7A7A7A'
                     }
                 }
             }
         }
-    </script>
-    <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #2A241F; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #CBA052; }
+    }
+</script>
+<style>
+    /* Override layout kasir agar POS bisa full height */
+
+
+    body { overflow: hidden !important; }
+.kasir-main { 
+    padding: 0 !important; 
+    overflow: hidden !important; 
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2A241F; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #CBA052; }
+    
+    @keyframes modalEnter {
+        0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-modal { animation: modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-item { animation: slideDown 0.3s ease forwards; }
+
+    .receipt-divider {
+        background-image: linear-gradient(to right, #2A241F 50%, transparent 50%);
+        background-size: 10px 1px;
+        background-repeat: repeat-x;
+        height: 1px;
+        width: 100%;
+    }
+    
+    @media print {
+        @page { margin: 0; size: 80mm auto; } 
+        body { background: white !important; color: black !important; display: block !important; }
+        .kasir-sidebar, header, main, #sideDrawer, #drawerOverlay, .no-print { display: none !important; }
+        #paymentModal { position: relative !important; display: block !important; background: white !important; }
+        #printArea { 
+            display: block !important; visibility: visible !important; position: relative !important; 
+            width: 76mm !important; margin: 0 auto !important; padding: 10px !important; 
+            box-shadow: none !important; border: none !important; background: white !important; color: black !important;
+        }
+        #receiptItems { max-height: none !important; overflow: visible !important; }
+        #printArea .text-gray-200, #printArea .text-gray-300 { color: #000 !important; font-weight: 700 !important; }
+        #printArea .text-nongki-gold { color: #000 !important; font-weight: 800 !important; }
+        .receipt-divider { background-image: linear-gradient(to right, #000 50%, transparent 50%) !important; }
+    }
+</style>
+@endpush
+
+@section('content')
+@php
+    $menus = \Illuminate\Support\Facades\DB::table('products')->where('IsDeleted', 0)->get();
+
+    function getCategory($name) {
+        $name = strtolower($name);
+        $kopi = ['americano', 'coffee', 'macchiato', 'latte'];
+        $makanan = ['macaroni', 'katsu', 'crispy', 'fries', 'noodles'];
+        foreach($kopi as $k) { if(strpos($name, $k) !== false) return 'kopi'; }
+        foreach($makanan as $m) { if(strpos($name, $m) !== false) return 'makanan'; }
+        return 'non-kopi';
+    }
+
+    function getDeskripsi($nama) {
+        $nama = strtolower($nama);
+        if (strpos($nama, 'americano') !== false) return 'Double shot espresso dengan air panas.';
+        if (strpos($nama, 'halzenut') !== false || strpos($nama, 'hazelnut') !== false) return 'Kopi dengan sentuhan rasa hazelnut.';
+        if (strpos($nama, 'matcha') !== false) return 'Matcha premium Jepang dengan susu.';
+        if (strpos($nama, 'vanilla') !== false) return 'Cappuccino klasik sentuhan vanilla.';
+        if (strpos($nama, 'macchiato') !== false) return 'Espresso dengan busa susu lembut.';
+        if (strpos($nama, 'aren') !== false) return 'Kopi susu dengan gula aren asli.';
+        if (strpos($nama, 'pandan') !== false) return 'Kopi susu dengan aroma pandan.';
+        if (strpos($nama, 'chocolate drink') !== false) return 'Minuman coklat pekat yang hangat.';
+        if (strpos($nama, 'avocado') !== false) return 'Perpaduan coklat dan alpukat segar.';
+        if (strpos($nama, 'manggo') !== false || strpos($nama, 'mango') !== false) return 'Smoothie mangga segar dan manis.';
+        if (strpos($nama, 'fries') !== false) return 'Kentang goreng renyah gurih.';
+        if (strpos($nama, 'macaroni') !== false) return 'Macaroni panggang dengan keju leleh.';
+        if (strpos($nama, 'katsu') !== false) return 'Chicken katsu saus kari Jepang.';
+        if (strpos($nama, 'enoki') !== false) return 'Jamur enoki goreng tepung renyah.';
+        if (strpos($nama, 'noodle') !== false) return 'Mie goreng bumbu spesial NONGKI.';
+        return 'Sajian menu spesial dari NONGKI.';
+    }
+@endphp
+
+{{-- WRAPPER POS FULL HEIGHT --}}
+<div class="flex overflow-hidden bg-[#14110E] text-gray-200 select-none h-full w-full">
+
+    {{-- Panel Kiri: Grid Menu --}}
+    <div class="flex-1 flex flex-col min-h-0">
+
         
-        /* Modal Animation */
-        @keyframes modalEnter {
-            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .animate-modal {
-            animation: modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+        {{-- Header POS --}}
+<div class="h-20 border-b border-[#2A241F] flex items-center justify-between px-5 shrink-0 bg-[#14110E]">
+    <div class="pt-4"> {{-- Tambahkan class pt-4 di sini untuk memberi jarak sedikit ke bawah --}}
+        <div class="text-xs text-[#7A7A7A] font-semibold tracking-wider uppercase mb-1">Kategori</div>
+        <div class="flex gap-2 overflow-x-auto" id="categoryFilter">
+            <button class="cat-btn active px-4 py-1 rounded-full text-xs font-medium border border-[#CBA052] bg-[#CBA052]/10 text-[#CBA052] transition-all" data-cat="semua">Semua</button>
+            <button class="cat-btn px-4 py-1 rounded-full text-xs font-medium border border-[#2A241F] text-[#7A7A7A] hover:border-[#CBA052]/50 transition-all" data-cat="kopi">Kopi</button>
+            <button class="cat-btn px-4 py-1 rounded-full text-xs font-medium border border-[#2A241F] text-[#7A7A7A] hover:border-[#CBA052]/50 transition-all" data-cat="non-kopi">Non-Kopi</button>
+            <button class="cat-btn px-4 py-1 rounded-full text-xs font-medium border border-[#2A241F] text-[#7A7A7A] hover:border-[#CBA052]/50 transition-all" data-cat="makanan">Makanan</button>
+        </div>
+    </div>
+    <div class="relative pt-4"> {{-- Tambahkan pt-4 juga di sini agar posisi search sejajar --}}
+        <svg class="w-4 h-4 text-[#7A7A7A] absolute left-3 top-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input type="text" id="searchInput" placeholder="Cari menu..." class="bg-[#1C1815] border border-[#2A241F] text-sm rounded-full py-2 pl-9 pr-4 text-[#D1D1D1] focus:outline-none focus:border-[#CBA052] transition-colors w-56">
+    </div>
+</div>
 
-        /* List Animation for New Items */
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-item { animation: slideDown 0.3s ease forwards; }
+        {{-- Grid Menu --}}
+        <div class="flex-1 overflow-y-auto p-4 min-h-0">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="productGrid">
+                @foreach($menus as $menu)
+                @php $cat = getCategory($menu->NamaKopi); @endphp
+                <div class="menu-card bg-[#1C1815] rounded-2xl border border-[#2A241F] hover:border-[#CBA052]/50 transition-all cursor-pointer group flex flex-col relative overflow-hidden"
+                     data-cat="{{ $cat }}"
+                     data-name="{{ strtolower($menu->NamaKopi) }}"
+                     onclick="addToCart({{ $menu->ProductID }}, '{{ addslashes($menu->NamaKopi) }}', {{ $menu->Harga }})">
 
-        /* Dashed Divider for Receipt */
-        .receipt-divider {
-            background-image: linear-gradient(to right, #2A241F 50%, transparent 50%);
-            background-size: 10px 1px;
-            background-repeat: repeat-x;
-            height: 1px;
-            width: 100%;
-        }
-        
-        /* PRINT STYLES (NO BLANK PAGE & CENTERED) */
-        @media print {
-            @page { margin: 0; size: 80mm auto; } 
-            
-            body { background: white !important; color: black !important; display: block !important; }
-            header, main, #sideDrawer, #drawerOverlay, .no-print { display: none !important; }
-            
-            #paymentModal { position: relative !important; display: block !important; background: white !important; }
-            #paymentModal > div { min-h-screen: auto !important; padding: 0 !important; display: block !important; }
-            
-            #printArea { 
-                display: block !important; visibility: visible !important; position: relative !important; 
-                width: 76mm !important; margin: 0 auto !important; padding: 10px !important; 
-                box-shadow: none !important; border: none !important; background: white !important; color: black !important;
-            }
-            
-            #receiptItems { max-height: none !important; overflow: visible !important; }
+                    <div class="absolute top-2 left-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-[#CBA052] group-hover:border-[#CBA052] transition-all z-10">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
 
-            #printArea .text-gray-200, #printArea .text-gray-300, #printArea .text-nongki-text { color: #000 !important; font-weight: 700 !important; }
-            #printArea .text-nongki-muted { color: #333 !important; font-size: 11px !important; }
-            #printArea .text-nongki-gold { color: #000 !important; font-weight: 800 !important; }
-            .receipt-divider { background-image: linear-gradient(to right, #000 50%, transparent 50%) !important; }
-        }
-    </style>
-</head>
-<body class="bg-nongki-bg text-gray-200 h-screen overflow-hidden flex flex-col select-none relative">
+                    <div class="h-28 w-full bg-[#2A241F] overflow-hidden">
+                        <img src="{{ asset('images/products/' . $menu->image) }}" alt="{{ $menu->NamaKopi }}"
+                             onerror="this.src='https://placehold.co/400x300?text={{ urlencode($menu->NamaKopi) }}'"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
 
-    @php
-        // 1. Ambil data langsung dari tabel products
-        $menus = \Illuminate\Support\Facades\DB::table('products')->where('IsDeleted', 0)->get();
-
-        // 2. Helper Kategori
-        function getCategory($name) {
-            $name = strtolower($name);
-            $kopi = ['americano', 'coffee', 'macchiato', 'latte'];
-            $makanan = ['macaroni', 'katsu', 'crispy', 'fries', 'noodles'];
-            
-            foreach($kopi as $k) { if(strpos($name, $k) !== false) return 'kopi'; }
-            foreach($makanan as $m) { if(strpos($name, $m) !== false) return 'makanan'; }
-            return 'non-kopi';
-        }
-
-        // 3. Helper Kamus Deskripsi Pintar (Lebih kebal typo)
-        function getDeskripsi($nama) {
-            $nama = strtolower($nama);
-            if (strpos($nama, 'americano') !== false) return 'Double shot espresso dengan air panas.';
-            if (strpos($nama, 'halzenut') !== false || strpos($nama, 'hazelnut') !== false) return 'Kopi dengan sentuhan rasa hazelnut.';
-            if (strpos($nama, 'matcha') !== false) return 'Matcha premium Jepang dengan susu.';
-            if (strpos($nama, 'vanilla') !== false) return 'Cappuccino klasik sentuhan vanilla.';
-            if (strpos($nama, 'macchiato') !== false) return 'Espresso dengan busa susu lembut.';
-            if (strpos($nama, 'aren') !== false) return 'Kopi susu dengan gula aren asli.';
-            if (strpos($nama, 'pandan') !== false) return 'Kopi susu dengan aroma pandan.';
-            if (strpos($nama, 'chocolate drink') !== false) return 'Minuman coklat pekat yang hangat.';
-            if (strpos($nama, 'avocado') !== false) return 'Perpaduan coklat dan alpukat segar.';
-            if (strpos($nama, 'manggo') !== false || strpos($nama, 'mango') !== false) return 'Smoothie mangga segar dan manis.';
-            if (strpos($nama, 'fries') !== false) return 'Kentang goreng renyah gurih.';
-            if (strpos($nama, 'macaroni') !== false) return 'Macaroni panggang dengan keju leleh.';
-            if (strpos($nama, 'katsu') !== false) return 'Chicken katsu saus kari Jepang.';
-            if (strpos($nama, 'enoki') !== false) return 'Jamur enoki goreng tepung renyah.';
-            if (strpos($nama, 'noodle') !== false) return 'Mie goreng bumbu spesial NONGKI.';
-            
-            return 'Sajian menu spesial dari NONGKI.';
-        }
-    @endphp
-
-    <header class="h-16 border-b border-nongki-border flex items-center justify-between px-6 shrink-0 bg-nongki-bg relative z-10 no-print">
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-3 text-nongki-gold">
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M4 19h10c2.21 0 4-1.79 4-4v-6H2v6c0 2.21 1.79 4 4 4zm14-10h1c1.66 0 3 1.34 3 3s-1.34 3-3 3h-1v-6z"/>
-                    <path d="M7 7c0-1.11.89-2 2-2s2-.89 2-2H9c0 1.11-.89 2-2 2s-2 .89-2 2h2z"/>
-                    <path d="M12 7c0-1.11.89-2 2-2s2-.89 2-2h-2c0 1.11-.89 2-2 2s-2 .89-2 2h2z"/>
-                </svg>
-                <span class="font-serif font-medium text-2xl tracking-wide">NONGKI</span>
-                <span class="text-nongki-muted text-xs font-sans tracking-widest ml-2 border-l border-nongki-border pl-3">KASIR</span>
+                    <div class="p-3 bg-[#1C1815]">
+                        <h3 class="text-xs font-semibold text-gray-200 line-clamp-1 group-hover:text-[#CBA052] transition-colors">{{ $menu->NamaKopi }}</h3>
+                        <p class="text-[#7A7A7A] text-[10px] mt-0.5 line-clamp-1">{{ getDeskripsi($menu->NamaKopi) }}</p>
+                        <p class="text-[#CBA052] text-xs font-bold mt-2">Rp {{ number_format($menu->Harga, 0, ',', '.') }}</p>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
-        
-        <div class="flex-1 max-w-xl mx-8 relative">
-            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <svg class="w-4 h-4 text-nongki-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    </div>
+
+    {{-- Panel Kanan: Order --}}
+    <div class="w-[360px] bg-[#1C1815] border-l border-[#2A241F] flex flex-col h-full min-h-0 shrink-0">
+
+        <div class="p-4 border-b border-[#2A241F] flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2 font-medium text-sm">
+                Pesanan Baru
+                <span id="cartCountBadge" class="bg-[#CBA052] text-[#14110E] text-xs font-bold px-2 py-0.5 rounded-full">0</span>
             </div>
-            <input type="text" id="searchInput" placeholder="Cari menu..." class="w-full bg-nongki-card border border-nongki-border text-sm rounded-full py-2 pl-10 pr-4 text-nongki-text focus:outline-none focus:border-nongki-gold transition-colors">
+            <button onclick="openClearCartModal()" class="text-xs text-[#7A7A7A] hover:text-red-400 transition-colors">Batal</button>
         </div>
 
-        <div class="flex items-center gap-4 text-sm">
-            <button onclick="toggleDrawer()" class="px-4 py-1.5 rounded-full border border-nongki-gold/50 bg-nongki-gold/10 text-nongki-gold hover:bg-nongki-gold hover:text-nongki-bg transition-colors flex items-center gap-2 font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Riwayat
+        <div class="p-3 grid grid-cols-2 gap-2 border-b border-[#2A241F] shrink-0">
+            <button id="btnDineIn" onclick="setOrderType('dinein')" class="py-2 text-xs font-medium rounded-lg bg-[#CBA052]/10 text-[#CBA052] border border-[#CBA052] transition-all">Dine In</button>
+            <button id="btnTakeAway" onclick="setOrderType('takeaway')" class="py-2 text-xs font-medium rounded-lg bg-[#14110E] text-[#7A7A7A] border border-[#2A241F] hover:border-[#CBA052]/30 transition-all">Take Away</button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-3 relative min-h-0">
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-[#7A7A7A] text-sm" id="emptyCartMessage">
+                <svg class="w-10 h-10 mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Belum ada pesanan.
+            </div>
+            <div id="cartList" class="space-y-2 hidden pb-4"></div>
+        </div>
+
+        <div class="p-4 border-t border-[#2A241F] bg-[#14110E] shrink-0">
+            <div class="space-y-1.5 mb-4 text-sm">
+                <div class="flex justify-between text-[#7A7A7A]">
+                    <span>Subtotal</span><span id="subtotalDisplay">Rp 0</span>
+                </div>
+                <div class="flex justify-between text-[#7A7A7A]">
+                    <span>PPN 11%</span><span id="taxDisplay">Rp 0</span>
+                </div>
+                <div class="flex justify-between font-bold text-base text-[#D1D1D1] pt-2 border-t border-[#2A241F] mt-2">
+                    <span>Total</span>
+                    <span id="totalDisplay" class="text-[#CBA052]">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex items-center justify-between">
+                    <label class="text-[#7A7A7A]">Uang Masuk</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2 text-[#7A7A7A] text-xs">Rp</span>
+                        <input type="number" id="inputUang" class="bg-[#1C1815] border border-[#2A241F] rounded-lg pl-8 pr-3 py-2 w-32 text-right focus:outline-none focus:border-[#CBA052] text-[#D1D1D1] text-sm transition-all" placeholder="0">
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-[#7A7A7A]">Kembalian</span>
+                    <span id="kembalianDisplay" class="font-medium text-[#7A7A7A]">-</span>
+                </div>
+            </div>
+
+            <button id="btnProses" onclick="processPayment()" class="w-full bg-[#CBA052] hover:bg-[#B38A40] text-[#14110E] font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm" disabled>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Proses Pembayaran
             </button>
+        </div>
+    </div>
+</div>
 
-            <div class="h-6 w-px bg-nongki-border mx-1"></div>
+{{-- Modal: Hapus Pesanan --}}
+<div id="clearCartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 opacity-0">
+    <div id="clearCartModalContent" class="bg-[#1C1815] border border-[#2A241F] w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center scale-95 opacity-0 transition-all duration-300">
+        <div class="w-14 h-14 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </div>
+        <h2 class="text-lg font-bold text-gray-200 mb-2">Hapus Pesanan</h2>
+        <p class="text-[#7A7A7A] text-sm mb-5">Apakah Anda yakin ingin membatalkan pesanan saat ini?</p>
+        <div class="flex gap-3">
+            <button onclick="closeClearCartModal()" class="flex-1 py-2.5 rounded-xl border border-[#2A241F] text-[#D1D1D1] hover:bg-[#14110E] transition-colors text-sm">Kembali</button>
+            <button onclick="executeClearCart()" class="flex-1 py-2.5 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white transition-colors text-sm font-bold">Ya, Hapus</button>
+        </div>
+    </div>
+</div>
 
-            <div class="px-3 py-1.5 rounded-full border border-nongki-border text-nongki-muted flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
-                <span id="shiftDisplay">Shift Pagi</span>
+{{-- Modal: Payment Receipt --}}
+<div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden overflow-y-auto no-print">
+    <div class="min-h-screen flex items-center justify-center p-4 py-10">
+        <div id="modalContent" class="w-full max-w-sm transform transition-all opacity-0 scale-90 m-auto">
+            <div id="printArea" class="bg-[#1C1815] border border-[#2A241F] shadow-2xl rounded-2xl p-8">
+                <div class="text-center mb-6">
+                    <div class="flex items-center justify-center gap-2 text-[#CBA052] mb-3">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M4 19h10c2.21 0 4-1.79 4-4v-6H2v6c0 2.21 1.79 4 4 4zm14-10h1c1.66 0 3 1.34 3 3s-1.34 3-3 3h-1v-6z"/></svg>
+                        <span class="font-serif font-bold text-xl tracking-widest">NONGKI</span>
+                    </div>
+                    <h2 class="text-sm font-medium text-[#D1D1D1] tracking-widest uppercase mb-1">Struk Pembayaran</h2>
+                    <p class="text-[#7A7A7A] text-xs" id="receiptDate">--</p>
+                    <p class="text-[#7A7A7A] text-xs mt-1 font-mono" id="receiptTrx">TRX-000000</p>
+                    <p class="text-[#CBA052] text-xs mt-1 font-medium" id="receiptOrderType">--</p>
+                    <p class="text-[#7A7A7A] text-xs mt-0.5 font-medium" id="receiptPayMethod">Tunai</p>
+                </div>
+
+                <div class="receipt-divider mb-4"></div>
+                <div class="py-2 mb-2 space-y-3" id="receiptItems"></div>
+                <div class="receipt-divider mt-2 mb-4"></div>
+
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between text-[#7A7A7A]">
+                        <span>Subtotal</span><span id="receiptSubtotal">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-[#7A7A7A]">
+                        <span>PPN 11%</span><span id="receiptTax">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-gray-100 font-bold pt-3 mt-2 border-t border-[#2A241F]">
+                        <span>Total Transaksi</span><span id="receiptTotal" class="text-[#CBA052]">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-[#7A7A7A] pt-2 border-t border-[#2A241F] border-dashed mt-2">
+                        <span>Tunai / Masuk</span><span id="receiptCash">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-[#D1D1D1] font-medium mt-1">
+                        <span>Kembalian</span><span id="receiptChange">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="text-center text-xs text-[#7A7A7A] mt-6">
+                    <p class="mb-1">Terima kasih atas kunjungan Anda!</p>
+                    <p>Powered by NONGKI POS</p>
+                </div>
             </div>
-            <div class="text-nongki-text font-medium w-16 text-center" id="realTimeClock">--.--</div>
-            
-            <div class="flex items-center gap-3 ml-2">
-                <div class="w-8 h-8 rounded-full bg-nongki-gold text-nongki-bg font-bold flex items-center justify-center shadow-[0_0_15px_-3px_rgba(203,160,82,0.4)]">KS</div>
-                <form id="logout-form" action="{{ route('logout') ?? url('/logout') }}" method="POST" class="m-0 p-0 hidden">
-                    @csrf
-                </form>
-                <button type="button" onclick="openLogoutModal()" class="p-2 text-nongki-muted hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors flex items-center justify-center" title="Keluar">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+
+            <div class="flex gap-4 mt-6 no-print">
+                <button onclick="window.print()" class="flex-1 py-3 rounded-xl border border-[#2A241F] text-[#D1D1D1] bg-[#1C1815] hover:bg-[#2A241F] transition-all text-sm font-medium flex justify-center items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Cetak Struk
+                </button>
+                <button onclick="closePaymentModal()" class="flex-1 py-3 rounded-xl bg-[#CBA052] text-[#14110E] font-bold hover:bg-[#B38A40] transition-all text-sm flex justify-center items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Selesai & Baru
                 </button>
             </div>
         </div>
-    </header>
-
-    <main class="flex-1 flex overflow-hidden no-print relative min-h-0">
-
-        {{-- Panel Kiri: Grid Menu --}}
-        <div class="flex-1 flex flex-col min-h-0 bg-nongki-bg">
-            <div class="p-6 pb-2 shrink-0">
-                <div class="text-xs text-nongki-muted font-semibold tracking-wider mb-3 uppercase">Kategori</div>
-                <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="categoryFilter">
-                    <button class="cat-btn active px-5 py-1.5 rounded-full text-sm font-medium border border-nongki-gold bg-nongki-gold/10 text-nongki-gold transition-all" data-cat="semua">Semua</button>
-                    <button class="cat-btn px-5 py-1.5 rounded-full text-sm font-medium border border-nongki-border text-nongki-muted hover:border-nongki-gold/50 hover:text-nongki-text transition-all" data-cat="kopi">Kopi</button>
-                    <button class="cat-btn px-5 py-1.5 rounded-full text-sm font-medium border border-nongki-border text-nongki-muted hover:border-nongki-gold/50 hover:text-nongki-text transition-all" data-cat="non-kopi">Non-Kopi</button>
-                    <button class="cat-btn px-5 py-1.5 rounded-full text-sm font-medium border border-nongki-border text-nongki-muted hover:border-nongki-gold/50 hover:text-nongki-text transition-all" data-cat="makanan">Makanan</button>
-                </div>
-            </div>
-
-            <div class="flex-1 overflow-y-auto p-6 pt-2 min-h-0">
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5" id="productGrid">
-                    @foreach($menus as $menu)
-                    @php 
-                        $cat = getCategory($menu->NamaKopi); 
-                    @endphp
-                    <div class="menu-card bg-nongki-card rounded-2xl border border-nongki-border hover:border-nongki-gold/50 transition-all cursor-pointer group flex flex-col h-full relative overflow-hidden" 
-                         data-cat="{{ $cat }}" 
-                         data-name="{{ strtolower($menu->NamaKopi) }}"
-    onclick="addToCart({{ $menu->ProductID }}, '{{ addslashes($menu->NamaKopi) }}', {{ $menu->Harga }})"">
-                        
-                        <div class="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-nongki-gold group-hover:border-nongki-gold group-hover:scale-110 transition-all z-10 shadow-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                        </div>
-
-                        <div class="h-36 w-full bg-[#2A241F] overflow-hidden relative">
-                            <div class="absolute inset-0 bg-gradient-to-t from-nongki-card to-transparent z-0 opacity-80 pointer-events-none"></div>
-                            <img src="{{ asset('images/products/' . $menu->image) }}" alt="{{ $menu->NamaKopi }}" onerror="this.src='https://placehold.co/400x300?text={{ urlencode($menu->NamaKopi) }}'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        </div>
-
-                        <div class="p-4 pt-3 mt-auto relative z-10 bg-nongki-card">
-                            <h3 class="text-sm font-semibold text-gray-200 line-clamp-1 group-hover:text-nongki-gold transition-colors">{{ $menu->NamaKopi }}</h3>
-                            <p class="text-nongki-muted text-[10px] mt-1 line-clamp-1">{{ getDeskripsi($menu->NamaKopi) }}</p>
-                            <div class="mt-3 flex items-center justify-between">
-                                <p class="text-nongki-gold text-sm font-bold">Rp {{ number_format($menu->Harga, 0, ',', '.') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        {{-- Panel Kanan: Order Panel --}}
-        <div class="w-[400px] bg-nongki-card border-l border-nongki-border flex flex-col h-full min-h-0 shrink-0 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.5)] z-20 relative">
-            
-            <div class="p-5 border-b border-nongki-border flex items-center justify-between bg-nongki-card shrink-0">
-                <div class="flex items-center gap-3 text-lg font-medium">
-                    <svg class="w-5 h-5 text-nongki-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Pesanan Baru <span id="cartCountBadge" class="bg-nongki-gold text-nongki-bg text-xs font-bold px-2 py-0.5 rounded-full">0</span>
-                </div>
-                <button onclick="openClearCartModal()" class="text-sm text-nongki-muted hover:text-red-400 transition-colors">Batal</button>
-            </div>
-
-            <div class="p-4 grid grid-cols-2 gap-2 border-b border-nongki-border bg-nongki-bg/30 shrink-0">
-                <button id="btnDineIn" onclick="setOrderType('dinein')" class="py-2 text-xs font-medium rounded-lg bg-nongki-gold/10 text-nongki-gold border border-nongki-gold transition-all shadow-sm">Dine In</button>
-                <button id="btnTakeAway" onclick="setOrderType('takeaway')" class="py-2 text-xs font-medium rounded-lg bg-nongki-bg text-nongki-muted border border-nongki-border hover:border-nongki-gold/30 transition-all shadow-sm">Take Away</button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto p-4 relative min-h-0">
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-nongki-muted text-sm" id="emptyCartMessage">
-                    <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                    Belum ada pesanan.
-                </div>
-                <div id="cartList" class="space-y-3 hidden pb-4"></div>
-            </div>
-
-            <div class="p-5 border-t border-nongki-border bg-nongki-bg shrink-0">
-                <div class="space-y-2 mb-4 text-sm">
-                    <div class="flex justify-between text-nongki-muted">
-                        <span>Subtotal</span>
-                        <span id="subtotalDisplay">Rp 0</span>
-                    </div>
-                    <div class="flex justify-between text-nongki-muted">
-                        <span>PPN 11%</span>
-                        <span id="taxDisplay">Rp 0</span>
-                    </div>
-                    <div class="flex justify-between text-lg font-bold text-nongki-text pt-3 border-t border-nongki-border mt-3">
-                        <span>Total</span>
-                        <span id="totalDisplay" class="text-nongki-gold drop-shadow-md">Rp 0</span>
-                    </div>
-                </div>
-
-                <div class="space-y-3 mb-5">
-                    <div class="flex items-center justify-between text-sm">
-                        <label class="text-nongki-muted">Uang Masuk</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-2 text-nongki-muted">Rp</span>
-                            <input type="number" id="inputUang" class="bg-nongki-card border border-nongki-border rounded-lg pl-8 pr-3 py-2 w-36 text-right focus:outline-none focus:border-nongki-gold focus:ring-1 focus:ring-nongki-gold text-nongki-text transition-all" placeholder="0">
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-nongki-muted">Kembalian</span>
-                        <span id="kembalianDisplay" class="font-medium text-nongki-muted">-</span>
-                    </div>
-                </div>
-
-                <button id="btnProses" onclick="processPayment()" class="w-full bg-nongki-gold hover:bg-nongki-goldHover text-nongki-bg font-bold py-3.5 rounded-xl transition-all shadow-[0_4px_20px_-5px_rgba(203,160,82,0.4)] hover:shadow-[0_4px_25px_-5px_rgba(203,160,82,0.6)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none" disabled>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    Proses Pembayaran
-                </button>
-            </div>
-        </div>
-
-        {{-- Drawer Overlay --}}
-        <div id="drawerOverlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleDrawer()"></div>
-        
-        <div id="sideDrawer" class="absolute top-0 right-0 h-full w-[400px] bg-nongki-card border-l border-nongki-border z-40 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col min-h-0">
-            <div class="p-6 border-b border-nongki-border flex justify-between items-center bg-nongki-bg/50 shrink-0">
-                <h2 class="text-xl font-bold text-nongki-gold flex items-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Pusat Pesanan
-                </h2>
-                <button onclick="toggleDrawer()" class="p-2 text-nongki-muted hover:text-white rounded-full hover:bg-nongki-border transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
-            <div class="p-4 grid grid-cols-2 gap-2 border-b border-nongki-border bg-nongki-bg shrink-0">
-                <button id="tabAktif" onclick="switchDrawerTab('aktif')" class="py-2.5 text-sm font-medium rounded-lg bg-nongki-gold/10 text-nongki-gold border border-nongki-gold transition-all">Pesanan Aktif (1)</button>
-                <button id="tabRiwayat" onclick="switchDrawerTab('riwayat')" class="py-2.5 text-sm font-medium rounded-lg bg-nongki-card text-nongki-muted border border-nongki-border hover:border-nongki-gold/50 transition-all">Riwayat Selesai</button>
-            </div>
-
-            <div id="contentAktif" class="flex-1 overflow-y-auto p-4 space-y-4 block min-h-0">
-                <div class="bg-nongki-bg border border-nongki-border rounded-xl p-4">
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <span class="text-xs font-mono text-nongki-muted block">#ORD-0248</span>
-                            <span class="font-bold text-gray-200">Meja 04 - Budi</span>
-                        </div>
-                        <span class="px-2 py-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-[10px] rounded-full uppercase tracking-wider font-bold">Diproses</span>
-                    </div>
-                    <div class="text-sm text-nongki-muted mb-3 border-l-2 border-nongki-border pl-2">2x Vanilla Latte<br>1x French Fries</div>
-                    <div class="flex justify-between items-center pt-3 border-t border-nongki-border">
-                        <span class="font-bold text-nongki-gold">Rp 98.000</span>
-                        <button class="px-3 py-1.5 bg-nongki-card border border-nongki-border text-nongki-text hover:border-nongki-gold text-xs rounded-lg transition-colors">Ubah</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="contentRiwayat" class="flex-1 overflow-y-auto p-4 space-y-4 hidden min-h-0">
-                <div class="flex items-center gap-4 bg-nongki-bg border border-nongki-border rounded-xl p-3 hover:border-nongki-gold/50 transition-all">
-                    <div class="shrink-0 border-r border-nongki-border border-dashed pr-4">
-                        <button class="flex flex-col items-center justify-center w-14 h-14 bg-nongki-gold/10 text-nongki-gold border border-nongki-gold/30 rounded-lg hover:bg-nongki-gold hover:text-nongki-bg transition-colors" title="Cetak Struk">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                            <span class="text-[9px] font-bold uppercase mt-1">Struk</span>
-                        </button>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-1">
-                            <span class="text-xs font-mono text-nongki-muted">TRX-982103</span>
-                            <span class="px-2 py-0.5 bg-green-500/10 text-green-500 text-[9px] rounded-full uppercase font-bold">Sukses</span>
-                        </div>
-                        <div class="text-[10px] text-nongki-muted mb-1">Hari ini, 08:45 WIB</div>
-                        <div class="font-bold text-gray-200 text-sm">Rp 120.000</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    {{-- Modal: Konfirmasi Logout --}}
-    <div id="logoutModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-        <div id="logoutModalContent" class="bg-nongki-card border border-nongki-border w-full max-w-sm rounded-2xl p-6 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 text-center relative">
-            <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)] relative z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></div>
-            <h2 class="text-xl font-bold text-gray-200 mb-2 relative z-10">Konfirmasi Keluar</h2>
-            <p class="text-nongki-muted text-sm mb-6 relative z-10">Apakah Anda yakin ingin keluar dari halaman kasir NONGKI?</p>
-            <div class="flex gap-3 relative z-10">
-                <button onclick="closeLogoutModal()" class="flex-1 py-3 rounded-xl border border-nongki-border text-nongki-text hover:bg-nongki-bg transition-colors text-sm font-medium">Batal</button>
-                <button onclick="executeLogout()" class="flex-1 py-3 rounded-xl bg-nongki-gold text-nongki-bg font-bold hover:bg-nongki-goldHover transition-colors text-sm">Ya, Keluar</button>
-            </div>
-        </div>
     </div>
+</div>
+@endsection
 
-    {{-- Modal: Hapus Pesanan --}}
-    <div id="clearCartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-        <div id="clearCartModalContent" class="bg-nongki-card border border-nongki-border w-full max-w-sm rounded-2xl p-6 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 text-center relative">
-            <div class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(248,113,113,0.2)]"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></div>
-            <h2 class="text-xl font-bold text-gray-200 mb-2">Hapus Pesanan</h2>
-            <p class="text-nongki-muted text-sm mb-6">Apakah Anda yakin ingin membatalkan dan menghapus pesanan saat ini?</p>
-            <div class="flex gap-3">
-                <button onclick="closeClearCartModal()" class="flex-1 py-3 rounded-xl border border-nongki-border text-nongki-text hover:bg-nongki-bg transition-colors text-sm font-medium">Kembali</button>
-                <button onclick="executeClearCart()" class="flex-1 py-3 rounded-xl bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white transition-colors text-sm font-bold">Ya, Hapus</button>
-            </div>
-        </div>
-    </div>
+@push('scripts')
+<script>
+    const formatRupiah = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
-    {{-- Modal: Payment Receipt --}}
-    <div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden overflow-y-auto no-print">
-        <div class="min-h-screen flex items-center justify-center p-4 py-10">
-            <div id="modalContent" class="w-full max-w-sm transform transition-all opacity-0 scale-90 m-auto">
-                
-                <div id="printArea" class="bg-nongki-card border border-nongki-border shadow-2xl rounded-2xl p-8 relative overflow-hidden">
-                    <div class="text-center mb-6 relative z-10">
-                        <div class="flex items-center justify-center gap-2 text-nongki-gold mb-3">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M4 19h10c2.21 0 4-1.79 4-4v-6H2v6c0 2.21 1.79 4 4 4zm14-10h1c1.66 0 3 1.34 3 3s-1.34 3-3 3h-1v-6z"/><path d="M7 7c0-1.11.89-2 2-2s2-.89 2-2H9c0 1.11-.89 2-2 2s-2 .89-2 2h2z"/><path d="M12 7c0-1.11.89-2 2-2s2-.89 2-2h-2c0 1.11-.89 2-2 2s-2 .89-2 2h2z"/></svg>
-                            <span class="font-serif font-bold text-xl tracking-widest">NONGKI</span>
-                        </div>
-                        <h2 class="text-sm font-medium text-nongki-text tracking-widest uppercase mb-1">Struk Pembayaran</h2>
-                        <p class="text-nongki-muted text-xs" id="receiptDate">--</p>
-                        <p class="text-nongki-muted text-xs mt-1 font-mono" id="receiptTrx">TRX-000000</p>
-                    </div>
+    let cart = [], totalVal = 0, subtotalVal = 0, taxVal = 0;
+    let selectedOrderType = 'dinein';
 
-                    <div class="receipt-divider mb-4"></div>
+    const cartList = document.getElementById('cartList');
+    const emptyCartMessage = document.getElementById('emptyCartMessage');
+    const cartCountBadge = document.getElementById('cartCountBadge');
+    const inputUang = document.getElementById('inputUang');
+    const kembalianDisplay = document.getElementById('kembalianDisplay');
+    const btnProses = document.getElementById('btnProses');
+    const paymentModal = document.getElementById('paymentModal');
+    const modalContent = document.getElementById('modalContent');
 
-                    <div class="py-2 mb-2 space-y-3" id="receiptItems"></div>
-
-                    <div class="receipt-divider mt-2 mb-4"></div>
-
-                    <div class="space-y-2 text-sm mb-6 relative z-10">
-                        <div class="flex justify-between text-nongki-muted">
-                            <span>Subtotal</span><span id="receiptSubtotal">Rp 0</span>
-                        </div>
-                        <div class="flex justify-between text-nongki-muted">
-                            <span>PPN 11%</span><span id="receiptTax">Rp 0</span>
-                        </div>
-                        <div class="flex justify-between text-gray-100 font-bold pt-3 mt-2 border-t border-nongki-border">
-                            <span>Total Transaksi</span><span id="receiptTotal" class="text-nongki-gold">Rp 0</span>
-                        </div>
-                        <div class="flex justify-between text-nongki-muted pt-2 border-t border-nongki-border border-dashed mt-2">
-                            <span>Tunai / Masuk</span><span id="receiptCash">Rp 0</span>
-                        </div>
-                        <div class="flex justify-between text-nongki-text font-medium mt-1">
-                            <span>Kembalian</span><span id="receiptChange">Rp 0</span>
-                        </div>
-                    </div>
-
-                    <div class="text-center text-xs text-nongki-muted mt-8 relative z-10">
-                        <p class="mb-1">Terima kasih atas kunjungan Anda!</p>
-                        <p>Powered by NONGKI POS</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-4 mt-6 no-print">
-                    <button onclick="window.print()" class="flex-1 py-3.5 rounded-xl border border-nongki-border text-nongki-text bg-nongki-card hover:bg-nongki-border hover:text-white transition-all text-sm font-medium flex justify-center items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        Cetak Struk
-                    </button>
-                    <button onclick="closePaymentModal()" class="flex-1 py-3.5 rounded-xl bg-nongki-gold text-nongki-bg font-bold hover:bg-nongki-goldHover transition-all text-sm shadow-[0_0_15px_rgba(203,160,82,0.3)] flex justify-center items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Selesai & Baru
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
-
-        let cart = [];
-        let totalVal = 0;
-        let subtotalVal = 0;
-        let taxVal = 0;
-
-        const cartList = document.getElementById('cartList');
-        const emptyCartMessage = document.getElementById('emptyCartMessage');
-        const cartCountBadge = document.getElementById('cartCountBadge');
-        const inputUang = document.getElementById('inputUang');
-        const kembalianDisplay = document.getElementById('kembalianDisplay');
-        const btnProses = document.getElementById('btnProses');
-
-        // --- CLOCK & DYNAMIC SHIFT LOGIC ---
-        function updateTimeAndShift() {
-            const now = new Date();
-            document.getElementById('realTimeClock').innerText = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute:'2-digit' }).replace(/:/g, '.');
-            
-            const hour = now.getHours();
-            const shiftDisplay = document.getElementById('shiftDisplay');
-            // Shift Pagi: 06:00 sampai 14:59. Sisanya Shift Sore.
-            if(hour >= 6 && hour < 15) {
-                shiftDisplay.innerText = 'Shift Pagi';
-            } else {
-                shiftDisplay.innerText = 'Shift Sore';
-            }
+    function setOrderType(type) {
+        selectedOrderType = type;
+        const btnDineIn = document.getElementById('btnDineIn');
+        const btnTakeAway = document.getElementById('btnTakeAway');
+        if (type === 'dinein') {
+            btnDineIn.className = 'py-2 text-xs font-medium rounded-lg bg-[#CBA052]/10 text-[#CBA052] border border-[#CBA052] transition-all';
+            btnTakeAway.className = 'py-2 text-xs font-medium rounded-lg bg-[#14110E] text-[#7A7A7A] border border-[#2A241F] transition-all';
+        } else {
+            btnTakeAway.className = 'py-2 text-xs font-medium rounded-lg bg-[#CBA052]/10 text-[#CBA052] border border-[#CBA052] transition-all';
+            btnDineIn.className = 'py-2 text-xs font-medium rounded-lg bg-[#14110E] text-[#7A7A7A] border border-[#2A241F] transition-all';
         }
-        setInterval(updateTimeAndShift, 1000);
-        updateTimeAndShift(); 
+    }
 
-        // --- ORDER TYPE LOGIC (DINE IN / TAKE AWAY) ---
-        function setOrderType(type) {
-            const btnDineIn = document.getElementById('btnDineIn');
-            const btnTakeAway = document.getElementById('btnTakeAway');
-            const activeClass = ['bg-nongki-gold/10', 'text-nongki-gold', 'border-nongki-gold'];
-            const inactiveClass = ['bg-nongki-bg', 'text-nongki-muted', 'border-nongki-border'];
+    function addToCart(id, name, price) {
+        const existing = cart.find(i => i.id === id);
+        if (existing) { existing.qty++; } else { cart.unshift({ id, name, price, qty: 1 }); }
+        updateCartUI();
+    }
 
-            if(type === 'dinein') {
-                btnDineIn.classList.add(...activeClass); btnDineIn.classList.remove(...inactiveClass);
-                btnTakeAway.classList.add(...inactiveClass); btnTakeAway.classList.remove(...activeClass);
-            } else {
-                btnTakeAway.classList.add(...activeClass); btnTakeAway.classList.remove(...inactiveClass);
-                btnDineIn.classList.add(...inactiveClass); btnDineIn.classList.remove(...activeClass);
-            }
-        }
-
-        // --- CART LOGIC ---
-        function addToCart(id, name, price) {
-            const existingItem = cart.find(item => item.id === id);
-            if (existingItem) {
-                existingItem.qty += 1;
-            } else {
-                cart.unshift({ id, name, price, qty: 1 });
-            }
+    function updateQty(id, delta) {
+        const idx = cart.findIndex(i => i.id === id);
+        if (idx > -1) {
+            cart[idx].qty += delta;
+            if (cart[idx].qty <= 0) cart.splice(idx, 1);
             updateCartUI();
         }
+    }
 
-        function updateQty(id, delta) {
-            const index = cart.findIndex(item => item.id === id);
-            if (index > -1) {
-                cart[index].qty += delta;
-                if (cart[index].qty <= 0) cart.splice(index, 1);
-                updateCartUI();
-            }
-        }
-
-        function updateCartUI() {
-            if (cart.length === 0) {
-                cartList.innerHTML = '';
-                cartList.classList.add('hidden');
-                emptyCartMessage.style.display = 'flex';
-                cartCountBadge.innerText = '0';
-                
-                document.getElementById('subtotalDisplay').innerText = 'Rp 0';
-                document.getElementById('taxDisplay').innerText = 'Rp 0';
-                document.getElementById('totalDisplay').innerText = 'Rp 0';
-                
-                totalVal = 0;
-            } else {
-                emptyCartMessage.style.display = 'none';
-                cartList.classList.remove('hidden');
-                cartList.innerHTML = '';
-                
-                let totalItems = 0;
-                subtotalVal = 0;
-
-                cart.forEach((item, index) => {
-                    totalItems += item.qty;
-                    subtotalVal += (item.price * item.qty);
-                    
-                    const animationClass = index === 0 ? 'animate-item' : '';
-
-                    cartList.innerHTML += `
-                        <div class="flex items-center justify-between p-3 bg-nongki-bg rounded-xl border border-nongki-border shadow-sm ${animationClass}">
-                            <div class="flex-1">
-                                <h4 class="text-sm font-medium text-gray-200 line-clamp-1">${item.name}</h4>
-                                <p class="text-xs text-nongki-gold mt-1">${formatRupiah(item.price)}</p>
-                            </div>
-                            <div class="flex items-center gap-3 bg-nongki-card rounded-lg p-1 border border-nongki-border">
-                                <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-nongki-muted hover:text-white transition-colors">-</button>
-                                <span class="text-sm w-4 text-center">${item.qty}</span>
-                                <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-nongki-muted hover:text-white transition-colors">+</button>
-                            </div>
+    function updateCartUI() {
+        if (cart.length === 0) {
+            cartList.innerHTML = '';
+            cartList.classList.add('hidden');
+            emptyCartMessage.style.display = 'flex';
+            cartCountBadge.innerText = '0';
+            document.getElementById('subtotalDisplay').innerText = 'Rp 0';
+            document.getElementById('taxDisplay').innerText = 'Rp 0';
+            document.getElementById('totalDisplay').innerText = 'Rp 0';
+            totalVal = 0;
+        } else {
+            emptyCartMessage.style.display = 'none';
+            cartList.classList.remove('hidden');
+            cartList.innerHTML = '';
+            let totalItems = 0; subtotalVal = 0;
+            cart.forEach((item, idx) => {
+                totalItems += item.qty;
+                subtotalVal += item.price * item.qty;
+                cartList.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-[#14110E] rounded-xl border border-[#2A241F] ${idx === 0 ? 'animate-item' : ''}">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-medium text-gray-200 line-clamp-1">${item.name}</h4>
+                            <p class="text-xs text-[#CBA052] mt-0.5">${formatRupiah(item.price)}</p>
                         </div>
-                    `;
-                });
-
-                cartCountBadge.innerText = totalItems;
-                taxVal = subtotalVal * 0.11;
-                totalVal = subtotalVal + taxVal;
-
-                document.getElementById('subtotalDisplay').innerText = formatRupiah(subtotalVal);
-                document.getElementById('taxDisplay').innerText = formatRupiah(taxVal);
-                document.getElementById('totalDisplay').innerText = formatRupiah(totalVal);
-            }
-            calculateChange(); 
-        }
-
-        function calculateChange() {
-            const uangMasuk = parseFloat(inputUang.value) || 0;
-            if (cart.length === 0) {
-                kembalianDisplay.innerText = '-';
-                kembalianDisplay.className = 'font-medium text-nongki-muted';
-                btnProses.disabled = true;
-                return;
-            }
-            const kembalian = uangMasuk - totalVal;
-            if (uangMasuk === 0) {
-                kembalianDisplay.innerText = '-';
-                kembalianDisplay.className = 'font-medium text-nongki-muted';
-                btnProses.disabled = true;
-            } else if (kembalian < 0) {
-                kembalianDisplay.innerText = 'Kurang: ' + formatRupiah(Math.abs(kembalian));
-                kembalianDisplay.className = 'font-medium text-red-400';
-                btnProses.disabled = true;
-            } else {
-                kembalianDisplay.innerText = formatRupiah(kembalian);
-                kembalianDisplay.className = 'font-medium text-nongki-gold text-lg';
-                btnProses.disabled = false;
-            }
-        }
-        inputUang.addEventListener('input', calculateChange);
-
-        // --- PAYMENT & RECEIPT MODAL LOGIC ---
-        const paymentModal = document.getElementById('paymentModal');
-        const paymentModalContent = document.getElementById('modalContent');
-
-        function processPayment() {
-            const uangMasuk = parseFloat(inputUang.value) || 0;
-            const kembalian = uangMasuk - totalVal;
-            const randomId = Math.floor(100000 + Math.random() * 900000);
-            
-            document.getElementById('receiptTrx').innerText = 'TRX-' + randomId;
-            const now = new Date();
-            const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('receiptDate').innerText = now.toLocaleDateString('id-ID', options);
-
-            const receiptItems = document.getElementById('receiptItems');
-            receiptItems.innerHTML = '';
-            cart.forEach(item => {
-                receiptItems.innerHTML += `
-                    <div class="flex justify-between text-sm">
-                        <div class="text-gray-300">
-                            <div class="line-clamp-1">${item.name}</div>
-                            <div class="text-xs text-nongki-muted mt-0.5">${item.qty} x ${formatRupiah(item.price)}</div>
+                        <div class="flex items-center gap-2 bg-[#1C1815] rounded-lg p-1 border border-[#2A241F]">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-[#7A7A7A] hover:text-white transition-colors text-sm">-</button>
+                            <span class="text-xs w-4 text-center">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-[#7A7A7A] hover:text-white transition-colors text-sm">+</button>
                         </div>
-                        <div class="text-gray-200 font-medium">${formatRupiah(item.qty * item.price)}</div>
+                    </div>`;
+            });
+            cartCountBadge.innerText = totalItems;
+            taxVal = subtotalVal * 0.11;
+            totalVal = subtotalVal + taxVal;
+            document.getElementById('subtotalDisplay').innerText = formatRupiah(subtotalVal);
+            document.getElementById('taxDisplay').innerText = formatRupiah(taxVal);
+            document.getElementById('totalDisplay').innerText = formatRupiah(totalVal);
+        }
+        calculateChange();
+    }
+
+    function calculateChange() {
+        const uang = parseFloat(inputUang.value) || 0;
+        if (cart.length === 0) { kembalianDisplay.innerText = '-'; kembalianDisplay.className = 'font-medium text-[#7A7A7A]'; btnProses.disabled = true; return; }
+        const kembalian = uang - totalVal;
+        if (uang === 0) { kembalianDisplay.innerText = '-'; kembalianDisplay.className = 'font-medium text-[#7A7A7A]'; btnProses.disabled = true; }
+        else if (kembalian < 0) { kembalianDisplay.innerText = 'Kurang: ' + formatRupiah(Math.abs(kembalian)); kembalianDisplay.className = 'font-medium text-red-400'; btnProses.disabled = true; }
+        else { kembalianDisplay.innerText = formatRupiah(kembalian); kembalianDisplay.className = 'font-medium text-[#CBA052] text-base'; btnProses.disabled = false; }
+    }
+    inputUang.addEventListener('input', calculateChange);
+
+    function processPayment() {
+        const uang = parseFloat(inputUang.value) || 0;
+        sendOrderToBackend(uang, uang - totalVal);
+    }
+
+   async function sendOrderToBackend(uangMasuk, kembalian) {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = meta ? meta.getAttribute('content') : '';
+    
+    if (!csrfToken) {
+        alert('CSRF token tidak ditemukan. Coba refresh halaman.');
+        resetBtn();
+        return;
+    }
+    
+    btnProses.disabled = true;
+    btnProses.innerHTML = 'Memproses...';
+    
+    try {
+        const response = await fetch("{{ route('kasir.transaksi.store') }}", {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRF-TOKEN': csrfToken 
+            },
+            body: JSON.stringify({
+                cart, subtotal: subtotalVal, tax: taxVal, total: totalVal,
+                cash_received: uangMasuk, order_type: selectedOrderType
+            })
+        });
+        const result = await response.json();
+        if (result.success) { showReceipt(result.trx_code, uangMasuk, kembalian); }
+        else { alert(result.message || 'Transaksi gagal.'); resetBtn(); }
+    } catch (err) { 
+        console.error(err); 
+        alert('Kesalahan koneksi.'); 
+        resetBtn(); 
+    }
+}
+
+    function resetBtn() {
+        btnProses.disabled = false;
+        btnProses.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Proses Pembayaran`;
+    }
+
+    function showReceipt(trxCode, uangMasuk, kembalian) {
+        document.getElementById('receiptTrx').innerText = trxCode;
+        const now = new Date();
+        document.getElementById('receiptDate').innerText = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        document.getElementById('receiptOrderType').innerText = selectedOrderType === 'dinein' ? '🍽️ Dine In' : '🥡 Take Away';
+        document.getElementById('receiptPayMethod').innerText = '💵 Tunai';
+
+        const receiptItems = document.getElementById('receiptItems');
+        receiptItems.innerHTML = '';
+        cart.forEach(item => {
+            receiptItems.innerHTML += `
+                <div class="flex justify-between text-sm">
+                    <div class="text-gray-300">
+                        <div class="line-clamp-1">${item.name}</div>
+                        <div class="text-xs text-[#7A7A7A] mt-0.5">${item.qty} x ${formatRupiah(item.price)}</div>
                     </div>
-                `;
-            });
-
-            document.getElementById('receiptSubtotal').innerText = formatRupiah(subtotalVal);
-            document.getElementById('receiptTax').innerText = formatRupiah(taxVal);
-            document.getElementById('receiptTotal').innerText = formatRupiah(totalVal);
-            document.getElementById('receiptCash').innerText = formatRupiah(uangMasuk);
-            document.getElementById('receiptChange').innerText = formatRupiah(kembalian);
-
-            paymentModal.classList.remove('hidden');
-            paymentModal.classList.add('block'); 
-            paymentModalContent.classList.remove('opacity-0', 'scale-90');
-            paymentModalContent.classList.add('animate-modal');
-
-            // ===== PENAMBAHAN FUNGSI AJAX OTOMATIS =====
-            sendOrderToBackend();
-        }
-
-        function closePaymentModal() {
-            paymentModalContent.classList.remove('animate-modal');
-            paymentModalContent.classList.add('opacity-0', 'scale-90');
-            setTimeout(() => {
-                paymentModal.classList.add('hidden');
-                paymentModal.classList.remove('block');
-                cart = [];
-                inputUang.value = '';
-                updateCartUI();
-            }, 200); 
-        }
-
-        // --- FILTER LOGIC ---
-        const searchInput = document.getElementById('searchInput');
-        const menuCards = document.querySelectorAll('.menu-card');
-        const catBtns = document.querySelectorAll('.cat-btn');
-
-        function filterMenu(query = '', category = 'semua') {
-            menuCards.forEach(card => {
-                const name = card.dataset.name;
-                const cat = card.dataset.cat;
-                const matchQuery = name.includes(query.toLowerCase());
-                const matchCat = category === 'semua' || cat === category;
-                card.style.display = (matchQuery && matchCat) ? 'flex' : 'none';
-            });
-        }
-
-        searchInput.addEventListener('input', (e) => {
-            const activeCat = document.querySelector('.cat-btn.active').dataset.cat;
-            filterMenu(e.target.value, activeCat);
+                    <div class="text-gray-200 font-medium">${formatRupiah(item.qty * item.price)}</div>
+                </div>`;
         });
 
-        catBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                catBtns.forEach(b => {
-                    b.classList.remove('active', 'bg-nongki-gold/10', 'text-nongki-gold', 'border-nongki-gold');
-                    b.classList.add('text-nongki-muted', 'border-nongki-border');
-                });
-                const clicked = e.target;
-                clicked.classList.add('active', 'bg-nongki-gold/10', 'text-nongki-gold', 'border-nongki-gold');
-                clicked.classList.remove('text-nongki-muted', 'border-nongki-border');
-                filterMenu(searchInput.value, clicked.dataset.cat);
-            });
+        document.getElementById('receiptSubtotal').innerText = formatRupiah(subtotalVal);
+        document.getElementById('receiptTax').innerText = formatRupiah(taxVal);
+        document.getElementById('receiptTotal').innerText = formatRupiah(totalVal);
+        document.getElementById('receiptCash').innerText = formatRupiah(uangMasuk);
+        document.getElementById('receiptChange').innerText = formatRupiah(kembalian);
+
+        paymentModal.classList.remove('hidden');
+        paymentModal.classList.add('block');
+        modalContent.classList.remove('opacity-0', 'scale-90');
+        modalContent.classList.add('animate-modal');
+    }
+
+    function closePaymentModal() {
+        modalContent.classList.remove('animate-modal');
+        modalContent.classList.add('opacity-0', 'scale-90');
+        setTimeout(() => { location.reload(); }, 200);
+    }
+
+    // Filter
+    const searchInput = document.getElementById('searchInput');
+    const menuCards = document.querySelectorAll('.menu-card');
+    const catBtns = document.querySelectorAll('.cat-btn');
+
+    function filterMenu(query = '', category = 'semua') {
+        menuCards.forEach(card => {
+            const matchQ = card.dataset.name.includes(query.toLowerCase());
+            const matchC = category === 'semua' || card.dataset.cat === category;
+            card.style.display = (matchQ && matchC) ? 'flex' : 'none';
         });
+    }
+    searchInput.addEventListener('input', e => filterMenu(e.target.value, document.querySelector('.cat-btn.active')?.dataset.cat));
+    catBtns.forEach(btn => {
+        btn.addEventListener('click', e => {
+            catBtns.forEach(b => { b.classList.remove('active'); b.className = 'cat-btn px-4 py-1 rounded-full text-xs font-medium border border-[#2A241F] text-[#7A7A7A] hover:border-[#CBA052]/50 transition-all'; });
+            e.target.classList.add('active');
+            e.target.className = 'cat-btn active px-4 py-1 rounded-full text-xs font-medium border border-[#CBA052] bg-[#CBA052]/10 text-[#CBA052] transition-all';
+            filterMenu(searchInput.value, e.target.dataset.cat);
+        });
+    });
 
-        // --- DRAWER & MODAL HELPERS ---
-        let drawerOpen = false;
-        const sideDrawer = document.getElementById('sideDrawer');
-        const drawerOverlay = document.getElementById('drawerOverlay');
-        const tabAktif = document.getElementById('tabAktif');
-        const tabRiwayat = document.getElementById('tabRiwayat');
-        const contentAktif = document.getElementById('contentAktif');
-        const contentRiwayat = document.getElementById('contentRiwayat');
-
-        function toggleDrawer() {
-            drawerOpen = !drawerOpen;
-            if(drawerOpen) {
-                drawerOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                drawerOverlay.classList.add('opacity-100');
-                sideDrawer.classList.remove('translate-x-full');
-            } else {
-                drawerOverlay.classList.remove('opacity-100');
-                drawerOverlay.classList.add('opacity-0', 'pointer-events-none');
-                sideDrawer.classList.add('translate-x-full');
-            }
-        }
-
-        function switchDrawerTab(tab) {
-            if(tab === 'aktif') {
-                tabAktif.className = 'py-2.5 text-sm font-medium rounded-lg bg-nongki-gold/10 text-nongki-gold border border-nongki-gold transition-all';
-                tabRiwayat.className = 'py-2.5 text-sm font-medium rounded-lg bg-nongki-card text-nongki-muted border border-nongki-border hover:border-nongki-gold/50 transition-all';
-                contentAktif.classList.remove('hidden');
-                contentRiwayat.classList.add('hidden');
-            } else {
-                tabRiwayat.className = 'py-2.5 text-sm font-medium rounded-lg bg-nongki-gold/10 text-nongki-gold border border-nongki-gold transition-all';
-                tabAktif.className = 'py-2.5 text-sm font-medium rounded-lg bg-nongki-card text-nongki-muted border border-nongki-border hover:border-nongki-gold/50 transition-all';
-                contentRiwayat.classList.remove('hidden');
-                contentAktif.classList.add('hidden');
-            }
-        }
-
-        function openLogoutModal() { document.getElementById('logoutModal').classList.remove('hidden'); document.getElementById('logoutModal').classList.add('flex'); setTimeout(()=> {document.getElementById('logoutModal').classList.remove('opacity-0'); document.getElementById('logoutModalContent').classList.remove('scale-95','opacity-0'); }, 10); }
-        function closeLogoutModal() { document.getElementById('logoutModalContent').classList.add('scale-95','opacity-0'); setTimeout(()=> { document.getElementById('logoutModal').classList.add('hidden'); document.getElementById('logoutModal').classList.remove('flex', 'opacity-0'); }, 300); }
-        function executeLogout() { document.getElementById('logout-form').submit(); }
-        function openClearCartModal() { if(cart.length===0) return; document.getElementById('clearCartModal').classList.remove('hidden'); document.getElementById('clearCartModal').classList.add('flex'); setTimeout(()=> {document.getElementById('clearCartModal').classList.remove('opacity-0'); document.getElementById('clearCartModalContent').classList.remove('scale-95','opacity-0'); }, 10); }
-        function closeClearCartModal() { document.getElementById('clearCartModalContent').classList.add('scale-95','opacity-0'); setTimeout(()=> { document.getElementById('clearCartModal').classList.add('hidden'); document.getElementById('clearCartModal').classList.remove('flex', 'opacity-0'); }, 300); }
-        function executeClearCart() { cart=[]; inputUang.value=''; updateCartUI(); closeClearCartModal(); }
-
-        // ==========================================
-        // TUGAS 3: LOGIKA AJAX (SINKRONISASI DASHBOARD)
-        // ==========================================
-        async function sendOrderToBackend() {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            
-            try {
-                const response = await fetch("{{ route('kasir.transaksi.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        total: totalVal, // Menggunakan variabel global total yang dihitung di updateCartUI
-                        cart: cart
-                    })
-                });
-
-                const result = await response.json();
-                if(result.success) {
-                    console.log("Transaksi sukses tersimpan di database!");
-                    startAutomatedStatusCheck();
-                } else {
-                    console.error("Error Backend: " + result.message);
-                }
-            } catch (err) {
-                console.error("Fetch Error:", err);
-            }
-        }
-
-        function startAutomatedStatusCheck() {
-            // Simulasi deteksi payment otomatis/notifikasi bahwa data sudah masuk DB (Tugas 3)
-            setTimeout(() => {
-                alert("✅ Sistem Sinkronisasi: Transaksi Berhasil Dicatat ke Dashboard Admin!");
-            }, 1000); 
-        }
-    </script>
-</body>
-</html>
+    // Modal helpers
+    function openClearCartModal() {
+        if (cart.length === 0) return;
+        const m = document.getElementById('clearCartModal');
+        const mc = document.getElementById('clearCartModalContent');
+        m.classList.remove('hidden'); m.classList.add('flex');
+        setTimeout(() => { m.classList.remove('opacity-0'); mc.classList.remove('scale-95', 'opacity-0'); }, 10);
+    }
+    function closeClearCartModal() {
+        const mc = document.getElementById('clearCartModalContent');
+        mc.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => { document.getElementById('clearCartModal').classList.add('hidden'); document.getElementById('clearCartModal').classList.remove('flex', 'opacity-0'); }, 300);
+    }
+    function executeClearCart() { cart = []; inputUang.value = ''; updateCartUI(); closeClearCartModal(); }
+</script>
+@endpush

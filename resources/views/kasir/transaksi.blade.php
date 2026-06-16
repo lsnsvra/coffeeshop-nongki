@@ -80,7 +80,11 @@
     }
     .status-selesai { background: rgba(93, 202, 165, 0.1); color: #5DCAA5; border: 1px solid rgba(93, 202, 165, 0.2); }
     .status-diproses { background: rgba(255, 152, 0, 0.1); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.2); }
-    
+    .status-pending { 
+    background: rgba(255, 152, 0, 0.1); 
+    color: #FF9800; 
+    border: 1px solid rgba(255, 152, 0, 0.2); 
+}
     .badge-method { background: var(--dark-4); color: var(--text-muted-c); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
 </style>
 @endpush
@@ -105,42 +109,50 @@
             </tr>
         </thead>
         <tbody>
+    @forelse($transactions as $trx)
+    <tr>
+        <td class="action-col">
+            <div class="action-btns">
+                <button class="btn-print-struk" title="Cetak Ulang Struk" onclick="window.open('{{ route('order.detail', $trx->OrderID) }}', '_blank')">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </div>
+        </td>
+        <td><span class="trx-id">{{ $trx->order_code }}</span></td>
+        <td style="font-weight: 600;">
+            {{ $trx->pelanggan }}
+            @if($trx->StatusOrder === 'paid')
+                <span style="font-size:0.7rem; background:rgba(201,168,76,0.1); color:var(--gold); padding:2px 8px; border-radius:6px; margin-left:6px; font-weight:700;">
+                    {{ str_contains($trx->order_code, 'TRX-') ? ($trx->pelanggan === 'Dine In' ? 'Dine In' : 'Take Away') : '' }}
+                </span>
+            @endif
+        </td>
+        <td class="trx-total">Rp {{ number_format($trx->TotalHarga, 0, ',', '.') }}</td>
+        <td><span class="badge-method"><i class="fa-solid fa-wallet" style="margin-right: 4px;"></i> Tunai</span></td>
+        <td style="color: var(--text-muted-c);"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> {{ \Carbon\Carbon::parse($trx->TanggalOrder)->format('d M, H:i') }} WIB</td>
+        <td>
             @php
-                // Dummy Data Tambahan Biar Tabel Lebih Hidup
-                $transactions = [
-                    ['#TRX-005', 'Dian P.', 65000, 'QRIS', '11:05 WIB', 'selesai'],
-                    ['#TRX-004', 'Andi R.', 45000, 'GoPay', '10:50 WIB', 'selesai'],
-                    ['#TRX-003', 'Guest', 28000, 'Tunai', '10:42 WIB', 'selesai'],
-                    ['#TRX-002', 'Budi S.', 120000, 'Tunai', '09:15 WIB', 'diproses'],
-                    ['#TRX-001', 'Sarah A.', 85000, 'QRIS', '08:30 WIB', 'selesai']
-                ];
+                $status = strtolower($trx->StatusOrder);
+                $badgeClass = match($status) {
+                    'paid' => 'status-selesai',
+                    'pending' => 'status-pending',
+                    default => 'status-diproses'
+                };
+                $label = match($status) {
+                    'paid' => 'Selesai',
+                    'pending' => 'Pending',
+                    default => ucfirst($status)
+                };
             @endphp
-
-            @foreach($transactions as $trx)
-            <tr>
-                {{-- KOLOM AKSI (CETAK STRUK) MUTLAK DI KIRI --}}
-                <td class="action-col">
-                    <div class="action-btns">
-                        <button class="btn-print-struk" title="Cetak Ulang Struk" onclick="alert('Mencetak struk {{ $trx[0] }}')">
-                            <i class="fa-solid fa-print"></i>
-                        </button>
-                    </div>
-                </td>
-                
-                {{-- DETAIL TRANSAKSI --}}
-                <td><span class="trx-id">{{ $trx[0] }}</span></td>
-                <td style="font-weight: 600;">{{ $trx[1] }}</td>
-                <td class="trx-total">Rp {{ number_format($trx[2], 0, ',', '.') }}</td>
-                <td><span class="badge-method"><i class="fa-solid fa-wallet" style="margin-right: 4px;"></i> {{ $trx[3] }}</span></td>
-                <td style="color: var(--text-muted-c);"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> {{ $trx[4] }}</td>
-                <td>
-                    <span class="badge-status status-{{ strtolower($trx[5]) }}">
-                        {{ ucfirst($trx[5]) }}
-                    </span>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
+            <span class="badge-status {{ $badgeClass }}">{{ $label }}</span>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted-c);">Belum ada transaksi.</td>
+    </tr>
+    @endforelse
+</tbody>
     </table>
 </div>
 @endsection

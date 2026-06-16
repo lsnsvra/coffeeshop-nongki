@@ -632,7 +632,7 @@
                     <tr>
                         <th>ID Order</th>
                         <th>Tanggal</th>
-                        <th>Pembeli</th>
+                        <th>Pelanggan</th>
                         <th>Detail Produk</th>
                         <th>Status</th>
                         <th style="text-align: right;">Total Harga</th>

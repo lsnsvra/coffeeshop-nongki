@@ -140,7 +140,7 @@ Route::middleware(['auth', 'role:kasir', 'track'])->prefix('kasir')->name('kasir
     Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store');
     Route::get('/pos', function () { return view('kasir.pos'); })->name('pos');
     Route::get('/menu', function () { return view('kasir.menu'); })->name('menu');
-    Route::get('/transaksi', function () { return view('kasir.transaksi'); })->name('transaksi');
+    Route::get('/transaksi', [TransaksiController::class, 'riwayat'])->name('transaksi');
     Route::get('/pesanan', function () { return view('kasir.pesanan'); })->name('pesanan');
 });
 
